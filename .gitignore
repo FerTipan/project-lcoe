@@ -1,16 +1,31 @@
 # Entorno virtual
 venv/
+.venv/
+env/
+ENV/
 
 # Archivos compilados de Python
 __pycache__/
 *.pyc
 *.pyo
+*.py[cod]
+*$py.class
 
 # Configuración local
 .env
 
 # Base de datos SQLite (si usas una)
-db.sqlite3
+*.sqlite3
+*.db
 
 # Archivos estáticos generados
 staticfiles/
+
+
+# Configuración de editores
+.vscode/
+.idea/
+
+# Archivos temporales
+*.log
+.DS_Store
