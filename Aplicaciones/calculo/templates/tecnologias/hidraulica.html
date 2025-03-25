@@ -21,14 +21,15 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-            <div class="card-header">
-                <h5>Generación Hidraúlica</h5>
+            <div class="col-md-6">
+                <div class="card-header">
+                    <h5>Generación Hidraúlica</h5>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <!-- <label for="exampleFormControlSelect1">Central Hidroelictrica</label> -->
                             <select class="form-control" id="exampleFormControlSelect1">
                                 <option disabled selected>-- Seleccione la Central Hidroeléctrica</option>
                                 <option>COCA CODO SINCLAIR</option>
@@ -56,37 +57,44 @@
             </div>
             <div class="card-body">
                 <div class="form-group">
-                    <div class="input-group input-group-sm">
-                      <span class="input-group-text badge bg-blue-600">Capacidad</span>
-                      <input type="text" id="cap-central" name="cap-central" class="form-control">
-                      <span class="input-group-text">[MW]</span>
+                    <style> .cont{ display: flex; justify-content: center;align-items: center;}.img-hidro{ width: 50%; height: 50%;}</style>
+                    <div class="input-group input-group-sm cont">
+                        <span class="input-group-text badge bg-blue-600">★</span>
+                        <img src="{% static 'img/tipoGeneracion/hidraulica.jpg' %}" class="img-fluid card-img-custom img-hidro" alt="Hidráulica">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group input-group-sm">
-                      <span class="input-group-text badge bg-blue-600">Vida Útil</span>
-                      <input type="text" id="cap-central" name="cap-central" class="form-control">
-                      <span class="input-group-text">[MW]</span>
+                        <span class="input-group badge bg-blue-600">Capacidad Central</span>
+                        <input type="text" id="cap-central" name="cap-central" class="form-control">
+                        <span class="input-group-text">[MW]</span>
+                      </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group badge bg-blue-600">Vida Útil</span>
+                      <input type="text" id="vida" name="vida" class="form-control">
+                      <span class="input-group-text">[# Años]</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group input-group-sm">
                       <span class="input-group-text badge bg-blue-600">Inversión Total</span>
-                      <input type="text" id="cap-central" name="cap-central" class="form-control">
+                      <input type="text" id="inv" name="inv" class="form-control">
                       <span class="input-group-text">[USD]</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group input-group-sm">
                       <span class="input-group-text badge bg-blue-600">Factor Planta</span>
-                      <input type="text" id="cap-central" name="cap-central" class="form-control">
+                      <input type="text" id="fac" name="fac" class="form-control">
                       <span class="input-group-text">[ % ]</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group input-group-sm">
                       <span class="input-group-text badge badge bg-blue-600">Año</span>
-                      <input type="text" id="cap-central" name="cap-central" class="form-control">
+                      <input type="text" id="anio" name="anio" class="form-control">
                       <span class="input-group-text">[aaaa]</span>
                     </div>
                 </div>
@@ -99,7 +107,6 @@
                 <h5>Costos Fijos</h5>
             </div>
             <div class="card-body">
-                <form>
                 <div class="form-group row mb-2">
                     <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos de Producción</label>
                     <div class="col-lg-5 col-md-9 col-sm-12">
@@ -112,12 +119,34 @@
                     <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos de Operación</label>
                     <div class="col-lg-5 col-md-9 col-sm-12">
                         <div class="typeahead">
-                            <input class="form-control" id="cst-operacion" name="cst-operacion" type="text" dir="ltr" placeholder="">
+                            <input class="form-control" id="cst-oper" name="cst-oper" type="text" dir="ltr" placeholder="">
                         </div>
                     </div>
                 </div>
-            <button class="badge bg-light-primary border border-primary">Calcular LCOE</button>
+                <!--<button class="badge bg-light-primary border border-primary">Calcular LCOE</button> -->
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5>Costos Variables</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group row mb-2">
+                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos</label>
+                    <div class="col-lg-5 col-md-9 col-sm-12">
+                        <div class="typeahead">
+                            <input class="form-control" id="cst-v" name="cst-v" type="text" dir="ltr" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button class="badge bg-success border border-primary" style="padding: 20px; border-radius: 50px;">Calcular LCOE</button>&nbsp;
+            <button class="badge bg-primary border border-primary" style="padding: 20px; border-radius: 50px;">Nuevo Caso</button>
+
         </div>
     </div>
 </div>
+<br>
 {% endblock %}
