@@ -19,7 +19,7 @@ __pycache__/
 *.db
 
 # Archivos estáticos generados
-staticfiles/
+#staticfiles/
 
 
 # Configuración de editores

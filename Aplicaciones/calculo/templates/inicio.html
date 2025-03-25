@@ -1,14 +1,128 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio - LCOE</title>
+    <title>App LCOE</title>
+    <!-- [Favicon] icon -->
+    <link rel="icon" href="{% static 'plantilla/mantis/src/assets/images/favicon.svg' %}" type="image/x-icon">
+    <!-- [Google Font] Family -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
+    <!-- [Tabler Icons] -->
+    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/tabler-icons.min.css' %}" >
+    <!-- [Feather Icons] -->
+    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/feather.css' %}" >
+    <!-- [Font Awesome Icons] -->
+    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/fontawesome.css' %}" >
+    <!-- [Material Icons] -->
+    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/material.css' %}" >
+    <!-- [Template CSS Files] -->
+    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style.css' %}" id="main-style-link" >
+    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style-preset.css' %}" >
+
+    <style>
+        body {
+        background: 
+            /* Capa blanca al 50% de opacidad */
+            linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+            /* Tu imagen de fondo */
+            url('{% static "img/inicio.PNG" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Efecto oscuro, ajusta la opacidad según necesites */
+    z-index: -1; /* Asegura que la capa oscura esté detrás del contenido */
+    }
+        .container {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .title1{
+            background: linear-gradient(to right, black, #4a90e2);
+            font-size: 9rem;
+            font-weight: bold;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        .title2{
+            background: linear-gradient(to right, #4a90e2, black);
+            font-size: 9rem;
+            font-weight: bold;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .btn-signin {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .text-muted {
+    font-size: 1.5rem;
+    padding: 70px 150px 20px 150px;
+    color: rgb(175, 175, 175) !important; /* Añade esta línea */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Opcional: sombra para mejor legibilidad */
+    }
+        
+        /* Botón "Iniciar" con el mismo efecto de degradado */
+        .btn-iniciar {
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(to right, rgb(197, 195, 195), #4a90e2, rgb(108, 108, 226));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border: 2px solid #4a90e2;
+            cursor: pointer;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        /* Efecto hover para el botón */
+        .btn-iniciar:hover {
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body>
-    <button class="btn btn-primary">
-        <a href="{% url 'tipoGeneracion' %}">Tipo de Generación</a>
-    </button>
-    <h1>Esta es la pagina de incio </h1>
+    <button class="btn btn-dark btn-signin">Sign in</button>
+    
+    <div class="container">
+        <h1 class="title"><span class="title1">LCOE</span> <span class="title2">APP</span></h1>
+        <p class="text-muted">
+            <strong>BIENVENIDOS A LA APLICACIÓN WEB DE CÁLCULO Y ANÁLISIS DEL COSTO NIVELADO DE ENERGÍA (LCOE) 
+            EN EL SECTOR ELÉCTRICO ECUATORIANO.</strong>
+        </p>
+        
+        <!-- Botón "Iniciar" -->
+        <a href="tipoGeneracion" class="btn-iniciar">Iniciar</a>
+    </div>
+
+    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/simplebar.min.js' %}"></script>
+    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/popper.min.js' %}"></script>
+    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/bootstrap.min.js' %}"></script>
+    <script src="{% static 'plantilla/mantis/dist/assets/js/fonts/custom-font.js' %}"></script>
+    <script src="{% static 'plantilla/mantis/dist/assets/js/pcoded.js' %}"></script>
+    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/feather.min.js' %}"></script>
 </body>
 </html>
