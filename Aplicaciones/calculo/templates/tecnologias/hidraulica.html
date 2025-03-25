@@ -1,0 +1,123 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Tipo</h5>
+                </div>
+                <ul class="breadcrumb">
+                <li class="breadcrumb-item">Tipo de Generación</li>
+
+                <li class="breadcrumb-item" aria-current="page">Hidráulica</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Generación Hidraúlica</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <!-- <label for="exampleFormControlSelect1">Central Hidroelictrica</label> -->
+                            <select class="form-control" id="exampleFormControlSelect1">
+                                <option disabled selected>-- Seleccione la Central Hidroeléctrica</option>
+                                <option>COCA CODO SINCLAIR</option>
+                                <option>MOLINO</option>
+                                <option>SOPLADORA</option>
+                                <option>MINAS SAN FRANCISCO</option> 
+                                <option>MARCEL LANIADO</option>
+                                <option>SAN FRNCISCO </option>
+                                <option>DELSITANISAGUA</option>
+                                <option>MAZAR</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Datos Generales</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text badge bg-blue-600">Capacidad</span>
+                      <input type="text" id="cap-central" name="cap-central" class="form-control">
+                      <span class="input-group-text">[MW]</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text badge bg-blue-600">Vida Útil</span>
+                      <input type="text" id="cap-central" name="cap-central" class="form-control">
+                      <span class="input-group-text">[MW]</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text badge bg-blue-600">Inversión Total</span>
+                      <input type="text" id="cap-central" name="cap-central" class="form-control">
+                      <span class="input-group-text">[USD]</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text badge bg-blue-600">Factor Planta</span>
+                      <input type="text" id="cap-central" name="cap-central" class="form-control">
+                      <span class="input-group-text">[ % ]</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text badge badge bg-blue-600">Año</span>
+                      <input type="text" id="cap-central" name="cap-central" class="form-control">
+                      <span class="input-group-text">[aaaa]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Costos Fijos</h5>
+            </div>
+            <div class="card-body">
+                <form>
+                <div class="form-group row mb-2">
+                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos de Producción</label>
+                    <div class="col-lg-5 col-md-9 col-sm-12">
+                        <div class="typeahead">
+                            <input class="form-control" id="cst-produc" name="cst-produc" type="text" dir="ltr" placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-2">
+                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos de Operación</label>
+                    <div class="col-lg-5 col-md-9 col-sm-12">
+                        <div class="typeahead">
+                            <input class="form-control" id="cst-operacion" name="cst-operacion" type="text" dir="ltr" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            <button class="badge bg-light-primary border border-primary">Calcular LCOE</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
