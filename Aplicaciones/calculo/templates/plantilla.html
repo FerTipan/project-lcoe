@@ -37,7 +37,7 @@
   <nav class="pc-sidebar">
     <div class="navbar-wrapper">
       <div class="m-header">
-        <div class="d-flex align-items-center justify-content-center">
+        <div class="d-flex">
           <a href="{% url 'inicio' %}" class="b-brand text-primary">
             <img src="{% static 'assets/cnde/images/logo2.jpg' %}" class="img-fluid" style="height: 50px; border-radius: 60px;" alt="logo lcoe"> <!-- logo-lg-->
           </a>
@@ -48,7 +48,7 @@
           <li class="pc-item">
             <a href="{% url 'inicio' %}" class="pc-link">
               <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
-              <span class="pc-mtext">Dashboard</span>
+              <span class="pc-mtext">Inicio</span>
             </a>
           </li>
   
@@ -76,7 +76,7 @@
           </li>
   
           <li class="pc-item pc-caption">
-            <label>Pages</label>
+            <label>User</label>
             <i class="ti ti-news"></i>
           </li>
           <li class="pc-item">
@@ -85,15 +85,8 @@
               <span class="pc-mtext">Login</span>
             </a>
           </li>
-          <li class="pc-item">
-            <a href="#" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
-              <span class="pc-mtext">Register</span>
-            </a>
-          </li>
-  
           <li class="pc-item pc-caption">
-            <label>Other</label>
+            <label>Otro</label>
             <i class="ti ti-brand-chrome"></i>
           </li>
           <li class="pc-item pc-hasmenu">
@@ -115,23 +108,14 @@
                   </li>
                 </ul>
               </li>
-              <li class="pc-item pc-hasmenu">
-                <a href="#!" class="pc-link">Level 2.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                <ul class="pc-submenu">
-                  <li class="pc-item"><a class="pc-link" href="#!">Level 3.1</a></li>
-                  <li class="pc-item"><a class="pc-link" href="#!">Level 3.2</a></li>
-                </ul>
-              </li>
             </ul>
           </li>
         </ul>
         <div class="card text-center">
           <div class="card-body">
             <img src="{% static 'plantilla/mantis/src/assets/images/img-navbar-card.png' %}" alt="images" class="img-fluid mb-2">
-            <h5>Upgrade To Pro</h5>
-            <p>To get more features and components</p>
-            <a href="" target="_blank"
-            class="btn btn-success">Buy Now</a>
+            <h5>LCOE</h5>
+            <p>To get more components</p>
           </div>
         </div>
       </div>
@@ -153,7 +137,7 @@
           <i class="ti ti-menu-2"></i>
         </a>
       </li>
-      <li class="dropdown pc-h-item d-inline-flex d-md-none">
+      <!-- <li class="dropdown pc-h-item d-inline-flex d-md-none">
         <a
           class="pc-head-link dropdown-toggle arrow-none m-0"
           data-bs-toggle="dropdown"
@@ -178,7 +162,7 @@
           <i data-feather="search" class="icon-search"></i>
           <input type="search" class="form-control" placeholder="Search here. . .">
         </form>
-      </li>
+      </li> -->
     </ul>
   </div>
   <!-- [Mobile Media Block end] -->

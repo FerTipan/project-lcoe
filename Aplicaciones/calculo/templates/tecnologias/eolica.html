@@ -17,6 +17,7 @@
         </div>
     </div>
 </div>
+<a href="{% url 'login' %}">LOGIN</a>
 <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -187,8 +188,84 @@
             </div>
         </div>
         <div class="d-flex justify-content-center">
-            <button class="badge bg-teal-500 border border-primary" style="padding: 20px; border-radius: 50px;">Calcular LCOE</button>&nbsp;
-            <button class="badge bg-primary border border-primary" style="padding: 20px; border-radius: 50px;">Nuevo Caso</button>
+            <button class="badge bg-primary border border-primary" style="padding: 20px; border-radius: 50px;" data-bs-toggle="modal" data-bs-target="#crearCasoLcoeModal"><i class="fa fa-plus"></i> Nuevo Caso</button>&nbsp;
+            <button class="badge bg-teal-500 border border-primary" style="padding: 20px; border-radius: 50px;">Calcular LCOE</button>
+            <!-- <button class="badge bg-primary border border-primary" style="padding: 20px; border-radius: 50px;">Nuevo Caso</button> -->
+        </div>
+
+        <div class="modal fade" id="crearCasoLcoeModal" tabindex="-1" aria-labelledby="crearCasoLcoeLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="crearCasoLcoeLabel">Creacion de Caso LCOE</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="frm-create-lcoe" method="post" action="#" enctype="multipart/form-data">
+                      {% csrf_token %}
+                        <div class="modal-body">
+                            <div class="row">
+                                <h5>Datos Generales</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>Capacidad</label>                                       
+                                        <span class="text-danger">[MW]</span>
+                                        <input type="number" class="form-control" name="capacidad" id="capacidad" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Inversión Total</label>
+                                        <input type="number" class="form-control" name="inver_total" id="inver_total" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Capital Propio</label>
+                                        <input type="number" class="form-control" name="capital_prp" id="capital_prp" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>Factor planta</label>
+                                        <input type="number" class="form-control" name="fac_planta" id="fac_planta" required>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label>Vida Util</label>
+                                                <input type="number" class="form-control" name="vida_util" id="vida_util" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label>Descuento</label>
+                                                <input type="number" class="form-control" name="fac_planta" id="fac_planta" required>
+                                            </div>
+                                        </div>                                      
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Deuda</label>
+                                        <input type="number" class="form-control" name="deuda" id="deuda" required>
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h5>Costos Fijos</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>Costos</label>
+                                        <input type="number" class="form-control" name="costos" id="costos" required>
+                                    </div>
+                                </div>
+                           
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Calcular</button>
+                            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

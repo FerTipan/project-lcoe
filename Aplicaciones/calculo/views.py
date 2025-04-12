@@ -21,3 +21,6 @@ def hidraulica(request):
 
 def termica(request):
     return render(request, 'tecnologias/termica.html')
+
+def login(request):
+    return render(request, 'login.html')

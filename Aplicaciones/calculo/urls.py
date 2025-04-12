@@ -8,4 +8,7 @@ urlpatterns = [
     path('termica/', views.termica, name='termica'),
     path('solar/', views.solar, name='solar'),  
     path('eolica/', views.eolica, name='eolica'),
+
+    path('login/', views.login, name='login'),
+
 ]

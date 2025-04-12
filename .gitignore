@@ -14,12 +14,15 @@ __pycache__/
 # Configuración local
 .env
 
-# Base de datos SQLite (si usas una)
+# Base de datos SQLite
 *.sqlite3
 *.db
+db.sqlite3
+
 
 # Archivos estáticos generados
-#staticfiles/
+staticfiles/
+media/
 
 
 # Configuración de editores
@@ -29,3 +32,4 @@ __pycache__/
 # Archivos temporales
 *.log
 .DS_Store
+Thumbs.db  
