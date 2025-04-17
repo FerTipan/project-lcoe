@@ -1,0 +1,19 @@
+{% extends "plantilla.html" %}
+{% block content %}
+<h2>Tipos de Central</h2>
+<a href="{% url 'tipoelectrica_create' %}" class="btn btn-success mb-3">Nuevo tipo</a>
+<table class="table table-bordered">
+    <thead><tr><th>Nombre</th><th>Acciones</th></tr></thead>
+    <tbody>
+        {% for tipo in object_list %}
+        <tr>
+            <td>{{ tipo.nombre }}</td>
+            <td>
+                <a href="{% url 'tipoelectrica_update' tipo.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'tipoelectrica_delete' tipo.pk %}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

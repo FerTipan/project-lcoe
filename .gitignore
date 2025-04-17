@@ -18,6 +18,7 @@ __pycache__/
 *.sqlite3
 *.db
 db.sqlite3
+Calculo.db
 
 
 # Archivos estáticos generados

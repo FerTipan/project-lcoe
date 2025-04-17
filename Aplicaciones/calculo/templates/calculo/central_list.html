@@ -1,0 +1,42 @@
+{% extends "plantilla.html" %}
+{% block content %}
+<h2>Centrales Eléctricas</h2>
+<a href="{% url 'central_create' %}" class="btn btn-success mb-3">Agregar nueva central</a>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+            <th>Empresa</th>
+            <th>Tipo</th>
+            <th>Potencia</th>
+            <th>Energia Media</th>
+            <th>Provincia</th>
+            <th>Cantón</th>
+            <th>Año de Operación</th>
+            <th>Tipo de Generación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for central in object_list %}
+        <tr>
+            <td>{{ central.nombre }}</td>
+            <th>{{ central.ubicacion}}</th>
+            <td>{{ central.empresa }}</td>
+            <th>{{ central.tipo}}</th>
+            <th>{{ central.potencia}}</th>
+            <td>{{ central.e_media }}</td>
+            <td>{{ central.provincia }}</td>
+            <td>{{ central.canton }}</td>
+            <td>{{ central.anio_operacion }}</td>
+            <td>{{ central.tipo_electrica }}</td>
+            <td>
+                <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
