@@ -3,9 +3,11 @@ venv/
 .venv/
 env/
 ENV/
+.env/
 
 # Archivos compilados de Python
 __pycache__/
+*/__pycache__/
 *.pyc
 *.pyo
 *.py[cod]
@@ -33,4 +35,8 @@ media/
 # Archivos temporales
 *.log
 .DS_Store
-Thumbs.db  
+Thumbs.db 
+
+# --- Archivos de configuración de base de datos de PostgreSQL (si tuvieras dumps) ---
+*.sql
+*.dump
