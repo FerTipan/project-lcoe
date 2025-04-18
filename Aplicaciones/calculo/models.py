@@ -37,13 +37,50 @@ class Central(models.Model):
     def __str__(self):
         return self.nombre
 
+# Class CentralTermica
 class CentralTermica(Central):
-    inversion_total = models.FloatField()
-    factor_planta = models.FloatField()
     costos_produccion = models.FloatField()
     costos_om = models.FloatField()
-    costos_variable = models.FloatField()
+    costos_administracion = models.FloatField()
 
+    costos_combustible = models.FloatField()
+    costos_transporte = models.FloatField()
+    costos_lubricacion = models.FloatField()
+    costo_agua = models.FloatField()
+    costo_mantenimeinto = models.FloatField()
+    costo_control_ambiental = models.FloatField()
+    costo_servicios_auxiliares = models.FloatField()
+
+    def to_dict(self):
+        return {
+            "tipo": "Térmica",
+            "costos_produccion": self.costos_produccion,
+            "costos_om": self.costos_om,
+            "costos_administracion": self.costos_administracion,
+            "costos_combustible": self.costos_combustible,
+            "costos_transporte": self.costos_transporte,
+            "costos_lubricacion": self.costos_lubricacion,
+            "costo_agua": self.costo_agua,
+            "costo_mantenimeinto": self.costo_mantenimeinto,
+            "costo_control_ambiental": self.costo_control_ambiental,
+            "costo_servicios_auxiliares": self.costo_servicios_auxiliares,
+        }
+
+class CentralFotovoltaica(Central):
+    costos_produccion = models.FloatField()
+    costos_om = models.FloatField()
+
+    costos_variable = models.FloatField()
+    
+    def to_dict(self):
+        return {
+            "tipo": "Fotovoltaica",
+            "costos_produccion": self.costos_produccion,
+            "costos_om": self.costos_om,
+            "costos_variable": self.costos_variable,
+        }
+
+ 
 # Class Info Central
 class InformacionCentral(models.Model):
     capacidad = models.FloatField()
