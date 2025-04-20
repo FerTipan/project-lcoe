@@ -1,19 +1,55 @@
 {% extends "plantilla.html" %}
 {% block content %}
-<h2>Tipos de Central</h2>
-<a href="{% url 'tipoelectrica_create' %}" class="btn btn-success mb-3">Nuevo tipo</a>
-<table class="table table-bordered">
-    <thead><tr><th>Nombre</th><th>Acciones</th></tr></thead>
-    <tbody>
-        {% for tipo in object_list %}
-        <tr>
-            <td>{{ tipo.nombre }}</td>
-            <td>
-                <a href="{% url 'tipoelectrica_update' tipo.pk %}" class="btn btn-warning btn-sm">Editar</a>
-                <a href="{% url 'tipoelectrica_delete' tipo.pk %}" class="btn btn-danger btn-sm">Eliminar</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="col-md-12">
+    <div class="page-header-title">
+      <h2 class="mb-0">Tipo de Generación Eléctrica</h2>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-12">
+        <a href="{% url 'tipoelectrica_create' %}" class="btn btn-success mb-3">Agregar tipo</a>
+        <div class="card">
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+                    <table class="table table table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th><th>Foto</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tipo in object_list %}
+                            <tr>
+                                <td>{{ tipo.nombre }}</td>
+                                <td>{% if tipo.foto_tipo and tipo.foto_tipo.url %}
+                                    <p class="mb-0  fw-normal">
+                                        <a  href="{{tipo.foto_tipo.url}}" target="_blank">
+                                            <img src="{{tipo.foto_tipo.url}}" alt=""
+                                            height="110px" width="150px">
+                                        </a>
+                                        <a class="btn btn-outline-success" download  href="{{tipo.foto_tipo.url}}">
+                                        Descargar
+                                        </a>
+                                    {% else %}
+                                        No hay foto disponible.
+                                    {% endif %}</td>
+                                <td>
+                                    <a href="{% url 'tipoelectrica_update' tipo.pk %}" class="btn btn-warning btn-sm"><i class="ti ti-pencil"></i></a>
+                                    <a href="{% url 'tipoelectrica_delete' tipo.pk}" class="btn btn-danger btn-sm">
+                                        <i class="ti ti-trash" name="eliminar"></i>
+                                    </a>
+                                   <!-- <a href="{% url 'tipoelectrica_delete' tipo.pk %}" class="btn btn-danger btn-sm">
+                                    <i class="ti ti-trash"></i>Eliminar</a> -->
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> 
+    </div>
+</div>
 {% endblock %}

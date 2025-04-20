@@ -51,7 +51,7 @@
     <div class="col-md-12">
         <div class="btn-sm justify-content-center align-items-center">
             <a href="{% url 'central_list' %}" class="btn btn-outline-primary">Centrales</a>
-            <a href="{% url 'tipoelectrica_list' %}" class="btn btn-outline-secondary">Tipos de Central</a>
+            <a href="{% url 'tipoelectrica_list' %}" class="btn btn-outline-secondary">Tipo de Generación</a>
             <a href="{% url 'info_list' %}" class="btn btn-outline-success">Información Técnica</a>
         </div>
     </div>
@@ -60,11 +60,15 @@
 <div class="container">
     <div class="row g-4 centered-cols"> 
         {% for tipo in tipos %}
-        <!-- Tarjeta Hidráulica -->
-        <div class="col-md-5"> <!-- Columnas más estrechas -->
+        <!-- Tarjetas Tipo Generación -->
+        <div class="col-md-5">
             <a href="{% url 'centrales_por_tipo' tipo.id %}" class="text-decoration-none">
                 <div class="card text-white shadow-lg card-hover card-rectangle"> 
-                    <img src="{% static 'img/tipoGeneracion/hidraulica.jpg' %}" class="card-img card-img-custom" alt="Hidráulica">
+                    {% if tipo.foto_tipo %}
+                        <img src="{{ tipo.foto_tipo.url }}" class="card-img card-img-custom" alt="Tipo de Generación">
+                    {% else %}
+                        <img src="{% static 'assets/images/default.jpg' %}" class="card-img card-img-custom" alt="Imagen por defecto">
+                    {% endif %}
                     <div class="card-img-overlay d-flex flex-column justify-content-between">
                         <h5 class="card-title">{{ tipo.nombre }}</h5>
                         <p class="card-text mb-0">Generación {{ tipo.nombre }}</p>
@@ -73,7 +77,6 @@
             </a>
         </div>
         {% endfor %}
-
         <!-- Tarjeta Térmica 
         <div class="col-md-5">
             <a href="{% url 'termica' %}" class="text-decoration-none">

@@ -13,6 +13,7 @@ class Administrador(models.Model):
 # Class TipoGeneracion 
 class TipoElectrica(models.Model):
     nombre = models.CharField(max_length=100)
+    foto_tipo = models.FileField(upload_to='tipo_electrica', null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -21,6 +22,7 @@ class TipoElectrica(models.Model):
 class Central(models.Model):
     nombre = models.CharField(max_length=100)
     ubicacion = models.CharField(max_length=200)
+    foto_central = models.FileField(upload_to='centrales', null=True, blank=True)
     empresa = models.CharField(max_length=100)
     tipo = models.CharField(max_length=200)
     potencia = models.FloatField()

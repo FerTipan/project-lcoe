@@ -1,8 +1,51 @@
 {% extends "plantilla.html" %}
 {% block content %}
-<h2>{% if form.instance.pk %}Editar{% else %}Nuevo{% endif %} Tipo de Central</h2>
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+<div class="row">
+    <div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <h2>{% if form.instance.pk %}Editar{% else %}Nuevo{% endif %} Tipo de Generación Eléctrica</h2>
+        </div>
+        <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group row">
+                <!--{{ form.as_p }} -->
+                 <label class="col-lg-4 col-form-label text-lg-end">Nombre de la Tecnología:</label>
+                <div class="col-lg-6">
+                    {{ form.nombre }}
+                </div> 
+            </div>
+            <div class="form-group row">
+                <label for="id_foto_tipo" class="col-lg-4 col-form-label text-lg-end">Foto Tecnología</label>
+                <div class="col-lg-6">
+                    {% if form.instance.foto_tipo %}
+                    <p>Imagen actual:</p>
+                    <img src="{{ form.instance.foto_tipo.url }}" class="img-thumbnail" width="200">
+                    {% endif %}
+                    <hr>
+                    {{ form.foto_tipo }}
+                </div>
+            </div>
+            <div class="form-group">
+                
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'tipoelectrica_list' %}" class="btn btn-danger">Cancelar</a>
+        </form>
+        </div>
+    </div>    
+</div>
+
+<script>
+    $("#id_foto_tipo").fileinput({
+      language: "es",
+      allowedFileExtensions: ["png", "jpg", "jpeg"], 
+      showCaption: false, 
+      dropZoneEnabled: true, 
+      showClose: false 
+    });
+</script>
 {% endblock %}
+

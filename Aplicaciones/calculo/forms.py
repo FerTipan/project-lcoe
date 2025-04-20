@@ -4,7 +4,11 @@ from .models import TipoElectrica, Central, InformacionCentral
 class TipoElectricaForm(forms.ModelForm):
     class Meta:
         model = TipoElectrica
-        fields = ['nombre']
+        fields = ['nombre', 'foto_tipo']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'foto_tipo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
 class CentralForm(forms.ModelForm):
     class Meta:
