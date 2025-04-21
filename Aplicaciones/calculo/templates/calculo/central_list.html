@@ -60,12 +60,12 @@
             <td>{{ central.anio_operacion }}</td>
             <td>{{ central.tipo_electrica }}</td>
             <td>
-                <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm"><i class="ti ti-pencil me-1" name="editar"></i></a>
                 <!-- <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
                 <form id="form-eliminar-{{ central.pk }}" method="POST" action="{% url 'central_delete' central.pk %}" class="d-inline">
                     {% csrf_token %}
                     <button type="button" onclick="confirmarEliminacion('{{ central.pk }}')" class="btn btn-danger btn-sm">
-                        <i class="ti ti-trash me-1"></i> Eliminar
+                        <i class="ti ti-trash me-1"></i>
                     </button>
                 </form>
             </td>

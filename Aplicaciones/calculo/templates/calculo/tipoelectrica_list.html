@@ -56,9 +56,12 @@
                                     {% endif %}</td>
                                 <td>
                                     <a href="{% url 'tipoelectrica_update' tipo.pk %}" class="btn btn-warning btn-sm"><i class="ti ti-pencil"></i></a>
-                                    <a href="{% url 'tipoelectrica_delete' tipo.pk}" class="btn btn-danger btn-sm">
-                                        <i class="ti ti-trash" name="eliminar"></i>
-                                    </a>
+                                    <form id="form-eliminar-{{ tipo.pk }}" method="POST" action="{% url 'tipoelectrica_delete' tipo.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="button" onclick="confirmarEliminacion('{{ tipo.pk }}')" class="btn btn-danger btn-sm">
+                                            <i class="ti ti-trash me-1"></i>
+                                        </button>
+                                    </form>
                                    <!-- <a href="{% url 'tipoelectrica_delete' tipo.pk %}" class="btn btn-danger btn-sm">
                                     <i class="ti ti-trash"></i>Eliminar</a> -->
                                 </td>

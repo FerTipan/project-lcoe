@@ -15,14 +15,26 @@ class TipoElectricaCreateView(CreateView):
     form_class = TipoElectricaForm
     success_url = reverse_lazy('tipoelectrica_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Tipo de Generación creada correctamente')
+        return super().form_valid(form)
+
 class TipoElectricaUpdateView(UpdateView):
     model = TipoElectrica
     form_class = TipoElectricaForm
     success_url = reverse_lazy('tipoelectrica_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Datos actualizados correctamente')
+        return super().form_valid(form)
+
 class TipoElectricaDeleteView(DeleteView):
     model = TipoElectrica
     success_url = reverse_lazy('tipoelectrica_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Tipo de Generación eliminado correctamente')
+        return super().delete(request, *args, **kwargs)
 
 # Central
 class CentralListView(ListView):
@@ -34,7 +46,7 @@ class CentralCreateView(CreateView):
     success_url = reverse_lazy('central_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Central creada exitosamente')
+        messages.success(self.request, 'Central creada correctamente')
         return super().form_valid(form)
     
 class CentralUpdateView(UpdateView):
@@ -43,7 +55,7 @@ class CentralUpdateView(UpdateView):
     success_url = reverse_lazy('central_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Datos de la Central actualizada exitosamente')
+        messages.success(self.request, 'Datos de la Central actualizados correctamente')
         return super().form_valid(form)
 
 class CentralDeleteView(DeleteView):
@@ -63,14 +75,26 @@ class InformacionCentralCreateView(CreateView):
     form_class = InformacionCentralForm
     success_url = reverse_lazy('info_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Datos ingresados correctamente')
+        return super().form_valid(form)
+
 class InformacionCentralUpdateView(UpdateView):
     model = InformacionCentral
     form_class = InformacionCentralForm
     success_url = reverse_lazy('info_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Datos actualizados correctamente')
+        return super().form_valid(form)
+
 class InformacionCentralDeleteView(DeleteView):
     model = InformacionCentral
     success_url = reverse_lazy('info_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Datos eliminados correctamente')
+        return super().delete(request, *args, **kwargs)
 
 # Views
 def inicio(request):

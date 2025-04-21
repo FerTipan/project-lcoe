@@ -17,6 +17,18 @@ class CentralForm(forms.ModelForm):
             'nombre', 'ubicacion', 'empresa', 'tipo', 'potencia', 'e_media',
             'provincia', 'canton', 'anio_operacion', 'tipo_electrica'
         ]
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'ubicacion': forms.TextInput(attrs={'class': 'form-control'}),
+            'empresa': forms.TextInput(attrs={'class': 'form-control'}),
+            'tipo': forms.TextInput(attrs={'class': 'form-control'}),
+            'potencia': forms.NumberInput(attrs={'class': 'form-control'}),
+            'e_media': forms.NumberInput(attrs={'class': 'form-control'}),
+            'provincia': forms.TextInput(attrs={'class': 'form-control'}),
+            'canton': forms.TextInput(attrs={'class': 'form-control'}),
+            'anio_operacion': forms.DateInput(attrs={'class': 'form-control','type': 'date' }),
+            'tipo_electrica': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 class InformacionCentralForm(forms.ModelForm):
     class Meta:

@@ -44,7 +44,13 @@
             <td>{{ info.anio }}</td>
             <td>
                 <a href="{% url 'info_update' info.pk %}" class="btn btn-warning btn-sm">Editar</a>
-                <a href="{% url 'info_delete' info.pk %}" class="btn btn-danger btn-sm">Eliminar</a>
+                <form id="form-eliminar-{{ info.pk }}" method="POST" action="{% url 'info_delete' info.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="button" onclick="confirmarEliminacion('{{ info.pk }}')" class="btn btn-danger btn-sm">
+                        <i class="ti ti-trash me-1"></i> Eliminar
+                    </button>
+                </form>
+                <!-- <a href="{% url 'info_delete' info.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
             </td>
         </tr>
         {% endfor %}
