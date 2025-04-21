@@ -1,5 +1,24 @@
 {% extends "plantilla.html" %}
 {% block content %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Ficha</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                            Tipos de Generación
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">Listado de Información Técnica</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 <h2>Ficha Técnica de Centrales</h2>
 <a href="{% url 'info_create' %}" class="btn btn-success mb-3">Agregar ficha</a>
 <table class="table table-bordered">

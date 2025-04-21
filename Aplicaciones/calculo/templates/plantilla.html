@@ -81,13 +81,6 @@
               <span class="pc-mtext">Gráficas</span>
             </a>
           </li>
-          <li class="pc-item">
-            <a href="#" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-plant-2"></i></span>
-              <span class="pc-mtext">Icons</span>
-            </a>
-          </li>
-  
           <li class="pc-item pc-caption">
             <label>User</label>
             <i class="ti ti-news"></i>
@@ -128,7 +121,7 @@
           <div class="card-body">
             <img src="{% static 'plantilla/mantis/src/assets/images/img-navbar-card.png' %}" alt="images" class="img-fluid mb-2">
             <h5>LCOE</h5>
-            <p>To get more components</p>
+            <p>More components</p>
           </div>
         </div>
       </div>
@@ -255,10 +248,6 @@
                 <i class="ti ti-help"></i>
                 <span>Soporte</span>
               </a>
-              <a href="#!" class="dropdown-item">
-                <i class="ti ti-user"></i>
-                <span>Ajustes del perfil</span>
-              </a>
             </div>
           </div>
         </div>
@@ -274,7 +263,6 @@
     <!-- [ Main Content ] start -->
     <div class="pc-container">
         <div class="pc-content">
-
             {% block content %}
 
             {% endblock%}
@@ -309,7 +297,32 @@
       {% endfor %}
     {% endif %}
     <!-- End Izi Toast -->
-
+    <!-- Toast de Confirmacion -->
+    <script>
+      function confirmarEliminacion(pk) {
+          iziToast.question({
+              timeout: false,
+              close: false,
+              overlay: true,
+              displayMode: 'once',
+              title: '¿Confirmar eliminación?',
+              message: 'Está  seguro de eliminar esta información',
+              position: 'center',
+              buttons: [
+                  ['<button><b>Eliminar</b></button>', function (instance, toast) {
+                      document.getElementById('form-eliminar-' + pk).submit();
+                      instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }, true],
+                  ['<button>Cancelar</button>', function (instance, toast) {
+                      instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }]
+              ]
+          });
+      }
+      </script>
+      
+    <!-- End Toast de Confirmacion -->
+     
     <script>layout_change('light');</script>
 
 

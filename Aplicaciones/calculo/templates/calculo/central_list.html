@@ -1,7 +1,35 @@
 {% extends "plantilla.html" %}
 {% block content %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Centrales</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                            Tipos de Generación
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">Lista de Centrales</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 <h2>Centrales Eléctricas</h2>
-<a href="{% url 'central_create' %}" class="btn btn-success mb-3">Agregar nueva central</a>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<a href="{% url 'central_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar</a>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -33,7 +61,13 @@
             <td>{{ central.tipo_electrica }}</td>
             <td>
                 <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm">Editar</a>
-                <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a>
+                <!-- <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
+                <form id="form-eliminar-{{ central.pk }}" method="POST" action="{% url 'central_delete' central.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="button" onclick="confirmarEliminacion('{{ central.pk }}')" class="btn btn-danger btn-sm">
+                        <i class="ti ti-trash me-1"></i> Eliminar
+                    </button>
+                </form>
             </td>
         </tr>
         {% endfor %}

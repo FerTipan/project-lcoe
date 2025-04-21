@@ -1,9 +1,10 @@
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import CentralFotovoltaica, CentralTermica, TipoElectrica, Central, InformacionCentral
 from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm
+from django.contrib import messages
 
 # TipoElectrica
 class TipoElectricaListView(ListView):
@@ -32,15 +33,27 @@ class CentralCreateView(CreateView):
     form_class = CentralForm
     success_url = reverse_lazy('central_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Central creada exitosamente')
+        return super().form_valid(form)
+    
 class CentralUpdateView(UpdateView):
     model = Central
     form_class = CentralForm
     success_url = reverse_lazy('central_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Datos de la Central actualizada exitosamente')
+        return super().form_valid(form)
+
 class CentralDeleteView(DeleteView):
     model = Central
     success_url = reverse_lazy('central_list')
 
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Central eliminada correctamente')
+        return super().delete(request, *args, **kwargs)
+    
 # InformacionCentral
 class InformacionCentralListView(ListView):
     model = InformacionCentral
@@ -119,8 +132,6 @@ def obtener_info_central(request, central_id):
             data["detalles_tipo"] = obj.to_dict()
         else:
             data["detalles_tipo"] = {}
-
-        return JsonResponse(data)
 
         return JsonResponse(data)
 

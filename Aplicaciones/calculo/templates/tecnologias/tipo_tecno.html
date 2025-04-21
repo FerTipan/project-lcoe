@@ -10,8 +10,11 @@
                     <h5 class="m-b-10">Tipo</h5>
                 </div>
                 <ul class="breadcrumb">
-                <li class="breadcrumb-item">Tipo de Generación</li>
-
+                <li class="breadcrumb-item">
+                    <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                        Tipo de Generación
+                    </a>
+                </li>
                 <li class="breadcrumb-item" aria-current="page">{{ tipo.nombre }}</li>
                 </ul>
             </div>
@@ -69,13 +72,13 @@
                                     <style> .cont{ display: flex; justify-content: center;align-items: center;}.img-term{ width: 50%; height: 50%;}</style>
                                     <div class="input-group input-group-sm cont">
                                         <span class="input-group-text badge bg-yellow-500">★</span>
-                                        <img src="{% static 'img/tipoGeneracion/termica.jpg' %}" class="img-fluid card-img-custom img-term" alt="Térmica">
+                                        <img src="{% static 'assets/images/default.jpg' %}" class="img-fluid card-img-custom img-term" alt="Térmica">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group input-group-sm">
                                         <span class="input-group badge bg-yellow-500">Capacidad Central</span>
-                                        <input type="text" id="capacidad" name="capacidad" class="form-control">
+                                        <input type="text" id="capacidad" name="capacidad" class="form-control">{{info.capacidad}}
                                         <span class="input-group-text">[MW]</span>
                                       </div>
                                 </div>
