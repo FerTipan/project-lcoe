@@ -118,6 +118,18 @@ USE_I18N = True
 
 USE_TZ = True
 
+#Users
+
+#AUTH_USER_MODEL = 'calculo.CustomUser'
+
+#LOGIN_URL = '/accounts/login/'
+#LOGIN_REDIRECT_URL = 'tipoGeneracion'
+#LOGOUT_REDIRECT_URL = 'inicio'
+
+# Para manejo de permisos
+#AUTHENTICATION_BACKENDS = [
+#    'django.contrib.auth.backends.ModelBackend',
+#]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

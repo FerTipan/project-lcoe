@@ -14,11 +14,12 @@ class CentralForm(forms.ModelForm):
     class Meta:
         model = Central
         fields = [
-            'nombre', 'ubicacion', 'empresa', 'tipo', 'potencia', 'e_media',
+            'nombre', 'foto_central','ubicacion', 'empresa', 'tipo', 'potencia', 'e_media',
             'provincia', 'canton', 'anio_operacion', 'tipo_electrica'
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'foto_central': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'ubicacion': forms.TextInput(attrs={'class': 'form-control'}),
             'empresa': forms.TextInput(attrs={'class': 'form-control'}),
             'tipo': forms.TextInput(attrs={'class': 'form-control'}),

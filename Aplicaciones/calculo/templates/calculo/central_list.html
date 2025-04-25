@@ -19,7 +19,12 @@
         </div>
     </div>
 </div>
-<h2>Centrales Eléctricas</h2>
+<div class="col-md-12">
+    <div class="page-header-title">
+      <h2 class="mb-0">Centrales Eléctricas</h2>
+    </div>
+</div>
+<br>
 {% if messages %}
   {% for message in messages %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -29,48 +34,127 @@
   {% endfor %}
 {% endif %}
 
-<a href="{% url 'central_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar</a>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Ubicación</th>
-            <th>Empresa</th>
-            <th>Tipo</th>
-            <th>Potencia</th>
-            <th>Energia Media</th>
-            <th>Provincia</th>
-            <th>Cantón</th>
-            <th>Año de Operación</th>
-            <th>Tipo de Generación</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for central in object_list %}
-        <tr>
-            <td>{{ central.nombre }}</td>
-            <th>{{ central.ubicacion}}</th>
-            <td>{{ central.empresa }}</td>
-            <th>{{ central.tipo}}</th>
-            <th>{{ central.potencia}}</th>
-            <td>{{ central.e_media }}</td>
-            <td>{{ central.provincia }}</td>
-            <td>{{ central.canton }}</td>
-            <td>{{ central.anio_operacion }}</td>
-            <td>{{ central.tipo_electrica }}</td>
-            <td>
-                <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm"><i class="ti ti-pencil me-1" name="editar"></i></a>
-                <!-- <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
-                <form id="form-eliminar-{{ central.pk }}" method="POST" action="{% url 'central_delete' central.pk %}" class="d-inline">
-                    {% csrf_token %}
-                    <button type="button" onclick="confirmarEliminacion('{{ central.pk }}')" class="btn btn-danger btn-sm">
-                        <i class="ti ti-trash me-1"></i>
+<h1>COLOR: </h1>
+<input type="color">
+<div class="row">
+    <div class="col-sm-12">
+        <a href="{% url 'central_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar</a>
+        <div class="card">
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+
+                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Mostrar Detalles">
+                        <button onclick="mostrarDetalles();" id="btn_ver_detalles"  class="btn btn-outline-primary btn-circle">
+                            <i class="ti ti-eye me-1"></i>
+                        </button>
+                      </span>
+              
+                    <button onclick="ocultarDetalles();" class="btn btn-outline-success btn-circle" id="btn_ocultar_detalles" style="display:none;">
+                        <i class="ti ti-eye"></i>
                     </button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                    <br>
+                    <table class="table table table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th class="principal">Nombre</th>
+                                <th class="secundario">Foto</th>
+                                <th class="principal">Ubicación</th>
+                                <th class="principal">Empresa</th>
+                                <th class="principal">Tipo</th>
+                                <th class="principal">Potencia</th>
+                                <th class="principal">Energia Media</th>
+                                <th class="secundario">Provincia</th>
+                                <th class="secundario">Cantón</th>
+                                <th class="secundario">Año de Operación</th>
+                                <th class="principal">Tipo de Generación</th>
+                                <th class="principal">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for central in object_list %}
+                            <tr>
+                                <td class="principal">{{ central.nombre }}</td>
+                                <td class="secundario">{% if central.foto_central and central.foto_central.url %}
+                                    <p class="mb-0  fw-normal">
+                                        <a  href="{{central.foto_central.url}}" target="_blank">
+                                            <img src="{{central.foto_central.url}}" alt=""
+                                            height="110px" width="150px">
+                                        </a>
+                                        <hr>
+                                        <a class="btn btn-outline-success" download  href="{{central.foto_central.url}}">
+                                        Descargar
+                                        </a>
+                                    {% else %}
+                                        No hay foto disponible.
+                                    {% endif %}
+                                </td>
+                                <td >{{ central.ubicacion}}</td>
+                                <td >{{ central.empresa }}</td>
+                                <td >
+                                    <span class="badge rounded-3 fw-semibold 
+                                    {% if central.tipo == 'VAPOR' %} bg-primary 
+                                    {% elif central.tipo == 'Térmica' %} bg-warning 
+                                    {% elif central.tipo == 'Eólica' %} bg-success 
+                                    {% elif central.tipo == 'Fotovoltaica' %} bg-light 
+                                    {% else %} bg-secondary 
+                                    {% endif %}">
+                                    {{ central.tipo}}
+                                    </span> 
+                                </td>
+                                <td >{{ central.potencia}}</td>
+                                <td >{{ central.e_media }}</td>
+                                <td class="secundario">{{ central.provincia }}</td>
+                                <td class="secundario">{{ central.canton }}</td>
+                                <td class="secundario">{{ central.anio_operacion }}</td>
+                                <td >
+                                    <span class="badge rounded-3 fw-semibold 
+                                    {% if central.tipo_electrica == 'Hidroeléctrica' %} bg-primary 
+                                    {% elif central.tipo_electrica == 'Térmica' %} bg-warning 
+                                    {% elif central.tipo_electrica == 'Eólica' %} bg-info 
+                                    {% elif central.tipo_electrica == 'Fotovoltaica' %} bg-light 
+                                    {% else %} bg-secondary 
+                                    {% endif %}">
+                                    {{ central.tipo_electrica }}
+                                    </span> 
+                                </td>
+                                <td>
+                                    <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1" name="editar"></i></a>
+                                    <!-- <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
+                                    <form id="form-eliminar-{{ central.pk }}" method="POST" action="{% url 'central_delete' central.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="button" onclick="confirmarEliminacion('{{ central.pk }}')" class="btn btn-danger btn-sm btn-circle">
+                                            <i class="ti ti-trash me-1"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(".secundario").hide();
+
+ function mostrarDetalles(){
+    $(".secundario").fadeIn();
+    $("#btn_ver_detalles").hide();
+    $("#btn_ocultar_detalles").fadeIn();
+ }
+
+ function ocultarDetalles(){
+    $(".secundario").hide();
+    $("#btn_ver_detalles").fadeIn();
+    $("#btn_ocultar_detalles").hide();
+ }
+
+
+ ocultarDetalles();
+</script>
 {% endblock %}

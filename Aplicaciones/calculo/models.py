@@ -1,15 +1,5 @@
 from django.db import models
 
-# Create your models here.
-class Administrador(models.Model):
-    username = models.CharField(max_length=150, unique=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255)
-    fecha_registro = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.username
-
 # Class TipoGeneracion 
 class TipoElectrica(models.Model):
     nombre = models.CharField(max_length=100)
@@ -69,10 +59,10 @@ class CentralTermica(Central):
         }
 
 class CentralFotovoltaica(Central):
-    costos_produccion = models.FloatField()
+    costos_prod = models.FloatField()
     costos_om = models.FloatField()
 
-    costos_variable = models.FloatField()
+    costos_var = models.FloatField()
     
     def to_dict(self):
         return {
