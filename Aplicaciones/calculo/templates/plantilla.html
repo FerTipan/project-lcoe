@@ -64,7 +64,28 @@
               <span class="pc-mtext">Inicio</span>
             </a>
           </li>
-  
+          <li class="pc-item pc-caption">
+            <label>Administrador</label>
+            <i class="ti ti-user"></i>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'central_list' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-bookmark"></i></span>
+              <span class="pc-mtext">Lista Centrales</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'tipoelectrica_list' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-clipboard"></i></span>
+              <span class="pc-mtext">Lista Tipo de Generación</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'info_list' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-file"></i></span>
+              <span class="pc-mtext">Información Técnica</span>
+            </a>
+          </li>
           <li class="pc-item pc-caption">
             <label>Tecnologías</label>
             <i class="ti ti-dashboard"></i>
@@ -82,7 +103,7 @@
             </a>
           </li>
           <li class="pc-item pc-caption">
-            <label>User</label>
+            <label>Usuario</label>
             <i class="ti ti-news"></i>
           </li>
           <li class="pc-item">

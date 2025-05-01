@@ -27,7 +27,7 @@
 <br>
 <div class="row">
     <div class="col-sm-12">
-        <a href="{% url 'tipoelectrica_create' %}" class="btn btn-success mb-3">Agregar tipo</a>
+        <a href="{% url 'tipoelectrica_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar tipo</a>
         <div class="card">
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
@@ -46,7 +46,7 @@
                                     <p class="mb-0  fw-normal">
                                         <a  href="{{tipo.foto_tipo.url}}" target="_blank">
                                             <img src="{{tipo.foto_tipo.url}}" alt=""
-                                            height="110px" width="150px">
+                                            height="70px" width="90px">
                                         </a>
                                         <a class="btn btn-outline-success" download  href="{{tipo.foto_tipo.url}}">
                                         Descargar
@@ -55,12 +55,16 @@
                                         No hay foto disponible.
                                     {% endif %}</td>
                                 <td>
-                                    <a href="{% url 'tipoelectrica_update' tipo.pk %}" class="btn btn-warning btn-sm"><i class="ti ti-pencil"></i></a>
+                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
+                                        <a href="{% url 'tipoelectrica_update' tipo.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil"></i></a>
+                                    </span>
                                     <form id="form-eliminar-{{ tipo.pk }}" method="POST" action="{% url 'tipoelectrica_delete' tipo.pk %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="button" onclick="confirmarEliminacion('{{ tipo.pk }}')" class="btn btn-danger btn-sm">
-                                            <i class="ti ti-trash me-1"></i>
-                                        </button>
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
+                                            <button type="button" onclick="confirmarEliminacion('{{ tipo.pk }}')" class="btn btn-danger btn-sm btn-circle">
+                                                <i class="ti ti-trash me-1"></i>
+                                            </button>
+                                        </span>
                                     </form>
                                    <!-- <a href="{% url 'tipoelectrica_delete' tipo.pk %}" class="btn btn-danger btn-sm">
                                     <i class="ti ti-trash"></i>Eliminar</a> -->

@@ -20,7 +20,7 @@
     </div>
 </div>
 <h2>Ficha Técnica de Centrales</h2>
-<a href="{% url 'info_create' %}" class="btn btn-success mb-3">Agregar ficha</a>
+<a href="{% url 'info_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar ficha</a>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -43,12 +43,17 @@
             <td>{{ info.factor_planta }}</td>
             <td>{{ info.anio }}</td>
             <td>
-                <a href="{% url 'info_update' info.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
+                    <a href="{% url 'info_update' info.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1"></i></a>
+                </span>
                 <form id="form-eliminar-{{ info.pk }}" method="POST" action="{% url 'info_delete' info.pk %}" class="d-inline">
                     {% csrf_token %}
-                    <button type="button" onclick="confirmarEliminacion('{{ info.pk }}')" class="btn btn-danger btn-sm">
-                        <i class="ti ti-trash me-1"></i> Eliminar
-                    </button>
+                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
+
+                        <button type="button" onclick="confirmarEliminacion('{{ info.pk }}')" class="btn btn-danger btn-sm btn-circle">
+                            <i class="ti ti-trash me-1"></i>
+                        </button>
+                    </span>
                 </form>
                 <!-- <a href="{% url 'info_delete' info.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
             </td>

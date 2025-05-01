@@ -34,25 +34,31 @@
   {% endfor %}
 {% endif %}
 
-<h1>COLOR: </h1>
-<input type="color">
+<!-- <h1>COLOR: </h1>
+<input type="color"> -->
 <div class="row">
     <div class="col-sm-12">
-        <a href="{% url 'central_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar</a>
+        <div class="row">
+            <div class="col-md-10">
+                <a href="{% url 'central_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar</a>
+            </div>
+            <div class="col-md-2">
+                <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Mostrar Detalles">
+                    <button onclick="mostrarDetalles();" id="btn_ver_detalles" class="btn btn-outline-primary btn-circle d-flex justify-content-center align-items-center">
+                        <i class="ti ti-eye"></i>
+                    </button>
+                </span>
+
+                <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Ocultar Detalles">
+                    <button onclick="ocultarDetalles();" class="btn btn-outline-success btn-circle d-flex justify-content-center align-items-center" id="btn_ocultar_detalles" style="display:none;">
+                        <i class="fa fa-eye-slash"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
-
-                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Mostrar Detalles">
-                        <button onclick="mostrarDetalles();" id="btn_ver_detalles"  class="btn btn-outline-primary btn-circle">
-                            <i class="ti ti-eye me-1"></i>
-                        </button>
-                      </span>
-              
-                    <button onclick="ocultarDetalles();" class="btn btn-outline-success btn-circle" id="btn_ocultar_detalles" style="display:none;">
-                        <i class="ti ti-eye"></i>
-                    </button>
-                    <br>
                     <table class="table table table-bordered nowrap">
                         <thead>
                             <tr>
@@ -78,7 +84,7 @@
                                     <p class="mb-0  fw-normal">
                                         <a  href="{{central.foto_central.url}}" target="_blank">
                                             <img src="{{central.foto_central.url}}" alt=""
-                                            height="110px" width="150px">
+                                            height="70px" width="90px">
                                         </a>
                                         <hr>
                                         <a class="btn btn-outline-success" download  href="{{central.foto_central.url}}">
@@ -118,13 +124,18 @@
                                     </span> 
                                 </td>
                                 <td>
-                                    <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1" name="editar"></i></a>
+                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
+                                        <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1" name="editar"></i></a>
+                                    </span>
                                     <!-- <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
                                     <form id="form-eliminar-{{ central.pk }}" method="POST" action="{% url 'central_delete' central.pk %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="button" onclick="confirmarEliminacion('{{ central.pk }}')" class="btn btn-danger btn-sm btn-circle">
-                                            <i class="ti ti-trash me-1"></i>
-                                        </button>
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
+                                            <button type="button" onclick="confirmarEliminacion('{{ central.pk }}')" class="btn btn-danger btn-sm btn-circle">
+                                                <i class="ti ti-trash me-1"></i>
+                                            </button>
+                                        </span>
+
                                     </form>
                                 </td>
                             </tr>

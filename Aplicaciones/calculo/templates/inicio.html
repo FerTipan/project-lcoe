@@ -102,10 +102,28 @@
         .btn-iniciar:hover {
             opacity: 0.7;
         }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1 /* Hace que el video quede en el fondo */
+        }
+
     </style>
 </head>
 <body>
-    <button class="btn btn-dark btn-signin">Acceso</button>
+    <!-- Video de fondo -->
+    <video class="video-background" autoplay muted loop>
+        <source src="{% static 'assets/video/background.mp4' %}" type="video/mp4">
+    </video>
+    <!-- Contenido de la página -->
+    <div class="header">
+        <button class="btn btn-dark btn-signin">Acceso</button>
+    </div>
     
     <div class="container">
         <h1 class="title"><span class="title1">LCOE</span> <span class="title2">APP</span></h1>
