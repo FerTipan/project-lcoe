@@ -146,3 +146,13 @@ def login(request):
 def informacion(request):
 
     return render(request, 'tecnologias/termica.html')
+
+
+
+
+
+# View para el mapa
+from django.shortcuts import render
+
+def mapa_view(request):
+    return render(request, 'Extras/mapa.html')

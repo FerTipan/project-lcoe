@@ -35,4 +35,7 @@ urlpatterns = [
     
     path('ajax/info-central/<int:central_id>/', views.obtener_info_central, name='ajax_info_central'),
 
+    # Mapa
+    path('mapa/', views.mapa_view, name='mapa'),
+
 ]
