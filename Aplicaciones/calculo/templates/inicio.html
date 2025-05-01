@@ -22,68 +22,98 @@
     <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style-preset.css' %}" >
 
     <style>
-        body {
-        background: 
-            /* Capa blanca al 50% de opacidad */
-            linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-            /* Tu imagen de fondo */
-            url('{% static "img/inicio.PNG" %}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        min-height: 100vh;
-        margin: 0;
-    }
-
-    body::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: -1; 
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+    
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+    
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+    
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Oscurece para que el texto resalte */
+            z-index: -1;
+        }
+    
+        .header {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1;
+        }
+    
+        .btn-signin {
+            padding: 10px 20px;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+    
+        .btn-signin:hover {
+            background-color: #4a90e2;
+            color: white;
+        }
+    
         .container {
-            height: 90vh;
+            position: relative;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 0 20px;
             text-align: center;
+            z-index: 1;
         }
-        .title1{
-            background: linear-gradient(to right, black, #4a90e2);
-            font-size: 6rem;
+    
+        .title1, .title2 {
+            font-size: 5rem;
             font-weight: bold;
+            color:blanchedalmond;
+            display: inline-block;
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: inline-block;
         }
-        .title2{
-            background: linear-gradient(to right, #4a90e2, black);
-            font-size: 6rem;
-            font-weight: bold;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
+    
+        .title1 {
+            background-image: linear-gradient(to right, black, #4a90e2);
         }
-
-        .btn-signin {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+    
+        .title2 {
+            background-image: linear-gradient(to right, #4a90e2, black);
         }
+    
         .text-muted {
-    font-size: 1.25rem;
-    padding: 70px 150px 20px 150px;
-    color: rgb(175, 175, 175) !important; /* Añade esta línea */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Opcional: sombra para mejor legibilidad */
-    }
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin-top: 30px;
+            margin-bottom: 40px;
         
-        /* Botón "Iniciar" con el mismo efecto de degradado */
+        }
+    
         .btn-iniciar {
             font-size: 1.25rem;
             font-weight: bold;
@@ -96,45 +126,53 @@
             border: 2px solid #4a90e2;
             cursor: pointer;
             transition: opacity 0.3s ease-in-out;
+            background-color: white;
         }
-        
-        /* Efecto hover para el botón */
+    
         .btn-iniciar:hover {
             opacity: 0.7;
         }
-
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1 /* Hace que el video quede en el fondo */
-        }
-
-    </style>
-</head>
-<body>
-    <!-- Video de fondo -->
-    <video class="video-background" autoplay muted loop>
-        <source src="{% static 'assets/video/background.mp4' %}" type="video/mp4">
-    </video>
-    <!-- Contenido de la página -->
-    <div class="header">
-        <button class="btn btn-dark btn-signin">Acceso</button>
-    </div>
     
-    <div class="container">
-        <h1 class="title"><span class="title1">LCOE</span> <span class="title2">APP</span></h1>
-        <p class="text-muted">
-            <strong>APLICACIÓN WEB DE CÁLCULO Y ANÁLISIS DEL COSTO NIVELADO DE ENERGÍA (LCOE) 
-            EN EL SECTOR ELÉCTRICO ECUATORIANO.</strong>
-        </p>
-        
-        <!-- Botón "Iniciar" -->
-        <a href="tipoGeneracion" class="btn-iniciar">Iniciar</a>
-    </div>
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title1, .title2 {
+                font-size: 3rem;
+            }
+            .text-muted {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+        }
+    </style>
+    
+    <body>
+        <!-- Video de fondo -->
+        <video class="video-background" autoplay muted loop>
+            <source src="{% static 'assets/video/video-inicio.mp4' %}" type="video/mp4">
+        </video>
+    
+        <!-- Capa oscura sobre el video -->
+        <div class="overlay"></div>
+    
+        <!-- Botón de acceso -->
+        <div class="header">
+            <button class="btn-signin">Acceso</button>
+        </div>
+    
+        <!-- Contenido -->
+        <div class="container">
+            <h1 class="title"><span class="title1">LCOE</span> <span class="title2">APP</span></h1>
+            <p class="text-white" style="font-size: 1.2rem;
+            max-width: 800px;
+            margin-top: 30px;
+            margin-bottom: 40px;">
+                <strong>APLICACIÓN WEB DE CÁLCULO Y ANÁLISIS DEL COSTO NIVELADO DE ENERGÍA (LCOE) 
+                EN EL SECTOR ELÉCTRICO ECUATORIANO.</strong>
+            </p>
+            <a href="/tipoGeneracion/" class="btn-iniciar">Iniciar</a>
+        </div>
+    </body>
+    
 
     <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/simplebar.min.js' %}"></script>
     <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/popper.min.js' %}"></script>

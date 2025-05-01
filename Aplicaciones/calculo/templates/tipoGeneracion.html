@@ -7,38 +7,102 @@
         background-color: #f0f8ff;
         margin: 0;
     }
-    /* Contenedor de tarjeta rectangular */
-    .card-rectangle {
-        aspect-ratio: 6/3; /* Relación más rectangular (4:3) */
-        width: 90%; /* Ancho reducido para mejor centrado */
-        position: relative;
-        overflow: hidden;
-        margin: 0 auto; /* Centrado horizontal */
-        border-radius: 15px;
-    }
 
-    /* Ajuste de imagen */
-    .card-img-custom {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
-
-    /* Efecto hover */
-    .card-hover:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease-in-out;
-    }
-
-    /* Ajuste para el contenido */
-    .card-img-overlay {
-        background: rgba(0, 0, 0, 0.4);
-    }
-
-    /* Centrado de columnas */
     .centered-cols {
         display: flex;
         justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .card-rectangle {
+        aspect-ratio: 6/3;
+        width: 90%;
+        max-width: 500px;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        background-color: #5b81ad;
+        color: white;
+        transition: transform 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .card-rectangle:hover {
+        transform: scale(1.05);
+    }
+
+    /* Imagen oculta por defecto */
+    .card-img-custom {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 1;
+    }
+
+    /* Al hacer hover, se muestra la imagen */
+    .card-rectangle:hover .card-img-custom {
+        opacity: 1;
+    }
+
+    /* Overlay con contenido */
+    .card-img-overlay {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.4);
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .card-rectangle:hover .card-img-overlay {
+        opacity: 1;
+    }
+
+    /* Ícono inicial centrado */
+    .card-icon {
+        font-size: 4rem;
+        z-index: 3;
+        position: relative;
+        transition: opacity 0.3s ease-in-out;
+        align-items: center;
+    }
+
+    /* Ocultar ícono al hacer hover */
+    .card-rectangle:hover .card-icon {
+        opacity: 0;
+    }
+
+    .card-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .card-title {
+            font-size: 1.3rem;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+        }
     }
 </style>
 
@@ -55,60 +119,41 @@
         <!-- Tarjetas Tipo Generación -->
         <div class="col-md-5">
             <a href="{% url 'centrales_por_tipo' tipo.id %}" class="text-decoration-none">
-                <div class="card text-white shadow-lg card-hover card-rectangle"> 
+                <div class="card-rectangle card-hover position-relative text-white text-center">
+                    <!-- Imagen oculta inicialmente -->
                     {% if tipo.foto_tipo %}
-                        <img src="{{ tipo.foto_tipo.url }}" class="card-img card-img-custom" alt="Tipo de Generación">
+                        <img src="{{ tipo.foto_tipo.url }}" class="card-img-custom" alt="Tipo de Generación">
                     {% else %}
-                        <img src="{% static 'assets/images/default.jpg' %}" class="card-img card-img-custom" alt="Imagen por defecto">
+                        <img src="{% static 'assets/images/default.jpg' %}" class="card-img-custom" alt="Imagen por defecto">
                     {% endif %}
-                    <div class="card-img-overlay d-flex flex-column justify-content-between">
+        
+                    <!-- Ícono centrado -->
+                    <div class="card-icon">
+                        {% if "hidráulica" in tipo.nombre|lower %}
+                            <i class="fas fa-water"></i>
+                        {% elif "fotovoltaica" in tipo.nombre|lower %}
+                            <i class="fas fa-sun"></i>
+                        {% elif "eólica" in tipo.nombre|lower %}
+                            <i class="fas fa-wind"></i>
+                        {% elif "térmica" in tipo.nombre|lower %}
+                            <i class="fas fa-fire"></i>
+                        {% else %}
+                            <i class="fas fa-bolt"></i>
+                        {% endif %}
+                    </div>
+        
+                    <!-- Texto al hacer hover -->
+                    <div class="card-overlay-text">
                         <h5 class="card-title">{{ tipo.nombre }}</h5>
-                        <p class="card-text mb-0">Generación {{ tipo.nombre }}</p>
+                        <p class="card-text">Generación {{ tipo.nombre }}</p>
                     </div>
                 </div>
             </a>
         </div>
         {% endfor %}
-        <!-- Tarjeta Térmica 
-        <div class="col-md-5">
-            <a href="{% url 'termica' %}" class="text-decoration-none">
-                <div class="card text-white shadow-lg card-hover card-rectangle">
-                    <img src="{% static 'img/tipoGeneracion/termica.jpg' %}" class="card-img card-img-custom" alt="Térmica">
-                    <div class="card-img-overlay d-flex flex-column justify-content-between">
-                        <h5 class="card-title">Térmica</h5>
-                        <p class="card-text mb-0">Generación Térmica</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        Tarjeta Fotovoltaica 
-        <div class="col-md-5">
-            <a href="{% url 'solar' %}" class="text-decoration-none">
-                <div class="card text-white shadow-lg card-hover card-rectangle">
-                    <img src="{% static 'img/tipoGeneracion/solar.jpg' %}" class="card-img card-img-custom" alt="Fotovoltaica">
-                    <div class="card-img-overlay d-flex flex-column justify-content-between">
-                        <h5 class="card-title">Fotovoltaica</h5>
-                        <p class="card-text mb-0">Generación Fotovoltaica</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        Tarjeta Eólica 
-        <div class="col-md-5">
-            <a href="{% url 'eolica' %}" class="text-decoration-none">
-                <div class="card text-white shadow-lg card-hover card-rectangle">
-                    <img src="{% static 'img/tipoGeneracion/eolica.jpg' %}" class="card-img card-img-custom" alt="Eólica">
-                    <div class="card-img-overlay d-flex flex-column justify-content-between">
-                        <h5 class="card-title">Eólica</h5>
-                        <p class="card-text mb-0">Generación Eólica</p>
-                    </div>
-                </div>
-            </a>
-        </div>-->
-
     </div>
-</div>
+</div> 
+<!-- Tarjetas Tipo Generación -->
+
 <br>
 {% endblock %}
