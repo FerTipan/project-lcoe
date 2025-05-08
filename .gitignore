@@ -1,2 +1,21 @@
+<<<<<<< HEAD
 # Created by venv; see https://docs.python.org/3/library/venv.html
 *
+=======
+# Entorno virtual
+venv/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Configuración local
+.env
+
+# Base de datos SQLite (si usas una)
+db.sqlite3
+
+# Archivos estáticos generados
+staticfiles/
+>>>>>>> a3dff5b01aab34fea0a7f46772be1cbf69f495e5

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -181,3 +182,8 @@ def login(request):
 def informacion(request):
 
     return render(request, 'tecnologias/termica.html')
+=======
+from django.shortcuts import render
+
+# Create your views here.
+>>>>>>> a3dff5b01aab34fea0a7f46772be1cbf69f495e5

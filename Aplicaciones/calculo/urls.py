@@ -1,4 +1,5 @@
 from django.urls import path 
+<<<<<<< HEAD
 from . import views 
 
 urlpatterns = [
@@ -36,3 +37,9 @@ urlpatterns = [
     path('ajax/info-central/<int:central_id>/', views.obtener_info_central, name='ajax_info_central'),
 
 ]
+=======
+from . import views
+urlpatterns=[
+    path('', views.inicio)
+]
+>>>>>>> a3dff5b01aab34fea0a7f46772be1cbf69f495e5

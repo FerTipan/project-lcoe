@@ -9,10 +9,14 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-import os
+
 from pathlib import Path
+<<<<<<< HEAD
 from decouple import config
 
+=======
+import os
+>>>>>>> a3dff5b01aab34fea0a7f46772be1cbf69f495e5
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,7 +140,7 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR,'project_lcoe/static'),)
+STATICFILES_DIRS=(os.path.join(BASE_DIR,'universidad/static'),)
 
 MEDIA_URL = 'media/'    
 MEDIA_ROOT = (os.path.join(BASE_DIR,'project_lcoe/media'))

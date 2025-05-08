@@ -1,5 +1,6 @@
 from django.db import models
 
+<<<<<<< HEAD
 # Class TipoGeneracion 
 class TipoElectrica(models.Model):
     nombre = models.CharField(max_length=100)
@@ -88,3 +89,6 @@ class InformacionCentral(models.Model):
 
     def __str__(self):
         return f"{self.central.nombre} - {self.anio}"
+=======
+# Create your models here.
+>>>>>>> a3dff5b01aab34fea0a7f46772be1cbf69f495e5
