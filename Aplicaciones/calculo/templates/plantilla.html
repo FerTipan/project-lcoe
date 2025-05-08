@@ -24,6 +24,7 @@
     <!-- Template CSS Files -->
     <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style.css' %}" id="main-style-link" >
     <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style-preset.css' %}" >
+    <link rel="stylesheet" href="{% static 'assets/css/tipo.css' %}" >
     <!--Importando JQuery-->
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <!-- Importancion del IziToast--> 
@@ -206,7 +207,7 @@
           aria-expanded="false"
         >
           <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image" class="user-avtar">
-          <span>Dani</span>
+          <span>{{ user.first_name }}</span>
         </a>
         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
           <div class="dropdown-header">
@@ -215,7 +216,7 @@
                 <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image" class="user-avtar wid-35">
               </div>
               <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1">Dani</h6>
+                <h6 class="mb-1">{{ user.first_name }}</h6>
                 <span>UI/UX Designer</span>
               </div>
               <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
@@ -259,7 +260,7 @@
                 <i class="ti ti-user"></i>
                 <span>Ver Perfil</span>
               </a>
-              <a href="#!" class="dropdown-item">
+              <a href="{% url 'logout' %}" class="dropdown-item">
                 <i class="ti ti-power"></i>
                 <span>Cerrar sesión</span>
               </a>
@@ -364,6 +365,24 @@
         border-radius: 800px;
         height: 30px;
         width: 30px;        
+      }
+      .section-title {
+        background-color: #3e5a77;
+        color: white;
+        padding: 6px 12px;
+        font-weight: bold;
+        border-radius: 6px;
+        margin-top: 20px;
+      }
+      label {
+        font-weight: 500;
+      }
+      input-2 {
+        height: 40px;
+      }
+      .form-control {
+        border: 1px solid #3e5a77;
+        border-radius: 10px;
       }
     </style>
 </body>

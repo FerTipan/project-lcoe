@@ -156,7 +156,8 @@
     
         <!-- Botón de acceso -->
         <div class="header">
-            <button class="btn-signin">Acceso</button>
+            <a class="btn-signin" href="{% url 'login' %}">Acceso</a>
+            <!-- <button class="btn-signin">Acceso</button>-->
         </div>
     
         <!-- Contenido -->
@@ -169,7 +170,7 @@
                 <strong>APLICACIÓN WEB DE CÁLCULO Y ANÁLISIS DEL COSTO NIVELADO DE ENERGÍA (LCOE) 
                 EN EL SECTOR ELÉCTRICO ECUATORIANO.</strong>
             </p>
-            <a href="/tipoGeneracion/" class="btn-iniciar">Iniciar</a>
+            <a href="{% url 'login' %}" class="btn-iniciar">Iniciar</a>
         </div>
     </body>
     

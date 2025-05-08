@@ -5,7 +5,11 @@ from django.urls import reverse_lazy
 from .models import CentralFotovoltaica, CentralTermica, TipoElectrica, Central, InformacionCentral
 from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
+@login_required
+def vista_usuario_calculo(request):
+    return render(request, 'calculo/tipoGeneracion.html')
 # TipoElectrica
 class TipoElectricaListView(ListView):
     model = TipoElectrica

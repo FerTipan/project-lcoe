@@ -37,3 +37,12 @@ class InformacionCentralForm(forms.ModelForm):
         fields = [
             'capacidad', 'vida_util', 'inversion', 'factor_planta', 'anio', 'central'
         ]
+        wigtets = {
+            'capacidad': forms.NumberInput(attrs={'class': 'form-control'}),
+            'vida_util': forms.NumberInput(attrs={'class': 'form-control'}),
+            'inversion': forms.NumberInput(attrs={'class': 'form-control'}),
+            'factor_planta': forms.NumberInput(attrs={'class': 'form-control'}),
+            'anio': forms.DateInput(attrs={'class': 'form-control','type': 'date' }),
+            'central': forms.Select(attrs={'class': 'form-control'}),
+        }
+        

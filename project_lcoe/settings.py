@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Aplicaciones.calculo'
+    'social_django',  
+    'Aplicaciones.usuarios',
+    'Aplicaciones.calculo',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',  
 ]
 
 ROOT_URLCONF = 'project_lcoe.urls'
@@ -65,6 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -87,6 +92,11 @@ DATABASES = {
     }
 }
 
+# login with google 
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('GOOGLE_CLIENT_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -118,18 +128,19 @@ USE_I18N = True
 
 USE_TZ = True
 
-#Users
+# Para manejo de permisos
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',  # Google OAuth
+    'django.contrib.auth.backends.ModelBackend',  # Para autenticación tradicional
+)
 
+#Users
 #AUTH_USER_MODEL = 'calculo.CustomUser'
 
-#LOGIN_URL = '/accounts/login/'
-#LOGIN_REDIRECT_URL = 'tipoGeneracion'
-#LOGOUT_REDIRECT_URL = 'inicio'
+LOGIN_URL = 'inicio'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = 'inicio'
 
-# Para manejo de permisos
-#AUTHENTICATION_BACKENDS = [
-#    'django.contrib.auth.backends.ModelBackend',
-#]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

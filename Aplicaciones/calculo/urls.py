@@ -1,8 +1,11 @@
 from django.urls import path 
 from . import views 
+from .views import vista_usuario_calculo
+
 
 urlpatterns = [
     path('', views.inicio, name='inicio'),
+    path('', vista_usuario_calculo, name='vista_usuario_calculo'),
     path('tipoGeneracion/', views.tipoGeneracion, name='tipoGeneracion'),
 
     # Eleccion tipo
