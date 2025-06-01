@@ -1,0 +1,162 @@
+{% extends "plantilla.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h3>Seleccione tipo de generación</h3>
+    <select id="tipo-select" class="form-select mb-3">
+        <option value="">-- Seleccione tipo --</option>
+        {% for tipo in tipos %}
+            <option value="{{ tipo.id }}">{{ tipo.nombre }}</option>
+        {% endfor %}
+    </select>
+
+    <h4>Centrales disponibles</h4>
+    <select id="central-select" class="form-select mb-3" disabled>
+        <option value="">-- Seleccione central --</option>
+    </select>
+
+    <!-- <div id="info-central" style="display:none;">
+        <h4>Información de la Central</h4>
+        <div id="datos-generales"></div>
+        <div id="datos-tecnicos"></div>
+    </div>-->
+    <div class="list-group list-group-flush" id="lista-centrales">
+        {% for central in centrales %}
+        <a href="#" class="list-group-item list-group-item-action central-item"
+           data-id="{{ central.id }}"
+           data-tipo="{{ central.tipo_especifico }}"
+           data-nombre="{{ central.nombre }}"
+           data-potencia="{{ central.potencia }}"
+           data-ubicacion="{{ central.ubicacion }}"
+           data-provincia="{{ central.provincia }}"
+           data-canton="{{ central.canton }}"
+           data-empresa="{{ central.empresa }}"
+           data-anio="{{ central.anio_operacion }}"
+           data-energia="{{ central.energia_media }}"
+           data-foto="{{ central.foto.url|default:'' }}"
+           {% if central.tipo_especifico == 'fotovoltaica' %}
+               data-fotovoltaica='{{ central.fotovoltaica|safe }}'
+           {% elif central.tipo_especifico == 'termica' %}
+               data-termica='{{ central.termica|safe }}'
+           {% endif %}>
+            <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1">{{ central.nombre }}</h6>
+                <small>{{ central.potencia }} MW</small>
+            </div>
+            <p class="mb-1 text-muted"><small>{{ central.ubicacion }}</small></p>
+        </a>
+        {% empty %}
+        <div class="list-group-item">
+            No hay centrales registradas de este tipo.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Buscador de centrales
+    const buscador = document.getElementById('buscador-central');
+    const centralItems = document.querySelectorAll('.central-item');
+    
+    buscador.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        centralItems.forEach(item => {
+            const nombre = item.dataset.nombre.toLowerCase();
+            const ubicacion = item.dataset.ubicacion.toLowerCase();
+            
+            if (nombre.includes(searchTerm) || ubicacion.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+    
+    // Manejar selección de central
+    centralItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remover clase activa de todos los items
+            centralItems.forEach(i => i.classList.remove('active'));
+            
+            // Agregar clase activa al item seleccionado
+            this.classList.add('active');
+            
+            // Mostrar los detalles de la central seleccionada
+            mostrarDetallesCentral(this);
+        });
+    });
+    
+    // Función para mostrar los detalles
+    function mostrarDetallesCentral(item) {
+        const template = document.getElementById('template-detalle');
+        const clone = template.content.cloneNode(true);
+        const panel = document.getElementById('panel-central');
+        
+        // Limpiar el panel
+        panel.innerHTML = '';
+        panel.appendChild(clone);
+        
+        // Actualizar título
+        document.getElementById('titulo-central').textContent = item.dataset.nombre;
+        
+        // Llenar datos generales
+        document.getElementById('central-nombre').textContent = item.dataset.nombre;
+        document.getElementById('central-empresa').textContent = item.dataset.empresa;
+        document.getElementById('central-ubicacion').textContent = item.dataset.ubicacion;
+        document.getElementById('central-potencia').textContent = item.dataset.potencia;
+        document.getElementById('central-energia').textContent = item.dataset.energia;
+        document.getElementById('central-anio').textContent = item.dataset.anio;
+        document.getElementById('central-provincia').textContent = item.dataset.provincia;
+        document.getElementById('central-canton').textContent = item.dataset.canton;
+        
+        // Mostrar foto si existe
+        const fotoElement = document.getElementById('central-foto');
+        if (item.dataset.foto) {
+            fotoElement.src = item.dataset.foto;
+            fotoElement.style.display = 'block';
+        } else {
+            fotoElement.style.display = 'none';
+        }
+        
+        // Llenar datos específicos según el tipo
+        const tipo = item.dataset.tipo;
+        const fichaTecnica = document.getElementById('ficha-tecnica-content');
+        
+        if (tipo === 'fotovoltaica' && item.dataset.fotovoltaica) {
+            const fotovoltaica = JSON.parse(item.dataset.fotovoltaica);
+            const templateFotovoltaica = document.getElementById('template-fotovoltaica');
+            const cloneFotovoltaica = templateFotovoltaica.content.cloneNode(true);
+            fichaTecnica.innerHTML = '';
+            fichaTecnica.appendChild(cloneFotovoltaica);
+            
+            // Llenar datos fotovoltaica
+            document.getElementById('cf-anio-ingreso').textContent = fotovoltaica.anio_ingreso;
+            document.getElementById('cf-num-paneles').textContent = fotovoltaica.numero_paneles;
+            document.getElementById('cf-sistema').textContent = fotovoltaica.sistema;
+            document.getElementById('cf-potencia-nominal').textContent = fotovoltaica.potencia_nominal;
+            document.getElementById('cf-potencia-efectiva').textContent = fotovoltaica.potencia_efectiva;
+            document.getElementById('cf-energia-anual').textContent = fotovoltaica.energia_anual_producida;
+            document.getElementById('cf-factor-planta').textContent = fotovoltaica.factor_planta;
+            document.getElementById('cf-inversion-total').textContent = fotovoltaica.inversion_total;
+            document.getElementById('cf-capital-propio').textContent = fotovoltaica.capital_propio;
+            document.getElementById('cf-costo-variable').textContent = fotovoltaica.costo_variable;
+            document.getElementById('cf-costo-produccion').textContent = fotovoltaica.costo_produccion;
+            document.getElementById('cf-costo-anual-oma').textContent = fotovoltaica.costo_anual_oma;
+            document.getElementById('cf-costo-oma-mw').textContent = fotovoltaica.costo_anual_oma_mw;
+            document.getElementById('cf-acreedor').textContent = fotovoltaica.acreedor;
+            document.getElementById('cf-deuda').textContent = fotovoltaica.deuda;
+            document.getElementById('cf-tasa-interes-anual').textContent = fotovoltaica.tasa_interes_anual;
+            document.getElementById('cf-anios-pago').textContent = fotovoltaica.anios_pago;
+        }
+        else if (tipo === 'termica' && item.dataset.termica) {
+            // Similar para térmica (omitiendo por brevedad)
+        }
+    }
+});
+</script>
+{% endblock %}

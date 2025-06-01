@@ -1,0 +1,39 @@
+{% extends "plantilla.html" %}
+{% block content %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Centrales</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                            Tipos de Generación
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">Lista de Centrales Fotovoltaicas</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="page-header-title">
+      <h2 class="mb-0">Lista de Plantas Fotovoltaicas</h2>
+    </div>
+</div>
+<div class="row">
+    <a href="{% url 'fotovoltaica_create' %}">Agregar nueva</a>
+    <ul>
+    {% for f in object_list %}
+        <li>
+        <a href="{% url 'fotovoltaica_update' f.pk %}">Editar</a> |
+        <a href="{% url 'fotovoltaica_delete' f.pk %}">Eliminar</a>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

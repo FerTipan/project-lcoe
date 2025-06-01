@@ -7,4 +7,6 @@ urlpatterns = [
     path('', views.redireccion_por_rol, name='inicio_redireccion'),
     path('admin-dashboard/', views.dashboard_admin, name='dashboard_admin'),
     path('logout/', views.custom_logout, name='logout'),
+
+    #path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
 ]

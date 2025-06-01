@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'social_django',  
     'Aplicaciones.usuarios',
     'Aplicaciones.calculo',
+    #'leaflet',
+
 ]
 
 MIDDLEWARE = [

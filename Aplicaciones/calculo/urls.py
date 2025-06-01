@@ -2,21 +2,15 @@ from django.urls import path
 from . import views 
 from .views import vista_usuario_calculo
 
-
 urlpatterns = [
     path('', views.inicio, name='inicio'),
-    path('', vista_usuario_calculo, name='vista_usuario_calculo'),
+    path('vista', vista_usuario_calculo, name='vista_usuario_calculo'),
     path('tipoGeneracion/', views.tipoGeneracion, name='tipoGeneracion'),
+    path('mapa/', views.mapa, name='mapa'),
 
+    path('Mapa/<str:pagina>/', views.mapa_detalle, name='mapa_detalle'),
     # Eleccion tipo
     path('centrales/<int:tipo_id>/', views.centrales_por_tipo, name='centrales_por_tipo'),
-
-    path('hidraulica/', views.hidraulica, name='hidraulica'),
-    path('termica/', views.termica, name='termica'),
-    path('solar/', views.solar, name='solar'),  
-    path('eolica/', views.eolica, name='eolica'),
-
-    path('login/', views.login, name='login'),
 
     # TipoElectrica
     path('tipoelectrica/', views.TipoElectricaListView.as_view(), name='tipoelectrica_list'),
@@ -30,12 +24,23 @@ urlpatterns = [
     path('central/editar/<int:pk>/', views.CentralUpdateView.as_view(), name='central_update'),
     path('central/eliminar/<int:pk>/', views.CentralDeleteView.as_view(), name='central_delete'),
 
+    # Fotovoltaica
+    path('fotovoltaica/', views.FotovoltaicaListView.as_view(), name='fotovoltaica_list'),
+    path('fotovoltaica/crear/', views.FotovoltaicaCreateView.as_view(), name='fotovoltaica_create'),
+    path('fotovoltaica/<int:pk>/editar/', views.FotovoltaicaUpdateView.as_view(), name='fotovoltaica_update'),
+    path('fotovoltaica/<int:pk>/eliminar/', views.FotovoltaicaDeleteView.as_view(), name='fotovoltaica_delete'),
+    
     # InformacionCentral
     path('informacion/', views.InformacionCentralListView.as_view(), name='info_list'),
     path('informacion/nuevo/', views.InformacionCentralCreateView.as_view(), name='info_create'),
     path('informacion/editar/<int:pk>/', views.InformacionCentralUpdateView.as_view(), name='info_update'),
     path('informacion/eliminar/<int:pk>/', views.InformacionCentralDeleteView.as_view(), name='info_delete'),
     
-    path('ajax/info-central/<int:central_id>/', views.obtener_info_central, name='ajax_info_central'),
+    #path('tipo/<int:tipo_id>/', views.centrales_por_tipo, name='centrales_por_tipo'),
+
+    #---- nuevo
+
+    path('calculo/', views.calculo_view, name='calculo_view'),
+    
 
 ]

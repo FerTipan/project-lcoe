@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>App LCOE</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!-- Favicon icon -->
     <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon"> 
     <!-- DataTables-->
-    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/plugins/dataTables.bootstrap5.min.css' %}">
+    <link href="{% static 'assets/lib/DataTables/datatables.min.css' %}" rel="stylesheet">
+    <script src="{% static 'assets/lib/DataTables/datatables.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/plugins/buttons.bootstrap5.min.css' %}"> 
     <!-- Google Font Family -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
@@ -25,6 +28,7 @@
     <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style.css' %}" id="main-style-link" >
     <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style-preset.css' %}" >
     <link rel="stylesheet" href="{% static 'assets/css/tipo.css' %}" >
+    <link rel="stylesheet" href="{% static 'assets/css/lcoe_table.css' %}">
     <!--Importando JQuery-->
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <!-- Importancion del IziToast--> 
@@ -33,7 +37,6 @@
      <!-- File Inputs Libreria-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.0/js/fileinput.min.js" integrity="sha512-ZOU4ZJnGlvyQ76zoWdOs4Yb7VnhJPRKkssorqt36m9/NDmHs0FrWteaSAsODgSJfBke9vAPLxpO7b1fb2Bmevw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.0/css/fileinput.min.css" integrity="sha512-cvhwKyzOpC1m0Ps5PFVput79SWoJ98fkcV52QEr3aJ1A6hfE6N1wzWFtGH8iYOHp/MHOg6LDlX5ljHoi9BS5SQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="{% static 'js/input-files.js' %}"></script>
     
 </head>
 <!-- [Head] end -->
@@ -82,11 +85,18 @@
             </a>
           </li>
           <li class="pc-item">
+            <a href="{% url 'fotovoltaica_list' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-bookmark"></i></span>
+              <span class="pc-mtext">Lista Fotovoltaicas</span>
+            </a>
+          </li>
+          <li class="pc-item">
             <a href="{% url 'info_list' %}" class="pc-link">
               <span class="pc-micon"><i class="ti ti-file"></i></span>
               <span class="pc-mtext">Información Técnica</span>
             </a>
           </li>
+
           <li class="pc-item pc-caption">
             <label>Tecnologías</label>
             <i class="ti ti-dashboard"></i>
@@ -95,6 +105,12 @@
             <a href="{% url 'tipoGeneracion' %}" class="pc-link">
               <span class="pc-micon"><i class="ti ti-plug"></i></span>
               <span class="pc-mtext">Tipo de Generación</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'mapa' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-clipboard"></i></span>
+              <span class="pc-mtext">Mapa</span>
             </a>
           </li>
           <li class="pc-item">
@@ -113,8 +129,9 @@
               <span class="pc-mtext">Inicio de Sesión</span>
             </a>
           </li>
+
           <li class="pc-item pc-caption">
-            <label>Otro</label>
+            <label>Mapa</label>
             <i class="ti ti-brand-chrome"></i>
           </li>
           <li class="pc-item pc-hasmenu">
@@ -207,7 +224,7 @@
           aria-expanded="false"
         >
           <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image" class="user-avtar">
-          <span>{{ user.first_name }}</span>
+          <span>{{ user.first_name }} &nbsp; {{ user.last_name }}</span>
         </a>
         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
           <div class="dropdown-header">
@@ -216,10 +233,10 @@
                 <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image" class="user-avtar wid-35">
               </div>
               <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1">{{ user.first_name }}</h6>
-                <span>UI/UX Designer</span>
+                <h6 class="mb-1">{{ user.first_name }}&nbsp;{{ user.last_name }}</h6>
+                <span>Usuario</span>
               </div>
-              <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
+              <a href="{% url 'logout' %}" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
             </div>
           </div>
           <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
@@ -234,19 +251,6 @@
                 aria-controls="drp-tab-1"
                 aria-selected="true"
                 ><i class="ti ti-user"></i> Perfil</button
-              >
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="drp-t2"
-                data-bs-toggle="tab"
-                data-bs-target="#drp-tab-2"
-                type="button"
-                role="tab"
-                aria-controls="drp-tab-2"
-                aria-selected="false"
-                ><i class="ti ti-settings"></i> Ajustes</button
               >
             </li>
           </ul>
@@ -373,16 +377,6 @@
         font-weight: bold;
         border-radius: 6px;
         margin-top: 20px;
-      }
-      label {
-        font-weight: 500;
-      }
-      input-2 {
-        height: 40px;
-      }
-      .form-control {
-        border: 1px solid #3e5a77;
-        border-radius: 10px;
       }
     </style>
 </body>

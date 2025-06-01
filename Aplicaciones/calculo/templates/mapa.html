@@ -1,0 +1,669 @@
+{% extends "plantilla.html" %}
+{% block content %}
+{% load static %}
+
+<!-- CSS de Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+<!-- JS de Leaflet -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> -->
+    <style>
+        :root {
+            --primary-blue: #1373cc;
+            --secondary-blue: #3e5a77;
+            --accent-blue: #1373cc;
+            --light-blue: rgba(19, 115, 204, 0.1);
+            --text-dark: #2c3e50;
+        }
+
+        .body2 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light-blue) 0%, #ffffff 100%);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: calc(100vh - 40px);
+        }
+
+        .controls-panel {
+            width: 350px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(19, 115, 204, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(19, 115, 204, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .map-container {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(19, 115, 204, 0.15);
+            border: 1px solid rgba(19, 115, 204, 0.1);
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+            border-radius: 15px;
+        }
+
+        .panel-title {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--light-blue), rgba(255,255,255,0.8));
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(19, 115, 204, 0.1);
+        }
+
+        .search-section, .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .section-label {
+            color: var(--secondary-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control {
+            border: 2px solid rgba(19, 115, 204, 0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-dark);
+            height: auto; /* Línea agregada para solucionar el problema */
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(19, 115, 204, 0.15);
+            background: white;
+        }
+
+        .form-control::placeholder {
+            color: #a0a0a0;
+            font-style: italic;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(19, 115, 204, 0.3);
+            color: white;
+        }
+
+        .btn-reset:active {
+            transform: translateY(0);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .energy-legend {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(19, 115, 204, 0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .legend-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+        }
+
+        /* Estilo personalizado para los popups */
+        .popup-content {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            max-width: 250px;
+        }
+
+        .popup-content h3 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .popup-content p {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .popup-content img {
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .popup-btn {
+            background: var(--primary-blue);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .popup-btn:hover {
+            background: var(--secondary-blue);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .controls-panel {
+                width: 100%;
+                position: static;
+            }
+            
+            .map-container {
+                height: 500px;
+            }
+        }
+
+        /* Animaciones suaves */
+        * {
+            transition: all 0.3s ease;
+        }
+
+        .controls-panel:hover {
+            box-shadow: 0 15px 40px rgba(19, 115, 204, 0.2);
+        }
+
+        .map-container:hover {
+            box-shadow: 0 15px 40px rgba(19, 115, 204, 0.2);
+        }
+
+        /* Estilos para los marcadores del mapa */
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px !important;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+        .leaflet-popup-tip {
+            background: white !important;
+        }
+    </style>
+
+
+    <div class="main-container">
+        <div class="controls-panel">
+            <div class="panel-title">
+                <i class="fas fa-leaf"></i>
+                Energías Renovables
+                <i class="fas fa-bolt"></i>
+            </div>
+
+            <div class="search-section">
+                <div class="section-label">
+                    <i class="fas fa-search"></i>
+                    Búsqueda
+                </div>
+                <input type="text" id="searchInput" class="form-control" placeholder="🔍 Buscar centrales energéticas...">
+            </div>
+
+            <div class="filter-section">
+                <div class="section-label">
+                    <i class="fas fa-filter"></i>
+                    Filtros Avanzados
+                </div>
+                
+                <select id="filterType" class="form-control mb-3">
+                    <option value="">📋 Seleccionar tipo de filtro</option>
+                    <option value="region">🗺 Por Región</option>
+                    <option value="energia">⚡ Por Tipo de Energía</option>
+                </select>
+
+                <select id="filterOptions" class="form-control mb-3" disabled>
+                    <option value="">Seleccione una opción...</option>
+                </select>
+
+                <button id="resetFilters" class="btn btn-reset">
+                    <i class="fas fa-sync-alt"></i>
+                    Restablecer Filtros
+                </button>
+            </div>
+
+            <div class="stats-card">
+                <div class="stats-number" id="statsNumber">9</div>
+                <div class="stats-label">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Centrales Energéticas
+                </div>
+            </div>
+
+            <div class="energy-legend">
+                <div class="section-label">
+                    <i class="fas fa-info-circle"></i>
+                    Leyenda de Energías
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #1373cc;">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <span>💧 Hidroeléctrica</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #3e5a77;">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <span>💨 Eólica</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #f39c12;">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <span>☀ Solar</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #e74c3c;">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <span>🌋 Geotérmica</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> 
+
+    <script>
+        // Crear mapa con OpenStreetMap
+        var map = L.map('map').setView([-0.19910582808506766, -77.68382550457454], 6);
+
+        // Cargar el tile layer de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Crear un objeto para almacenar los marcadores y sus nombres
+        var markers = [];
+        var markerNames = {};
+        var markerRegions = {};
+        var markerEnergies = {};
+        var visibleMarkers = 0;
+
+        // Función para actualizar el contador de estadísticas
+        function updateStats() {
+            document.getElementById('statsNumber').textContent = visibleMarkers;
+        }
+
+        // Función para crear el marcador con iconos personalizados
+        function createMarker(lat, lng, title, description, image, classes) {
+            // Crear icono personalizado basado en el tipo de energía
+            var iconColor = '#1373cc';
+            var iconName = 'bolt';
+            
+            if (classes.includes('hidroelectrica')) {
+                iconColor = '#1373cc';
+                iconName = 'tint';
+            } else if (classes.includes('eolica')) {
+                iconColor = '#3e5a77';
+                iconName = 'wind';
+            } else if (classes.includes('solar')) {
+                iconColor = '#f39c12';
+                iconName = 'sun';
+            } else if (classes.includes('geotermica')) {
+                iconColor = '#e74c3c';
+                iconName = 'mountain';
+            }
+
+            var customIcon = L.divIcon({
+                html: `<div style="background: ${iconColor}; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3); border: 3px solid white;"><i class="fas fa-${iconName}" style="color: white; font-size: 12px;"></i></div>`,
+                className: 'custom-marker',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+
+            var marker = L.marker([lat, lng], {icon: customIcon});
+            
+            var popupContent = `
+                <div class="popup-content">
+                    <h3><i class="fas fa-${iconName}"></i> ${title}</h3>
+                    <p>${description}</p>
+                    <img src="${image}" alt="${title}" style="width: 100px; height: auto;" />
+                    <br/>
+                    <a href="{% url 'mapa_detalle' pagina='tipo_tecno' %}" class="popup-btn">
+                        <i class="fas fa-external-link-alt"></i> Ver Detalles
+                    </a>
+                </div>`;
+            
+            marker.bindPopup(popupContent);
+            marker.classes = classes;
+
+            markers.push(marker);
+            markerNames[title.toLowerCase()] = marker;
+
+            // Almacenar por región y tipo de energía
+            classes.forEach(function(className) {
+                if (className === "sierra" || className === "oriente" || className === "galapagos" || className === "costa") {
+                    if (!markerRegions[className]) {
+                        markerRegions[className] = [];
+                    }
+                    markerRegions[className].push(marker);
+                }
+
+                if (className === "eolica" || className === "hidroelectrica" || className === "solar" || className === "geotermica") {
+                    if (!markerEnergies[className]) {
+                        markerEnergies[className] = [];
+                    }
+                    markerEnergies[className].push(marker);
+                }
+            });
+
+            marker.addTo(map);
+            visibleMarkers++;
+        }
+
+        // Crear los marcadores con sus clases
+        createMarker(
+            -3.7988, -79.1248, 
+            "Mazar", 
+            "Central hidroeléctrica ubicada en la región Sierra.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["hidroelectrica", "sierra"]
+        );
+
+        createMarker(
+            -0.7992, -78.6791, 
+            "San Francisco", 
+            "Central hidroeléctrica ubicada en la región Sierra.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["hidroelectrica", "sierra"]
+        );
+
+        // Costa (Eólica)
+        createMarker(
+            -2.5223, -80.6905, 
+            "Cabo de la Vela", 
+            "Parque eólico ubicado en la Costa.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["eolica", "costa"]
+        );
+
+        // Oriente (Hidráulica)
+        createMarker(
+            -0.7224, -76.1799, 
+            "Delfín II", 
+            "Central hidroeléctrica ubicada en la región Oriente.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["hidroelectrica", "oriente"]
+        );
+
+        // Galápagos (Solar)
+        createMarker(
+            -0.9542, -89.6207, 
+            "San Cristóbal Solar", 
+            "Planta solar en Galápagos.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["solar", "galapagos"]
+        );
+
+        // Más marcadores para la región Sierra
+        createMarker(
+            -1.5853, -78.0042, 
+            "Totorillas", 
+            "Central hidroeléctrica ubicada en la región Sierra.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["hidroelectrica", "sierra"]
+        );
+
+        createMarker(
+            -0.8855, -78.3862, 
+            "La Esperanza II", 
+            "Central hidroeléctrica ubicada en la región Sierra.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["hidroelectrica", "sierra"]
+        );
+
+        // Oriente (Eólica)
+        createMarker(
+            -1.0198, -77.2378, 
+            "Cuyabeno Eólico", 
+            "Parque eólico ubicado en la región Oriente.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["eolica", "oriente"]
+        );
+
+        // Galápagos (Hidráulica)
+        createMarker(
+            -2.0816, -90.5924, 
+            "Isla Floreana Hidráulica", 
+            "Central hidroeléctrica en la región Galápagos.", 
+            "{% static 'assets/images/logo.png' %}",
+            ["hidroelectrica", "galapagos"]
+        );
+
+        updateStats();
+
+        // Función para mostrar las opciones de filtro
+        $("#filterType").change(function() {
+            var selectedFilter = $(this).val();
+            var options = "";
+
+            $("#filterOptions").empty().prop("disabled", true); // Deshabilitar y vaciar por defecto
+
+            if (selectedFilter) { // Solo habilitar si se selecciona un tipo de filtro válido
+                 $("#filterOptions").prop("disabled", false);
+                if (selectedFilter === "region") {
+                    options = '<option value="">🌎 Seleccione región...</option>';
+                    options += '<option value="sierra">🏔 Sierra</option>';
+                    options += '<option value="costa">🏖 Costa</option>';
+                    options += '<option value="oriente">🌿 Oriente</option>';
+                    options += '<option value="galapagos">🐢 Galápagos</option>';
+                } else if (selectedFilter === "energia") {
+                    options = '<option value="">⚡ Seleccione tipo de energía...</option>';
+                    options += '<option value="eolica">💨 Eólica</option>';
+                    options += '<option value="solar">☀ Solar</option>';
+                    options += '<option value="hidroelectrica">💧 Hidráulica</option>';
+                    options += '<option value="geotermica">🌋 Geotérmica</option>';
+                }
+            } else { // Si se selecciona "Seleccionar tipo de filtro"
+                 options = '<option value="">Seleccione una opción...</option>';
+            }
+
+
+            $("#filterOptions").html(options);
+        });
+
+        // Función para filtrar por región o tipo de energía
+        $("#filterOptions").change(function() {
+            var filterValue = $(this).val();
+            visibleMarkers = 0;
+
+            markers.forEach(function(marker) {
+                map.removeLayer(marker); // Quitar todos primero
+            });
+            
+            if (!filterValue) { // Si se deselecciona una opción específica de filtro (ej. "Seleccione región...")
+                // Volver a mostrar todos los marcadores si el filtro principal está vacío o se resetea
+                 if (!$("#filterType").val()) {
+                    markers.forEach(function(marker) {
+                        marker.addTo(map);
+                        visibleMarkers++;
+                    });
+                 } // Si hay un tipo de filtro pero no opción, no mostrar nada o mantener estado previo (actualmente no muestra nada)
+            } else {
+                var foundInCurrentFilter = false;
+                markers.forEach(function(marker) {
+                    if (marker.classes.includes(filterValue)) {
+                        marker.addTo(map);
+                        visibleMarkers++;
+                        foundInCurrentFilter = true;
+                    }
+                });
+            }
+            updateStats();
+        });
+
+        // Función de búsqueda
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            var searchTerm = e.target.value.toLowerCase();
+            visibleMarkers = 0;
+            
+            // Limpiar filtros si se realiza una búsqueda para evitar conflictos
+            $("#filterType").val("");
+            $("#filterOptions").empty().append('<option value="">Seleccione una opción...</option>').prop("disabled", true);
+
+            markers.forEach(function(marker) {
+                // Obtener el título del popup de forma segura
+                var popup = marker.getPopup();
+                var title = '';
+                if (popup && typeof popup.getContent === 'function') {
+                     var content = popup.getContent();
+                     // Extraer el título del contenido del popup (esto puede necesitar ajuste según la estructura del popupContent)
+                     var titleMatch = content.match(/<h3>.? (.?)<\/h3>/i);
+                     if (titleMatch && titleMatch[1]) {
+                         title = titleMatch[1].toLowerCase();
+                     }
+                }
+                var classes = marker.classes.join(" ").toLowerCase();
+                
+                if (title.includes(searchTerm) || classes.includes(searchTerm)) {
+                    marker.addTo(map);
+                    visibleMarkers++;
+                } else {
+                    map.removeLayer(marker);
+                }
+            });
+
+            updateStats();
+
+            if (visibleMarkers === 0 && searchTerm === '') { // Si el campo de búsqueda está vacío y no hay marcadores, mostrar todos
+                 markers.forEach(function(marker) {
+                    marker.addTo(map);
+                    visibleMarkers++;
+                });
+                updateStats();
+                map.setView([-0.19910582808506766, -77.68382550457454], 6);
+            } else if (visibleMarkers > 0 && searchTerm !== '') {
+                // Opcional: hacer zoom/fit a los marcadores encontrados
+                // var group = new L.featureGroup(markers.filter(m => map.hasLayer(m)));
+                // if (Object.keys(group._layers).length > 0) {
+                // map.fitBounds(group.getBounds().pad(0.5));
+                // }
+            } else if (visibleMarkers === 0 && searchTerm !== '') {
+                // No se encontraron resultados, mantener el mapa centrado
+                 map.setView([-0.19910582808506766, -77.68382550457454], 6);
+            }
+        });
+
+        // Función para reiniciar los filtros
+        $("#resetFilters").click(function() {
+            $("#filterType").val("");
+            $("#filterOptions").empty().append('<option value="">Seleccione una opción...</option>').prop("disabled", true);
+            $("#searchInput").val("");
+            
+            visibleMarkers = 0;
+            markers.forEach(function(marker) {
+                marker.addTo(map);
+                visibleMarkers++;
+            });
+
+            updateStats();
+            map.setView([-0.19910582808506766, -77.68382550457454], 6);
+        });
+    </script>
+
+
+{% endblock %}

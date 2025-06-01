@@ -2,14 +2,22 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import CentralFotovoltaica, CentralTermica, TipoElectrica, Central, InformacionCentral
-from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm
+from .models import  TipoElectrica, Central, InformacionCentral, Fotovoltaica, CasoCalculo, ResultadoCalculo 
+from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm, FotovoltaicaForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.serializers import serialize
+import json
+from .services import crear_parametros_desde_fotovoltaica
+from django.contrib.auth.decorators import login_required
+# Importacion de la app usuarios
+from Aplicaciones.usuarios.models import Perfil
+
 
 @login_required
 def vista_usuario_calculo(request):
     return render(request, 'calculo/tipoGeneracion.html')
+
 # TipoElectrica
 class TipoElectricaListView(ListView):
     model = TipoElectrica
@@ -70,6 +78,42 @@ class CentralDeleteView(DeleteView):
         messages.success(request, 'Central eliminada correctamente')
         return super().delete(request, *args, **kwargs)
     
+class FotovoltaicaListView(ListView):
+    model = Fotovoltaica
+    template_name = 'fotovoltaica/lista.html'
+
+    def get_queryset(self):
+        return Fotovoltaica.objects.filter(central__tipo_electrica__nombre__icontains='fotovoltaica')
+
+class FotovoltaicaCreateView(CreateView):
+    model = Fotovoltaica
+    form_class = FotovoltaicaForm
+    template_name = 'fotovoltaica/form.html'
+    success_url = reverse_lazy('fotovoltaica_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Central fotovoltaica agregada correctamente.')
+        return super().form_valid(form)
+    
+
+class FotovoltaicaUpdateView(UpdateView):
+    model = Fotovoltaica
+    form_class = FotovoltaicaForm
+    template_name = 'fotovoltaica/form.html'
+    success_url = reverse_lazy('fotovoltaica_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Central fotovoltaica actualizada correctamente.')
+        return super().form_valid(form)
+
+class FotovoltaicaDeleteView(DeleteView):
+    model = Fotovoltaica
+    success_url = reverse_lazy('fotovoltaica_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Central fotovoltaica eliminada correctamente.')
+        return super().delete(request, *args, **kwargs)
+    
 # InformacionCentral
 class InformacionCentralListView(ListView):
     model = InformacionCentral
@@ -100,7 +144,6 @@ class InformacionCentralDeleteView(DeleteView):
         messages.success(request, 'Datos eliminados correctamente')
         return super().delete(request, *args, **kwargs)
 
-# Views
 def inicio(request):
     return render(request, 'inicio.html')
 
@@ -108,80 +151,119 @@ def tipoGeneracion(request):
     tipos = TipoElectrica.objects.all()
     return render(request, 'tipoGeneracion.html', {'tipos': tipos})
 
-#Centrales por tipo
+def mapa(request):
+    lugares = [
+        {"nombre": "Lugar 1", "lat": -1.8312, "lng": -78.1834},
+        {"nombre": "Lugar 2", "lat": -0.1807, "lng": -78.4747},
+    ]
+    return render(request, 'mapa.html', {'lugares': lugares})
+
+def mapa_detalle(request, pagina):
+    # Asegúrate de que la variable 'pagina' no tenga la extensión .html
+    return render(request, f'tecnologias/{pagina}.html')
+
+# ------------- Centrales por tipo --------------
+@login_required
 def centrales_por_tipo(request, tipo_id):
     tipo = get_object_or_404(TipoElectrica, id=tipo_id)
     centrales = Central.objects.filter(tipo_electrica=tipo)
-    return render(request, 'tecnologias/tipo_tecno.html', {
-        'tipo': tipo,
-        'centrales': centrales
-})
-# Obtener info
-def obtener_info_central(request, central_id):
-    try:
-        central = get_object_or_404(Central, id=central_id)
-        tipo = central.tipo_electrica.nombre
 
-        # Mapeo de tipo -> clase hija
-        tipo_modelo = {
-            "Térmica": CentralTermica,
-            "Fotovoltaica": CentralFotovoltaica,
-        }
-
-        modelo = tipo_modelo.get(tipo)
-        if not modelo:
-            return JsonResponse({"error": f"Tipo de central no especificada: {tipo}"}, status=400)
-
-        # obtener instancia específica
-        obj = modelo.objects.get(id=central.id)
-
-        # obtener información técnica
-        info = InformacionCentral.objects.filter(central=central).order_by('-anio').first()
-
-        if not info:
-            return JsonResponse({"error": "No hay información técnica asociada a esta central."}, status=404)
-
-        data = {
-            "nombre": central.nombre,
-            "ubicacion": central.ubicacion,
-            "empresa": central.empresa,
-            "potencia": central.potencia,
-            "tipo": tipo,
-            "informacion": {
-                "capacidad": info.capacidad,
-                "vida_util": info.vida_util,
-                "inversion": info.inversion,
-                "factor_planta": info.factor_planta,
-                "anio": info.anio,
-            },
-        }
-        # Agregar detalles específicos de cada tipo
-        if hasattr(obj, 'to_dict'):
-            data["detalles_tipo"] = obj.to_dict()
+    centrales_con_tipo = []
+    for central in centrales:
+        if hasattr(central, 'fotovoltaica'):
+            tipo_especifico = 'fotovoltaica'
         else:
-            data["detalles_tipo"] = {}
+            tipo_especifico = 'general'
 
-        return JsonResponse(data)
+        centrales_con_tipo.append({
+            'id': central.id,
+            'nombre': central.nombre,
+            'tipo_especifico': tipo_especifico,
+            'potencia': central.potencia,
+            'ubicacion': f"{central.provincia}, {central.canton}"
+        })
 
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+    central_seleccionada = None
+    resultado = None
+    caso = None
 
-# Tecnologias
-def eolica(request):
-    return render(request, 'tecnologias/eolica.html')
+    try:
+        perfil_usuario = Perfil.objects.get(user=request.user)
+    except Perfil.DoesNotExist:
+        messages.error(request, "No tienes un perfil asociado.")
+        #return redirect('seleccion', tipo_id=tipo.id)
 
-def solar(request):
-    return render(request, 'tecnologias/solar.html')
+    if request.method == "POST":
+        central_id = request.POST.get("central_id")
+        central_seleccionada = get_object_or_404(Central, id=central_id)
 
-def hidraulica(request):
-    return render(request, 'tecnologias/hidraulica.html')
+        caso = CasoCalculo.objects.create(
+            nombre=f"Cálculo de {central_seleccionada.nombre}",
+            usuario=perfil_usuario,
+            central=central_seleccionada
+        )
 
-def termica(request):
-    return render(request, 'tecnologias/termica.html')
+        crear_parametros_desde_fotovoltaica(caso)
+        resultado = ResultadoCalculo.objects.create(caso=caso)
+        resultado.save()
 
-def login(request):
-    return render(request, 'login.html')
+    return render(request, 'tecnologias/seleccion.html', {
+        'tipo': tipo,
+        'centrales': centrales_con_tipo,
+        'central_seleccionada': central_seleccionada,
+        'resultado': resultado,
+        'caso': caso
+    })
 
-def informacion(request):
+# ----------- VISUALIZACION DE INFO -------------
+@login_required
+def calculo_view(request):
+    centrales = Central.objects.all()
+    central_seleccionada = None
+    resultado = None
+    caso = None
 
-    return render(request, 'tecnologias/termica.html')
+    if request.method == "POST":
+        central_id = request.POST.get("central_id")
+        central_seleccionada = Central.objects.get(id=central_id)
+        
+        caso = CasoCalculo.objects.create(
+            nombre=f"Cálculo de {central_seleccionada.nombre}",
+            #usuario=request.user.perfil,
+            central=central_seleccionada
+        )
+        crear_parametros_desde_fotovoltaica(caso)
+        resultado = ResultadoCalculo.objects.create(caso=caso)
+        resultado.save()
+
+    return render(request, '/calculo_lcoe.html', {
+        'centrales': centrales,
+        'central_seleccionada': central_seleccionada,
+        'caso': caso,
+        'resultado': resultado
+    })
+
+
+# ---------------------  CALCULOS LCOE --------------------  
+@login_required
+def crear_caso_y_calcular(request, central_id):
+    central = Central.objects.get(id=central_id)
+
+    caso = CasoCalculo.objects.create(
+        nombre=f"Cálculo de {central.nombre}",
+        usuario=request.user.perfil,
+        central=central
+    )
+
+    crear_parametros_desde_fotovoltaica(caso)
+
+    resultado = ResultadoCalculo.objects.create(caso=caso)
+    resultado.save()  
+
+    return redirect('ver_resultado', caso_id=caso.id)
+
+
+def ver_resultado(request, caso_id):
+    caso = CasoCalculo.objects.get(id=caso_id)
+    resultado = caso.resultadocalculo
+    return render(request, 'resultados/result.html', {'caso': caso, 'resultado': resultado})

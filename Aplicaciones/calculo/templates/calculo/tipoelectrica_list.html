@@ -31,8 +31,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
-                    <table class="table table table-bordered nowrap">
-                        <thead>
+                    <table id="tbl-tipo" class="table table-hover">
+                        <thead class="table-lcoe">
                             <tr>
                                 <th>Nombre</th><th>Foto</th>
                                 <th>Acciones</th>
@@ -78,4 +78,13 @@
         </div> 
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let table = new DataTable('#tbl-tipo', {
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+        },
+        });
+    }); 
+</script>
 {% endblock %}

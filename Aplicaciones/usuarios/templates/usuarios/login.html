@@ -22,10 +22,11 @@
       <h3 class="mb-4 fw-bold">¡Bienvenido!</h3>
       <p class="mb-4 text-muted">Ingresa tus credenciales o usa tu cuenta de Google</p>
 
-      <form>
+      <form method="POST">
+        {% csrf_token %}
         <div class="mb-3">
-          <label for="email" class="form-label">Correo electrónico</label>
-          <input type="email" class="form-control" id="email" placeholder="correo@ejemplo.com">
+          <label for="username" class="form-label">User</label>
+          <input type="username" class="form-control" id="username" placeholder="JD">
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Contraseña</label>

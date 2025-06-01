@@ -5,6 +5,7 @@ charset-normalizer==3.4.2
 cryptography==44.0.3
 defusedxml==0.7.1
 Django==5.1.7
+django-leaflet==0.32.0
 idna==3.10
 oauthlib==3.2.2
 psycopg2-binary==2.9.10

@@ -19,46 +19,78 @@
         </div>
     </div>
 </div>
-<h2>Ficha Técnica de Centrales</h2>
-<a href="{% url 'info_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar ficha</a>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Central</th>
-            <th>Capacidad</th>
-            <th>Vida Útil</th>
-            <th>Inversión</th>
-            <th>Factor Planta</th>
-            <th>Año</th>
-           <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for info in object_list %}
-        <tr>
-            <td>{{ info.central.nombre }}</td>
-            <th>{{ info.capacidad}}</th>
-            <td>{{ info.vida_util }} años</td>
-            <td>{{ info.inversion }}</td>
-            <td>{{ info.factor_planta }}</td>
-            <td>{{ info.anio }}</td>
-            <td>
-                <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
-                    <a href="{% url 'info_update' info.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1"></i></a>
-                </span>
-                <form id="form-eliminar-{{ info.pk }}" method="POST" action="{% url 'info_delete' info.pk %}" class="d-inline">
-                    {% csrf_token %}
-                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
+<div class="col-md-12">
+    <div class="page-header-title">
+      <h2 class="mb-0">Ficha Técnica de Centrales</h2>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-md-10">
+                <a href="{% url 'info_create' %}" class="btn btn-success mb-3"><i class="ti ti-plus"></i>Agregar ficha</a>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbl-ficha" class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Central</th>
+                                    <th>Capacidad</th>
+                                    <th>Vida Útil</th>
+                                    <th>Inversión</th>
+                                    <th>Factor Planta</th>
+                                    <th>Año</th>
+                                <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for info in object_list %}
+                                <tr>
+                                    <td>{{ info.central.nombre }}</td>
+                                    <th>{{ info.capacidad}}</th>
+                                    <td>{{ info.vida_util }} años</td>
+                                    <td>{{ info.inversion }}</td>
+                                    <td>{{ info.factor_planta }}</td>
+                                    <td>{{ info.anio }}</td>
+                                    <td>
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
+                                            <a href="{% url 'info_update' info.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1"></i></a>
+                                        </span>
+                                        <form id="form-eliminar-{{ info.pk }}" method="POST" action="{% url 'info_delete' info.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
 
-                        <button type="button" onclick="confirmarEliminacion('{{ info.pk }}')" class="btn btn-danger btn-sm btn-circle">
-                            <i class="ti ti-trash me-1"></i>
-                        </button>
-                    </span>
-                </form>
-                <!-- <a href="{% url 'info_delete' info.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                                                <button type="button" onclick="confirmarEliminacion('{{ info.pk }}')" class="btn btn-danger btn-sm btn-circle">
+                                                    <i class="ti ti-trash me-1"></i>
+                                                </button>
+                                            </span>
+                                        </form>
+                                        <!-- <a href="{% url 'info_delete' info.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let table = new DataTable('#tbl-ficha', {
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+        },
+        });
+    }); 
+</script>
+
+
+
 {% endblock %}

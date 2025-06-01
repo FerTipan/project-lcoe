@@ -1,0 +1,327 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Centrales de Generación {{ tipo.nombre }}</h2>
+            <p class="lead">Seleccione una central para ver sus detalles</p>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" id="buscador-central" class="form-control" placeholder="Buscar central...">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <form method="post" class="mb-3">
+            {% csrf_token %}
+            <label for="central">Selecciona una central:</label>
+            <select name="central_id" id="central" class="form-select" onchange="this.form.submit()">
+                <option value="">-- Selecciona --</option>
+                {% for c in centrales %}
+                <option value="{{ c.id }}"
+                    {% if central_seleccionada and c.id == central_seleccionada.id %}selected{% endif %}>
+                    {{ c.nombre }} - {{ c.tipo_especifico|title }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <div class="row">
+        <!-- Lista de Centrales -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-bolt me-2"></i>Listado de Centrales
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" id="lista-centrales">
+                        {% if central_seleccionada %}
+                            <hr>
+                            <h4>Información de la central: {{ central_seleccionada.nombre }}</h4>
+                            <ul>
+                                <li><strong>Ubicación:</strong> {{ central_seleccionada.provincia }}, {{ central_seleccionada.canton }}</li>
+                                <li><strong>Empresa:</strong> {{ central_seleccionada.empresa }}</li>
+                                <li><strong>Tipo:</strong> {{ central_seleccionada.tipo }}</li>
+                                <li><strong>Potencia:</strong> {{ central_seleccionada.potencia }} MW</li>
+                                <li><strong>Inicio operación:</strong> {{ central_seleccionada.anio_operacion }}</li>
+                            </ul>
+
+                            {% if resultado %}
+                                <hr>
+                                <h4>Resultado del Cálculo LCOE</h4>
+                                <p><strong>LCOE:</strong> {{ resultado.lcoe }} USD/kWh</p>
+                                <p><strong>Fecha del cálculo:</strong> {{ resultado.fecha_calculo }}</p>
+                            {% endif %}
+                            {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Visualización -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span id="titulo-central">Seleccione una central</span>
+                </div>
+                <div class="card-body" id="panel-central">
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-bolt fa-3x mb-3"></i>
+                        <p>Seleccione una central del listado para ver sus detalles</p>
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </div>
+</div>
+
+<!-- Template para los detalles -->
+<template id="template-detalle">
+    <div>
+        <ul class="nav nav-tabs mb-3" id="centralTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button">Datos Generales</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tecnica-tab" data-bs-toggle="tab" data-bs-target="#tecnica" type="button">Ficha Técnica</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="centralTabsContent">
+            <div class="tab-pane fade show active" id="general" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="central-foto" src="" class="img-fluid rounded mb-3" alt="Foto de la central" style="max-height: 200px;">
+                    </div>
+                    <div class="col-md-8">
+                        <h4 id="central-nombre"></h4>
+                        <p class="text-muted" id="central-empresa"></p>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <p><i class="fas fa-map-marker-alt"></i> <strong>Ubicación:</strong> <span id="central-ubicacion"></span></p>
+                                <p><i class="fas fa-bolt"></i> <strong>Potencia:</strong> <span id="central-potencia"></span> MW</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><i class="fas fa-chart-line"></i> <strong>Energía Media:</strong> <span id="central-energia"></span> MWh</p>
+                                <p><i class="fas fa-calendar-alt"></i> <strong>Año Operación:</strong> <span id="central-anio"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Localización</h5>
+                        <p><strong>Provincia:</strong> <span id="central-provincia"></span></p>
+                        <p><strong>Cantón:</strong> <span id="central-canton"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tecnica" role="tabpanel">
+                <div id="ficha-tecnica-content"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Templates para fichas técnicas -->
+<template id="template-termica">
+    <div>
+        <h4>Central Térmica</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Costos de Operación (USD)</h5>
+                <table class="table table-sm">
+                    <tr><th>Producción:</th><td id="ct-produccion"></td></tr>
+                    <tr><th>Operación y Mantenimiento:</th><td id="ct-om"></td></tr>
+                    <tr><th>Administración:</th><td id="ct-administracion"></td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h5>Costos Específicos (USD)</h5>
+                <table class="table table-sm">
+                    <tr><th>Combustible:</th><td id="ct-combustible"></td></tr>
+                    <tr><th>Transporte:</th><td id="ct-transporte"></td></tr>
+                    <tr><th>Lubricación:</th><td id="ct-lubricacion"></td></tr>
+                    <tr><th>Agua:</th><td id="ct-agua"></td></tr>
+                    <tr><th>Mantenimiento:</th><td id="ct-mantenimiento"></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="template-fotovoltaica">
+    <div>
+        <h4>Central Fotovoltaica</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Costos de Operación (USD)</h5>
+                <table class="table table-sm">
+                    <tr><th>Producción:</th><td id="cf-produccion"></td></tr>
+                    <tr><th>Operación y Mantenimiento:</th><td id="cf-om"></td></tr>
+                    <tr><th>Variables:</th><td id="cf-variables"></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</template>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Variables globales
+    let currentSearchTerm = '';
+    const buscador = document.getElementById('buscador-central');
+    let centralItems = document.querySelectorAll('.central-item'); // Mutable
+    
+    // Buscador de centrales con debounce
+    let searchTimeout;
+    buscador.addEventListener('input', function() {
+        currentSearchTerm = this.value.toLowerCase();
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            filterCentrales(currentSearchTerm);
+        }, 300);
+    });
+    
+    function filterCentrales(searchTerm) {
+        centralItems.forEach(item => {
+            const nombre = item.dataset.nombre.toLowerCase();
+            const ubicacion = item.dataset.ubicacion.toLowerCase();
+            const matches = nombre.includes(searchTerm) || ubicacion.includes(searchTerm);
+            item.style.display = matches ? 'block' : 'none';
+        });
+    }
+    
+    // Delegación de eventos para manejar elementos dinámicos
+    document.getElementById('lista-centrales').addEventListener('click', function(e) {
+        const item = e.target.closest('.central-item');
+        if (item) {
+            e.preventDefault();
+            selectCentral(item);
+        }
+    });
+    
+    function selectCentral(item) {
+        // Remover clase activa de todos los items
+        document.querySelectorAll('.central-item').forEach(i => {
+            i.classList.remove('active');
+        });
+        
+        // Agregar clase activa al item seleccionado
+        item.classList.add('active');
+        mostrarDetallesCentral(item);
+        
+        // Reaplicar filtro después de selección
+        if (currentSearchTerm) {
+            filterCentrales(currentSearchTerm);
+        }
+    }
+    
+    function mostrarDetallesCentral(item) {
+        const template = document.getElementById('template-detalle');
+        const clone = template.content.cloneNode(true);
+        const panel = document.getElementById('panel-central');
+        
+        panel.innerHTML = '';
+        panel.appendChild(clone);
+        
+        // Actualizar título
+        document.getElementById('titulo-central').textContent = item.dataset.nombre;
+        
+        // Llenar datos generales
+        const fillData = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value || 'N/A';
+        };
+        
+        fillData('central-nombre', item.dataset.nombre);
+        fillData('central-empresa', item.dataset.empresa);
+        fillData('central-ubicacion', item.dataset.ubicacion);
+        fillData('central-potencia', item.dataset.potencia);
+        fillData('central-energia', item.dataset.energia);
+        fillData('central-anio', item.dataset.anio);
+        fillData('central-provincia', item.dataset.provincia);
+        fillData('central-canton', item.dataset.canton);
+        
+        // Foto
+        const fotoElement = document.getElementById('central-foto');
+        if (item.dataset.foto) {
+            fotoElement.src = item.dataset.foto;
+            fotoElement.style.display = 'block';
+        } else {
+            fotoElement.src = '{% static "img/default-powerplant.jpg" %}';
+            fotoElement.style.display = 'block';
+        }
+        
+        // Ficha técnica
+        const tipo = item.dataset.tipo;
+        const fichaTecnica = document.getElementById('ficha-tecnica-content');
+        
+        try {
+            if (tipo === 'fotovoltaica' && item.dataset.fotovoltaica) {
+                const fotovoltaica = JSON.parse(item.dataset.fotovoltaica);
+                const templateFotovoltaica = document.getElementById('template-fotovoltaica');
+                const cloneFotovoltaica = templateFotovoltaica.content.cloneNode(true);
+                fichaTecnica.innerHTML = '';
+                fichaTecnica.appendChild(cloneFotovoltaica);
+                
+                // Función auxiliar para llenar datos
+                const fillFotovoltaica = (id, value) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value !== undefined ? value : 'N/A';
+                };
+                
+                // Llenar datos fotovoltaica
+                fillFotovoltaica('cf-anio-ingreso', fotovoltaica.anio_ingreso);
+                fillFotovoltaica('cf-num-paneles', fotovoltaica.numero_paneles);
+                fillFotovoltaica('cf-sistema', fotovoltaica.sistema);
+                fillFotovoltaica('cf-potencia-nominal', fotovoltaica.potencia_nominal);
+                fillFotovoltaica('cf-potencia-efectiva', fotovoltaica.potencia_efectiva);
+                fillFotovoltaica('cf-energia-anual', fotovoltaica.energia_anual_producida);
+                fillFotovoltaica('cf-factor-planta', fotovoltaica.factor_planta);
+                fillFotovoltaica('cf-inversion-total', fotovoltaica.inversion_total);
+                fillFotovoltaica('cf-capital-propio', fotovoltaica.capital_propio);
+                fillFotovoltaica('cf-costo-variable', fotovoltaica.costo_variable);
+                fillFotovoltaica('cf-costo-produccion', fotovoltaica.costo_produccion);
+                fillFotovoltaica('cf-costo-anual-oma', fotovoltaica.costo_anual_oma);
+                fillFotovoltaica('cf-costo-oma-mw', fotovoltaica.costo_anual_oma_mw);
+                fillFotovoltaica('cf-acreedor', fotovoltaica.acreedor);
+                fillFotovoltaica('cf-deuda', fotovoltaica.deuda);
+                fillFotovoltaica('cf-tasa-interes-anual', fotovoltaica.tasa_interes_anual);
+                fillFotovoltaica('cf-anios-pago', fotovoltaica.anios_pago);
+            }
+            else if (tipo === 'termica' && item.dataset.termica) {
+                // Implementación similar para térmicas
+                const termica = JSON.parse(item.dataset.termica);
+                const templateTermica = document.getElementById('template-termica');
+                const cloneTermica = templateTermica.content.cloneNode(true);
+                fichaTecnica.innerHTML = '';
+                fichaTecnica.appendChild(cloneTermica);
+                
+                // Llenar datos térmica (similar al de fotovoltaica)
+                // ...
+            }
+        } catch (error) {
+            console.error('Error al parsear datos técnicos:', error);
+            fichaTecnica.innerHTML = '<div class="alert alert-danger">Error al cargar los datos técnicos</div>';
+        }
+    }
+    
+    // Seleccionar la primera central automáticamente si existe
+    const primeraCentral = document.querySelector('.central-item');
+    if (primeraCentral) {
+        selectCentral(primeraCentral);
+    }
+});
+</script>
+
+
+{% endblock %}

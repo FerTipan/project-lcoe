@@ -21,3 +21,18 @@ def dashboard_admin(request):
 def custom_logout(request):
     logout(request)
     return redirect('inicio')
+
+
+#from .forms import PerfilForm
+
+''' @login_required
+def editar_perfil(request):
+    perfil = request.user.perfil
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, instance=perfil)
+        if form.is_valid():
+            form.save()
+            return redirect("tipoTecno")
+    else:
+        form = PerfilForm(instance=perfil)
+    return render(request, 'usuarios/editar_perfil.html', {'form': form}) '''

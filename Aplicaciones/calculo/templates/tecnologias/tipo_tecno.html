@@ -48,10 +48,10 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <select class="form-control" id="exampleFormControlSelect1">
-                                                <option disabled selected>-- Seleccione la Central</option>
+                                            <select id="select-central" class="form-control">
+                                                <option value="">Seleccione una central...</option>
                                                 {% for central in centrales %}
-                                                    <option value="{{ central.id }}">{{ central.nombre }}</option>
+                                                    <option value="{{ central.id }}">{{ central.nombre }} ({{ central.tipo }})</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -61,12 +61,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
+                <div id="datos-central" class="row" style="display: none;">
+                    <div class="col-md-6 ">
                         <div class="card">
                             <div class="card-header">
                                 <h5>Datos Generales</h5>
                             </div>
+                            <div id="datos-contenido"></div>
                             <div class="card-body">
                                 <div class="form-group">
                                     <style> .cont{ display: flex; justify-content: center;align-items: center;}.img-term{ width: 50%; height: 50%;}</style>
@@ -351,50 +352,36 @@
 </div>
 <br>
 <script>
-   document.getElementById("central-select").addEventListener("change", function () {
-    let centralId = this.value;
-    fetch(`/obtener-info-central/${centralId}/`)
+document.getElementById('select-central').addEventListener('change', function() {
+    const centralId = this.value;
+    if (!centralId) {
+        document.getElementById('datos-central').style.display = 'none';
+        return;
+    }
+    
+    fetch(`/obtener-datos-central/?central_id=${centralId}`)
         .then(response => response.json())
         .then(data => {
-            if (data.error) {
+            if (data.success) {
+                const datos = data.datos;
+                const contenido = document.getElementById('datos-contenido');
+                
+                // Construir el HTML con los datos
+                let html = '<table class="table">';
+                for (const [key, value] of Object.entries(datos)) {
+                    // Formatear el nombre del campo para mejor legibilidad
+                    const nombreCampo = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    html += `<tr><th>${nombreCampo}</th><td>${value}</td></tr>`;
+                }
+                html += '</table>';
+                
+                contenido.innerHTML = html;
+                document.getElementById('datos-central').style.display = 'block';
+            } else {
                 alert(data.error);
-                return;
             }
-
-            // Campos comunes
-            document.getElementById("capacidad").value = data.informacion.capacidad || '';
-            document.getElementById("vida_util").value = data.informacion.vida_util || '';
-            document.getElementById("inversion").value = data.informacion.inversion || '';
-            document.getElementById("factor_planta").value = data.informacion.factor_planta || '';
-            document.getElementById("anio").value = data.informacion.anio || '';
-
-
-
-            // Condicional por tipo
-            if (data.tipo === "Térmica") {
-                document.getElementById("costos_produccion").value = data.detalles_tipo.costos_produccion || '';
-                document.getElementById("costos_om").value = data.detalles_tipo.costos_om || '';
-                document.getElementById("costos_administracion").value = data.detalles_tipo.costos_administracion || '';
-                document.getElementById("costos_combustible").value = data.detalles_tipo.costos_combustible || '';
-                document.getElementById("costos_transporte").value = data.detalles_tipo.costos_transporte || '';
-                document.getElementById("costos_lubricacion").value = data.detalles_tipo.costos_lubricacion || '';
-                document.getElementById("costo_agua").value = data.detalles_tipo.costo_agua || '';
-                document.getElementById("costo_mantenimiento").value = data.detalles_tipo.costo_mantenimiento || '';
-                document.getElementById("costo_control_ambiental").value = data.detalles_tipo.costo_control_ambiental || '';
-                document.getElementById("costo_servicios_auxiliares").value = data.detalles_tipo.costo_servicios_auxiliares || '';
-                //document.querySelector(".img-term").src = "/static/img/tipoGeneracion/termica.jpg";
-            } else if (data.tipo === "Fotovoltaica") {
-                document.getElementById("costos_produccion").value = data.detalles_tipo.costos_produccion || '';
-                document.getElementById("area").value = data.detalles_tipo.costos_om || '';
-                document.getElementById("costos_variable").value = data.detalles_tipo.costos_variable || '';
-                //document.querySelector(".img-term").src = "/static/img/tipoGeneracion/fotovoltaica.jpg";
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
         });
 });
-
 </script>
     
 {% endblock %}

@@ -59,19 +59,19 @@
         <div class="card">
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
-                    <table class="table table table-bordered nowrap">
-                        <thead>
+                    <table id="tbl-central" class="table table-hover table-striped">
+                        <thead class="table-lcoe">
                             <tr>
                                 <th class="principal">Nombre</th>
                                 <th class="secundario">Foto</th>
                                 <th class="principal">Ubicación</th>
                                 <th class="principal">Empresa</th>
                                 <th class="principal">Tipo</th>
-                                <th class="principal">Potencia</th>
-                                <th class="principal">Energia Media</th>
-                                <th class="secundario">Provincia</th>
+                                <th class="secundario">Potencia</th>
+                                <th class="secundario">Energia Media</th>
+                                <th class="principal">Provincia</th>
                                 <th class="secundario">Cantón</th>
-                                <th class="secundario">Año de Operación</th>
+                                <th class="principal">Año de Operación</th>
                                 <th class="principal">Tipo de Generación</th>
                                 <th class="principal">Acciones</th>
                             </tr>
@@ -98,39 +98,39 @@
                                 <td >{{ central.empresa }}</td>
                                 <td >
                                     <span class="badge rounded-3 fw-semibold 
-                                    {% if central.tipo == 'VAPOR' %} bg-primary 
-                                    {% elif central.tipo == 'Térmica' %} bg-warning 
-                                    {% elif central.tipo == 'Eólica' %} bg-success 
+                                    {% if central.tipo == 'Hidroeléctrica' %} bg-primary 
+                                    {% elif central.tipo == 'GAS' %} bg-warning 
+                                    {% elif central.tipo == 'VAPOR' %} bg-success 
                                     {% elif central.tipo == 'Fotovoltaica' %} bg-light 
-                                    {% else %} bg-secondary 
+                                    {% else %} bg-primary 
                                     {% endif %}">
                                     {{ central.tipo}}
                                     </span> 
                                 </td>
-                                <td >{{ central.potencia}}</td>
-                                <td >{{ central.e_media }}</td>
-                                <td class="secundario">{{ central.provincia }}</td>
+                                <td class="secundario">{{ central.potencia}}</td>
+                                <td class="secundario">{{ central.e_media }}</td>
+                                <td class="principal">{{ central.provincia }}</td>
                                 <td class="secundario">{{ central.canton }}</td>
-                                <td class="secundario">{{ central.anio_operacion }}</td>
-                                <td >
+                                <td class="principal">{{ central.anio_operacion }}</td>
+                                <td>
                                     <span class="badge rounded-3 fw-semibold 
-                                    {% if central.tipo_electrica == 'Hidroeléctrica' %} bg-primary 
-                                    {% elif central.tipo_electrica == 'Térmica' %} bg-warning 
-                                    {% elif central.tipo_electrica == 'Eólica' %} bg-info 
-                                    {% elif central.tipo_electrica == 'Fotovoltaica' %} bg-light 
-                                    {% else %} bg-secondary 
-                                    {% endif %}">
-                                    {{ central.tipo_electrica }}
+                                        {% if central.tipo_electrica == 'HIDROELECTRICA' %}bg-primary text-white
+                                        {% elif central.tipo_electrica == 'TERMICA' %}bg-warning text-dark
+                                        {% elif central.tipo_electrica == 'Eólica' %}bg-info text-dark
+                                        {% elif central.tipo_electrica == 'Fotovoltaica' %}bg-light text-dark
+                                        {% else %}bg-info text-white{% endif %}">
+                                        {{ central.tipo_electrica }}
                                     </span> 
                                 </td>
+
                                 <td>
-                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
+                                    <span class="d-inline-block mb-2" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
                                         <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1" name="editar"></i></a>
                                     </span>
                                     <!-- <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
                                     <form id="form-eliminar-{{ central.pk }}" method="POST" action="{% url 'central_delete' central.pk %}" class="d-inline">
                                         {% csrf_token %}
-                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
+                                        <span class="d-inline-block mb-2" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
                                             <button type="button" onclick="confirmarEliminacion('{{ central.pk }}')" class="btn btn-danger btn-sm btn-circle">
                                                 <i class="ti ti-trash me-1"></i>
                                             </button>
@@ -150,22 +150,28 @@
 
 
 <script>
-
     $(".secundario").hide();
 
- function mostrarDetalles(){
-    $(".secundario").fadeIn();
-    $("#btn_ver_detalles").hide();
-    $("#btn_ocultar_detalles").fadeIn();
- }
+    function mostrarDetalles(){
+        $(".secundario").fadeIn();
+        $("#btn_ver_detalles").hide();
+        $("#btn_ocultar_detalles").fadeIn();
+    }
 
- function ocultarDetalles(){
-    $(".secundario").hide();
-    $("#btn_ver_detalles").fadeIn();
-    $("#btn_ocultar_detalles").hide();
- }
+    function ocultarDetalles(){
+        $(".secundario").hide();
+        $("#btn_ver_detalles").fadeIn();
+        $("#btn_ocultar_detalles").hide();
+    }
 
+    ocultarDetalles();
 
- ocultarDetalles();
+    document.addEventListener("DOMContentLoaded", function () {
+        let table = new DataTable('#tbl-central', {
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+        },
+        });
+    }); 
 </script>
 {% endblock %}
