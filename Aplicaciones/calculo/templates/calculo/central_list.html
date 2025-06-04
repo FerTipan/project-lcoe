@@ -56,6 +56,7 @@
                 </span>
             </div>
         </div>
+        <br>
         <div class="card">
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
@@ -101,8 +102,7 @@
                                     {% if central.tipo == 'Hidroeléctrica' %} bg-primary 
                                     {% elif central.tipo == 'GAS' %} bg-warning 
                                     {% elif central.tipo == 'VAPOR' %} bg-success 
-                                    {% elif central.tipo == 'Fotovoltaica' %} bg-light 
-                                    {% else %} bg-primary 
+                                    {% else %} bg-light text-dark
                                     {% endif %}">
                                     {{ central.tipo}}
                                     </span> 
@@ -114,13 +114,13 @@
                                 <td class="principal">{{ central.anio_operacion }}</td>
                                 <td>
                                     <span class="badge rounded-3 fw-semibold 
-                                        {% if central.tipo_electrica == 'HIDROELECTRICA' %}bg-primary text-white
-                                        {% elif central.tipo_electrica == 'TERMICA' %}bg-warning text-dark
-                                        {% elif central.tipo_electrica == 'Eólica' %}bg-info text-dark
-                                        {% elif central.tipo_electrica == 'Fotovoltaica' %}bg-light text-dark
+                                        {% if central.tipo_electrica|lower == 'hidroeléctrica' %}bg-primary text-white
+                                        {% elif central.tipo_electrica|lower == 'termica' %}bg-success text-white
+                                        {% elif central.tipo_electrica|lower == 'eólica' %}bg-info text-white
+                                        {% elif central.tipo_electrica|lower == 'fotovoltaica' %}bg-warning text-white
                                         {% else %}bg-info text-white{% endif %}">
-                                        {{ central.tipo_electrica }}
-                                    </span> 
+                                        {{ central.tipo_electrica|title }}
+                                    </span>
                                 </td>
 
                                 <td>

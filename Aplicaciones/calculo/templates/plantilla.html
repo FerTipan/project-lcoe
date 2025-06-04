@@ -309,19 +309,37 @@
    <!-- Start Izi Toast --> 
    {% if messages %}
       {% for message in messages %}
-      <script>
-          var tag = "{{ message.tags }}"; 
-          
-          if(tag && iziToast[tag]) {
-              iziToast[tag]({
-                  title: "{{ message.tags|title }}",
-                  message: "{{ message }}",
-                  position: "topRight"
-              });
+        <script>
+          var tag = "{{ message.tags }}";
+          var titulo = "";
+          switch (tag) {
+            case "success":
+              titulo = "Éxito";
+              break;
+            case "error":
+              titulo = "Error";
+              break;
+            case "warning":
+              titulo = "Advertencia";
+              break;
+            case "info":
+              titulo = "Información";
+              break;
+            default:
+              titulo = "Mensaje";
           }
-      </script>
+
+          if(tag && iziToast[tag]) {
+            iziToast[tag]({
+              title: titulo,
+              message: "{{ message }}",
+              position: "topRight"
+            });
+          }
+        </script>
       {% endfor %}
     {% endif %}
+
     <!-- End Izi Toast -->
      
     <!-- Toast de Confirmacion -->

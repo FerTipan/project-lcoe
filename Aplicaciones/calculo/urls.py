@@ -1,9 +1,12 @@
 from django.urls import path 
 from . import views 
 from .views import vista_usuario_calculo
+from .views import AdminDashboardView, UserDashboardView
 
 urlpatterns = [
     path('', views.inicio, name='inicio'),
+    path('dashboard/admin/', AdminDashboardView.as_view(), name='admin-dashboard'),
+    path('dashboard/user/', UserDashboardView.as_view(), name='user-dashboard'),
     path('vista', vista_usuario_calculo, name='vista_usuario_calculo'),
     path('tipoGeneracion/', views.tipoGeneracion, name='tipoGeneracion'),
     path('mapa/', views.mapa, name='mapa'),

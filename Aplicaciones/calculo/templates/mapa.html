@@ -2,14 +2,10 @@
 {% block content %}
 {% load static %}
 
-<!-- CSS de Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-
-<!-- JS de Leaflet -->
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> -->
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-blue: #1373cc;
@@ -19,12 +15,10 @@
             --text-dark: #2c3e50;
         }
 
-        .body2 {
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, var(--light-blue) 0%, #ffffff 100%);
             color: var(--text-dark);
-            margin: 0;
-            padding: 20px;
             min-height: 100vh;
         }
 
@@ -278,8 +272,9 @@
             background: white !important;
         }
     </style>
+</head>
 
-
+<body>
     <div class="main-container">
         <div class="controls-panel">
             <div class="panel-title">
@@ -304,7 +299,7 @@
                 
                 <select id="filterType" class="form-control mb-3">
                     <option value="">📋 Seleccionar tipo de filtro</option>
-                    <option value="region">🗺 Por Región</option>
+                    <option value="region">🗺️ Por Región</option>
                     <option value="energia">⚡ Por Tipo de Energía</option>
                 </select>
 
@@ -347,7 +342,7 @@
                     <div class="legend-icon" style="background: #f39c12;">
                         <i class="fas fa-sun"></i>
                     </div>
-                    <span>☀ Solar</span>
+                    <span>☀️ Solar</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-icon" style="background: #e74c3c;">
@@ -363,12 +358,12 @@
         </div>
     </div>
 
-    <!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <script>
-        // Crear mapa con OpenStreetMap
+        // Crear el mapa con OpenStreetMap
         var map = L.map('map').setView([-0.19910582808506766, -77.68382550457454], 6);
 
         // Cargar el tile layer de OpenStreetMap
@@ -547,14 +542,14 @@
                  $("#filterOptions").prop("disabled", false);
                 if (selectedFilter === "region") {
                     options = '<option value="">🌎 Seleccione región...</option>';
-                    options += '<option value="sierra">🏔 Sierra</option>';
-                    options += '<option value="costa">🏖 Costa</option>';
+                    options += '<option value="sierra">🏔️ Sierra</option>';
+                    options += '<option value="costa">🏖️ Costa</option>';
                     options += '<option value="oriente">🌿 Oriente</option>';
                     options += '<option value="galapagos">🐢 Galápagos</option>';
                 } else if (selectedFilter === "energia") {
                     options = '<option value="">⚡ Seleccione tipo de energía...</option>';
                     options += '<option value="eolica">💨 Eólica</option>';
-                    options += '<option value="solar">☀ Solar</option>';
+                    options += '<option value="solar">☀️ Solar</option>';
                     options += '<option value="hidroelectrica">💧 Hidráulica</option>';
                     options += '<option value="geotermica">🌋 Geotérmica</option>';
                 }
@@ -612,7 +607,7 @@
                 if (popup && typeof popup.getContent === 'function') {
                      var content = popup.getContent();
                      // Extraer el título del contenido del popup (esto puede necesitar ajuste según la estructura del popupContent)
-                     var titleMatch = content.match(/<h3>.? (.?)<\/h3>/i);
+                     var titleMatch = content.match(/<h3>.*? (.*?)<\/h3>/i);
                      if (titleMatch && titleMatch[1]) {
                          title = titleMatch[1].toLowerCase();
                      }
@@ -664,6 +659,6 @@
             map.setView([-0.19910582808506766, -77.68382550457454], 6);
         });
     </script>
-
+</body>
 
 {% endblock %}

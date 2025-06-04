@@ -40,8 +40,8 @@
         
                     <!-- Texto al hacer hover -->
                     <div class="card-overlay-text">
-                        <h5 class="card-title">{{ tipo.nombre }}</h5>
-                        <p class="card-text">Generación {{ tipo.nombre }}</p>
+                        <h5 class="card-title">{{ tipo.nombre|lower|capfirst }}</h5>
+                        <p class="card-text">Generación {{ tipo.nombre|lower|capfirst }}</p>
                     </div>
                 </div>
             </a>

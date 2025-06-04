@@ -12,11 +12,19 @@ from .services import crear_parametros_desde_fotovoltaica
 from django.contrib.auth.decorators import login_required
 # Importacion de la app usuarios
 from Aplicaciones.usuarios.models import Perfil
-
+from django.views.generic import TemplateView
+from Aplicaciones.usuarios.decorators import AdminRequiredMixin, UserRequiredMixin
 
 @login_required
 def vista_usuario_calculo(request):
     return render(request, 'calculo/tipoGeneracion.html')
+
+
+class AdminDashboardView(AdminRequiredMixin, TemplateView):
+    template_name = 'calculo/tipoGeneracion.html'
+
+class UserDashboardView(UserRequiredMixin, TemplateView):
+    template_name = 'calculo/tipoGeneracion.html'
 
 # TipoElectrica
 class TipoElectricaListView(ListView):

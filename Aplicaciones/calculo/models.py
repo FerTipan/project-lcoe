@@ -6,8 +6,15 @@ class TipoElectrica(models.Model):
     nombre = models.CharField(max_length=100)
     foto_tipo = models.FileField(upload_to='tipo_electrica', null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.strip().upper() 
+        super().save(*args, **kwargs)
+    
     def __str__(self):
-        return self.nombre
+        # Muestra capitalizado (solo visual)
+        return self.nombre.capitalize()
+
 
 # Class central
 class Central(models.Model):
