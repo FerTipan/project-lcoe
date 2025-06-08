@@ -104,6 +104,7 @@
                             <hr>
                             <h4>Información de la central: {{ central_seleccionada.nombre }}</h4>
                             <ul>
+                                <li><strong>Foto:</strong> {{ central_seleccionada.central.foto_central }}</li>
                                 <li><strong>Ubicación:</strong> {{ central_seleccionada.provincia }}, {{ central_seleccionada.canton }}</li>
                                 <li><strong>Empresa:</strong> {{ central_seleccionada.empresa }}</li>
                                 <li><strong>Tipo:</strong> {{ central_seleccionada.tipo }}</li>
@@ -120,6 +121,7 @@
                         {% endif %}
                     </div>
                 </div>
+                
             </div>
         </div>     
     </div>

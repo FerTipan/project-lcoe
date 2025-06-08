@@ -167,7 +167,6 @@ def mapa(request):
     return render(request, 'mapa.html', {'lugares': lugares})
 
 def mapa_detalle(request, pagina):
-    # Asegúrate de que la variable 'pagina' no tenga la extensión .html
     return render(request, f'tecnologias/{pagina}.html')
 
 # ------------- Centrales por tipo --------------
@@ -224,7 +223,7 @@ def centrales_por_tipo(request, tipo_id):
     })
 
 # ----------- VISUALIZACION DE INFO -------------
-@login_required
+'''@login_required
 def calculo_view(request):
     centrales = Central.objects.all()
     central_seleccionada = None
@@ -250,7 +249,7 @@ def calculo_view(request):
         'caso': caso,
         'resultado': resultado
     })
-
+'''
 
 # ---------------------  CALCULOS LCOE --------------------  
 @login_required

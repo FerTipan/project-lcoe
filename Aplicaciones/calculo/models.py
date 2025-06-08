@@ -12,7 +12,7 @@ class TipoElectrica(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        # Muestra capitalizado (solo visual)
+        # Muestra capitalizado
         return self.nombre.capitalize()
 
 

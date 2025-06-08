@@ -11,7 +11,7 @@ urlpatterns = [
     path('tipoGeneracion/', views.tipoGeneracion, name='tipoGeneracion'),
     path('mapa/', views.mapa, name='mapa'),
 
-    path('Mapa/<str:pagina>/', views.mapa_detalle, name='mapa_detalle'),
+    path('mapa/<str:pagina>/', views.mapa_detalle, name='mapa_detalle'),
     # Eleccion tipo
     path('centrales/<int:tipo_id>/', views.centrales_por_tipo, name='centrales_por_tipo'),
 
@@ -43,7 +43,7 @@ urlpatterns = [
 
     #---- nuevo
 
-    path('calculo/', views.calculo_view, name='calculo_view'),
+    #path('calculo/', views.calculo_view, name='calculo_view'),
     
 
 ]
