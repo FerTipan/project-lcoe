@@ -81,6 +81,16 @@
                                 <th class="principal">Costos OMA</th>
                                 <th class="principal">Costos Anual OMA Inversión</th>
                                 <th class="principal">Costos Anual OMA/ MW</th>
+                                <th class="secundario">Beta</th>
+                                <th class="secundario">Margen de Intermediación Bancaria </th>
+                                <th class="secundario">Indice de Inflación</th>
+                                <th class="secundario">Tasa Interes de Economia</th>
+                                <th class="secundario">Riesgo País</th>
+                                <th class="secundario">Indice de Premio al Riesgo</th>
+                                <th class="secundario">Tasa de Descuento Sin Riesgo</th>
+                                <th class="secundario">Tasa de Descuento al Mercado</th>
+                                <th class="secundario">Premio por el Riesgo Mercado</th>
+                                <th class="secundario">Tasa de Impuestos</th>
 
 
                                 <th class="principal">Acciones</th>
@@ -118,6 +128,17 @@
                                 <td class="principal">{{ fotovoltaica.costo_anual_oma }}</td>
                                 <td class="principal">{{ fotovoltaica.costo_anual_oma_inversion }}</td>
                                 <td class="principal">{{ fotovoltaica.costo_anual_oma_mw }}</td>
+                                <td class="secundario">{{ fotovoltaica.beta }}</td>
+                                <td class="secundario">{{ fotovoltaica.margen_intermediacion }}</td>
+                                <td class="secundario">{{ fotovoltaica.inflacion }}</td>
+                                <td class="secundario">{{ fotovoltaica.economia }}</td>
+                                <td class="secundario">{{ fotovoltaica.riesgo }}</td>
+                                <td class="secundario">{{ fotovoltaica.indice_premio }}</td>
+                                <td class="secundario">{{ fotovoltaica.sin_riesgo }}</td>
+                                <td class="secundario">{{ fotovoltaica.tasa_mercado }}</td>
+                                <td class="secundario">{{ fotovoltaica.premio_riesgo_mercado }}</td>
+                                <td class="secundario">{{ fotovoltaica.impuesto }}</td>
+
                                 <td>
                                     <span class="d-inline-block mb-2" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
                                         <a href="{% url 'fotovoltaica_update' fotovoltaica.pk%}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1" name="editar"></i></a>

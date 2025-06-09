@@ -34,8 +34,7 @@
                     <table id="tbl-tipo" class="table table-hover">
                         <thead class="table-lcoe">
                             <tr>
-                                <th>Nombre</th><th>Foto</th>
-                                <th>Acciones</th>
+                                <th>Nombre</th><th>Foto</th><th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,12 +78,25 @@
     </div>
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let table = new DataTable('#tbl-tipo', {
+document.addEventListener("DOMContentLoaded", function () {
+    let table = new DataTable('#tbl-tipo', {
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
         },
-        });
-    }); 
+        dom:
+            "<'row'<'col-sm-8 d-flex align-items-center'B><'col-md-4 d-flex justify-content-end'f>>" +  // Botones + buscador
+            "<'row'<'col-sm-6'l>>" +                                          
+            "<'row'<'col-sm-12'tr>>" +                                             // Tabla
+            "<'row mt-2'<'col-md-6'i><'col-md-6 d-flex justify-content-end'p>>",   
+        buttons: [
+            { extend: 'copy', text: '<i class="fa fa-copy"></i> Copiar', className: 'custom-blue' },
+            { extend: 'csv', text: '<i class="fa fa-file-csv"></i> CSV', className: 'custom-blue' },
+            { extend: 'excel', text: '<i class="fa fa-file-excel"></i> Excel', className: 'custom-blue' },
+            { extend: 'pdf', text: '<i class="fa fa-file-pdf"></i> PDF', className: 'custom-blue' },
+            { extend: 'print', text: '<i class="fa fa-print"></i> Imprimir', className: 'custom-blue' }
+        ]
+    });
+});
 </script>
+
 {% endblock %}

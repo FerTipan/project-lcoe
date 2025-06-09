@@ -120,6 +120,15 @@
                             {% endif %}
                         {% endif %}
                     </div>
+                    {% if resultado_detallado %}
+                        <h4>Resultado Detallado:</h4>
+                        <ul>
+                            {% for clave, valor in resultado_detallado.items %}
+                                <li><strong>{{ clave }}:</strong> {{ valor }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
                 </div>
                 
             </div>

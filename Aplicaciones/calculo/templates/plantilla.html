@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>App LCOE</title>
+    <!--Importando JQuery-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery Validate -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
     <!-- Favicon icon -->
     <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon"> 
@@ -29,8 +32,6 @@
     <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style-preset.css' %}" >
     <link rel="stylesheet" href="{% static 'assets/css/tipo.css' %}" >
     <link rel="stylesheet" href="{% static 'assets/css/lcoe_table.css' %}">
-    <!--Importando JQuery-->
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <!-- Importancion del IziToast--> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css" integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js" integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -306,66 +307,91 @@
     <script src="{% static 'plantilla/mantis/dist/assets/js/pcoded.js' %}"></script>
     <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/feather.min.js' %}"></script>
 
-   <!-- Start Izi Toast --> 
-   {% if messages %}
-      {% for message in messages %}
+  <!-- Start Izi Toast --> 
+  {% if messages %}
+    {% for message in messages %}
+      {% if 'success' in message.tags %}
         <script>
-          var tag = "{{ message.tags }}";
-          var titulo = "";
-          switch (tag) {
-            case "success":
-              titulo = "Éxito";
-              break;
-            case "error":
-              titulo = "Error";
-              break;
-            case "warning":
-              titulo = "Advertencia";
-              break;
-            case "info":
-              titulo = "Información";
-              break;
-            default:
-              titulo = "Mensaje";
-          }
-
-          if(tag && iziToast[tag]) {
-            iziToast[tag]({
-              title: titulo,
-              message: "{{ message }}",
-              position: "topRight"
+          document.addEventListener("DOMContentLoaded", function () {
+            iziToast.success({
+              title: "Éxito",
+              message: "{{ message.message|escapejs }}",  <!-- aquí el cambio clave -->
+              position: "topRight",
+              timeout: 4000,
+              close: true,
+              pauseOnHover: true,
+              progressBar: true
             });
-          }
+          });
         </script>
-      {% endfor %}
-    {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 
-    <!-- End Izi Toast -->
-     
-    <!-- Toast de Confirmacion -->
+
+
+  <script>
+    function confirmarEliminacion(formId) {
+      iziToast.question({
+          timeout: 20000,
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          title: 'Confirmar Eliminación',
+          message: '¿Estás seguro de que deseas eliminar este elemento?',
+          position: 'center',
+          buttons: [
+              ['<button><b>SI</b></button>', function (instance, toast) {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  document.getElementById(formId).submit();
+              }, true],
+              ['<button>NO</button>', function (instance, toast) {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              }]
+          ]
+        });
+      }
+    </script>
     <script>
-      function confirmarEliminacion(pk) {
-          iziToast.question({
+    function confirmarEliminacionclave(formId) {
+      iziToast.question({
+        timeout: false,
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        title: 'Advertencia',
+        message: '⚠️ Esto puede estar relacionado con otras tablas (claves foráneas).',
+        position: 'center',
+        buttons: [
+          ['<button>Entiendo, continuar</button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            iziToast.question({
               timeout: false,
               close: false,
               overlay: true,
               displayMode: 'once',
-              title: '¿Confirmar eliminación?',
-              message: 'Está  seguro de eliminar esta información',
+              title: 'Confirmar eliminación',
+              message: '¿Estás completamente seguro de que deseas eliminar este registro?',
               position: 'center',
               buttons: [
-                  ['<button><b>Eliminar</b></button>', function (instance, toast) {
-                      document.getElementById('form-eliminar-' + pk).submit();
-                      instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                  }, true],
-                  ['<button>Cancelar</button>', function (instance, toast) {
-                      instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                  }]
+                ['<button>Eliminar</button>', function (instance2, toast2) {
+                  instance2.hide({ transitionOut: 'fadeOut' }, toast2, 'button');
+                  document.getElementById(formId).submit(); // eliminar
+                }, true],
+                ['<button>Cancelar</button>', function (instance2, toast2) {
+                  instance2.hide({ transitionOut: 'fadeOut' }, toast2, 'button');
+                }]
               ]
-          });
-      }
-      </script>
-      
+            });
+
+          }, true],
+          ['<button>Cancelar</button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+          }]
+        ]
+      });
+    }
+    </script>
     <!-- End Toast de Confirmacion -->
      
     <script>layout_change('light');</script>
@@ -397,5 +423,6 @@
         margin-top: 20px;
       }
     </style>
+
 </body>
 </html>

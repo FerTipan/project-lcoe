@@ -187,23 +187,25 @@ def centrales_por_tipo(request, tipo_id):
             'nombre': central.nombre,
             'tipo_especifico': tipo_especifico,
             'potencia': central.potencia,
-            'ubicacion': f"{central.provincia}, {central.canton}"
+            'ubicacion': f"{central.provincia}"
         })
 
     central_seleccionada = None
     resultado = None
     caso = None
+    resultado_detallado = None
 
     try:
         perfil_usuario = Perfil.objects.get(user=request.user)
     except Perfil.DoesNotExist:
         messages.error(request, "No tienes un perfil asociado.")
-        #return redirect('seleccion', tipo_id=tipo.id)
-
+        return redirect('inicio')  
+    
     if request.method == "POST":
         central_id = request.POST.get("central_id")
         central_seleccionada = get_object_or_404(Central, id=central_id)
 
+        # Crear el caso de cálculo
         caso = CasoCalculo.objects.create(
             nombre=f"Cálculo de {central_seleccionada.nombre}",
             usuario=perfil_usuario,
@@ -211,15 +213,32 @@ def centrales_por_tipo(request, tipo_id):
         )
 
         crear_parametros_desde_fotovoltaica(caso)
-        resultado = ResultadoCalculo.objects.create(caso=caso)
-        resultado.save()
 
+        # Realizar cálculo
+        parametros = caso.parametrocalculo
+        resultado_detallado = parametros._calculo_fotovoltaico()
+
+        if "lcoe" in resultado_detallado:
+            try:
+                lcoe_valor = float(resultado_detallado["lcoe"])  # 👈 fuerza conversión a número real
+                resultado = ResultadoCalculo.objects.create(
+                    caso=caso,
+                    lcoe=lcoe_valor,
+                    detalle=resultado_detallado  
+                )
+            except (ValueError, TypeError, KeyError) as e:
+                messages.error(request, f"Ocurrió un error al guardar el resultado: {e}")
+        else:
+            messages.error(request, "Ocurrió un error al calcular el LCOE.")
+
+    
     return render(request, 'tecnologias/seleccion.html', {
         'tipo': tipo,
         'centrales': centrales_con_tipo,
         'central_seleccionada': central_seleccionada,
         'resultado': resultado,
-        'caso': caso
+        'caso': caso,
+        'resultado_detallado': resultado_detallado
     })
 
 # ----------- VISUALIZACION DE INFO -------------

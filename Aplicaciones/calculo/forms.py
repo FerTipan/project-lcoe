@@ -15,8 +15,8 @@ class CentralForm(forms.ModelForm):
     class Meta:
         model = Central
         fields = [
-            'nombre', 'foto_central','ubicacion', 'empresa', 'tipo', 'potencia', 'e_media',
-            'provincia', 'canton', 'anio_operacion', 'tipo_electrica'
+            'nombre', 'foto_central','ubicacion', 'empresa', 'tipo', 'potencia',
+            'provincia', 'anio_operacion', 'tipo_electrica'
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
@@ -25,9 +25,7 @@ class CentralForm(forms.ModelForm):
             'empresa': forms.TextInput(attrs={'class': 'form-control'}),
             'tipo': forms.TextInput(attrs={'class': 'form-control'}),
             'potencia': forms.NumberInput(attrs={'class': 'form-control'}),
-            'e_media': forms.NumberInput(attrs={'class': 'form-control'}),
             'provincia': forms.TextInput(attrs={'class': 'form-control'}),
-            'canton': forms.TextInput(attrs={'class': 'form-control'}),
             'anio_operacion': forms.DateInput(attrs={'class': 'form-control','type': 'number' }),
             'tipo_electrica': forms.Select(attrs={'class': 'form-control'}),
         }
@@ -47,42 +45,65 @@ class InformacionCentralForm(forms.ModelForm):
             'central': forms.Select(attrs={'class': 'form-control'}),
         }
         
-
 class FotovoltaicaForm(forms.ModelForm):
     class Meta:
         model = Fotovoltaica
-        fields = '__all__'
+        fields = '__all__'  
+
         widgets = {
-            'central': forms.Select(attrs={'class': 'campo-lcoe'}),
-            'anio_ingreso': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'numero_paneles': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'sistema': forms.TextInput(attrs={'class': 'campo-lcoe'}),
-            'potencia_nominal': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'potencia_efectiva': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'energia_anual_producida': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'energia_bruta_calculada': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'factor_planta': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'vida_util': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'degradacion': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'inversion_total': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'capital_propio': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'acreedor': forms.TextInput(attrs={'class': 'campo-lcoe'}),
-            'deuda': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'tasa_interes_anual': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'tasa_interes_periodo': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'periodos_por_anio': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'anios_pago_total': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'total_periodos': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'anios_gracia': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'periodos_gracia': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'periodos_pago': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'anios_pago': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'costo_variable': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'costo_produccion': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'costo_anual_oma': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'costo_anual_oma_inversion': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
-            'costo_anual_oma_mw': forms.NumberInput(attrs={'class': 'campo-lcoe'}),
+            'central': forms.Select(attrs={'class': 'form-control campo-lcoe'}),
+            'anio_ingreso': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'numero_paneles': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'sistema': forms.TextInput(attrs={'class': 'form-control campo-lcoe'}),
+            'potencia_nominal': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'potencia_efectiva': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'factor_planta': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'vida_util': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'degradacion': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'inversion_total': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'porcentaje_capital_propio': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'porcentaje_deuda': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'acreedor': forms.TextInput(attrs={'class': 'form-control campo-lcoe'}),
+            'tasa_interes_periodo': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'periodos_por_anio': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'anios_pago_total': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'anios_gracia': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'costo_variable': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'beta': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'margen_intermediacion': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'inflacion': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'economia': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'riesgo': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'sin_riesgo': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'tasa_mercado': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'premio_riesgo_mercado': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'impuesto': forms.NumberInput(attrs={'class': 'form-control campo-lcoe'}),
+            'costo_produccion': forms.NumberInput(attrs={'class': 'form-control campo-lcoe '}),
+
+
+            # Campos calculados (pueden ser mostrados como solo lectura)
+            'energia_anual_producida': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'energia_bruta_calculada': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'capital_propio': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'deuda': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'tasa_interes_anual': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'total_periodos': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'periodos_gracia': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'periodos_pago': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'anios_pago': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'costo_anual_oma': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'costo_anual_oma_inversion': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'costo_anual_oma_mw': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
+            'indice_premio': forms.NumberInput(attrs={'class': 'form-control campo-lcoe bg-light', 'readonly': 'readonly'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(FotovoltaicaForm, self).__init__(*args, **kwargs)
+
+        # Aplica clase por defecto si no está en widgets (por si agregas más campos después)
+        for field_name, field in self.fields.items():
+            if 'class' not in field.widget.attrs:
+                field.widget.attrs['class'] = 'form-control campo-lcoe'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
