@@ -212,26 +212,25 @@ def centrales_por_tipo(request, tipo_id):
             central=central_seleccionada
         )
 
-        crear_parametros_desde_fotovoltaica(caso)
+        # Crear parámetros desde la fotovoltaica
+        parametros = crear_parametros_desde_fotovoltaica(caso)
 
-        # Realizar cálculo
-        parametros = caso.parametrocalculo
+        # Calcular LCOE
         resultado_detallado = parametros._calculo_fotovoltaico()
 
-        if "lcoe" in resultado_detallado:
+        if resultado_detallado and 'lcoe' in resultado_detallado:
             try:
-                lcoe_valor = float(resultado_detallado["lcoe"])  # 👈 fuerza conversión a número real
+                lcoe_valor = float(resultado_detallado['lcoe'])
                 resultado = ResultadoCalculo.objects.create(
                     caso=caso,
                     lcoe=lcoe_valor,
-                    detalle=resultado_detallado  
+                    detalle=resultado_detallado  # Si quieres guardar todo el dict, asegúrate de que el campo `detalle` lo permita
                 )
             except (ValueError, TypeError, KeyError) as e:
                 messages.error(request, f"Ocurrió un error al guardar el resultado: {e}")
         else:
-            messages.error(request, "Ocurrió un error al calcular el LCOE.")
+            messages.error(request, "No se pudo calcular el LCOE correctamente.")
 
-    
     return render(request, 'tecnologias/seleccion.html', {
         'tipo': tipo,
         'centrales': centrales_con_tipo,

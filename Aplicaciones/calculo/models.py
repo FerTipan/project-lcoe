@@ -144,6 +144,7 @@ class ParametroCalculo(models.Model):
     tasa_crecimiento_energia = models.FloatField(default=0.0)
     costo_operacion_anual = models.FloatField()
 
+    # fotovoltaico
     capital_propio = models.FloatField(blank=True, null=True)
     deuda = models.FloatField(blank=True, null=True)
     porcentaje_capital_propio = models.FloatField(blank=True, null=True)
@@ -280,7 +281,7 @@ class ParametroCalculo(models.Model):
 
             # Diccionario 
             return {
-            'lcoe': round(lcoe, 4),  # LCOE puede ir con 4 decimales si deseas más precisión
+            'lcoe': round(lcoe, 4),  # LCOE 
             'PN': round(PN, 2), 'FP': round(FP, 2), 'VU': round(VU, 2), 'IN': round(IN, 2),
             'CP': round(CP, 2), 'CV': round(CV, 2), 'P_CP': round(P_CP, 2), 'D': round(D, 2),
             'P_D': round(P_D, 2), 'PDT': round(PDT, 2), 'TIP': round(TIP, 4), 'TIA': round(TIA, 4),
@@ -294,7 +295,7 @@ class ParametroCalculo(models.Model):
             'degradacion': round(degradacion, 4), 'FRC': round(FRC, 4), 'anualidad': round(anualidad, 2),
             'CF_total': round(CF_total, 2), 'CV_total': round(CV_total, 2), 'costos': round(costos, 2),
             'numerador': round(numerador, 2), 'denominador': round(denominador, 2),
-            'CF_total_1': round(CF_total_1, 2), 'CF_total_2': round(CF_total_2, 2)
+            'CF_total_1': round(CF_total_1, 2), 'CF_total_2': round(CF_total_2, 2) 
         }
         except Exception as e:
             return {"error": str(e)}
