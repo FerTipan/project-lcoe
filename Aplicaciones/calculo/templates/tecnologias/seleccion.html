@@ -43,6 +43,33 @@
         border-radius: 0 0 10px 10px;
     }
 </style>
+<div class="row">
+    <div class="col-md-6">
+        <!-- Botón que abre modal -->
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalResultados">
+        Ver detalles de cálculo
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalResultados" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles del cálculo de LCOE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                {% for clave, valor in resultado.items %}
+                    <li><strong>{{ clave }}:</strong> {{ valor }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col-md-8">
@@ -50,7 +77,6 @@
             <p class="lead text-muted">Seleccione una central para ver sus detalles</p>
         </div>
         <div class="col-md-4">
-            <!-- Botón que lanza el modal -->
             {% if tipo|lower == "hidráulica" %}
                 <a
                     class="btn btn-primary float-end mb-3 text-white" 
@@ -179,7 +205,6 @@
         </div>         
 
         <script>
-            // Función para seleccionar central
             function selectCentral(element) {
                 const centralId = element.dataset.id;
                 
@@ -295,24 +320,6 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            
-                            {% if resultado_detallado %}
-                            <div class="mt-4 pt-3 border-top">
-                                <h5><i class="fas fa-list-ul me-2"></i>Detalles del cálculo</h5>
-                                <div class="table-responsive mt-3">
-                                    <table class="table table-striped table-hover">
-                                        <tbody>
-                                            {% for clave, valor in resultado_detallado.items %}
-                                            <tr>
-                                                <th width="30%">{{ clave }}</th>
-                                                <td>{{ valor }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            {% endif %}
                         </div>
                     {% endif %}
                 </div>

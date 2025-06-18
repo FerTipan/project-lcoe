@@ -2,13 +2,13 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import  TipoElectrica, Central, InformacionCentral, Fotovoltaica, CasoCalculo, ResultadoCalculo 
+from .models import  TipoElectrica, Central, InformacionCentral, Fotovoltaica, CasoCalculo, ResultadoCalculo , ParametroFotovoltaica
 from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm, FotovoltaicaForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
 import json
-from .services import crear_parametros_desde_fotovoltaica
+from .services import crear_parametros_desde_fotovoltaica, crear_parametros_desde_tipo_generacion
 from django.contrib.auth.decorators import login_required
 # Importacion de la app usuarios
 from Aplicaciones.usuarios.models import Perfil
@@ -188,7 +188,7 @@ def centrales_por_tipo(request, tipo_id):
             'nombre': central.nombre,
             'tipo_especifico': tipo_especifico,
             'potencia': central.potencia,
-            'ubicacion': f"{central.provincia}",
+            'ubicacion': central.provincia,
         })
 
     central_seleccionada = None
@@ -199,8 +199,8 @@ def centrales_por_tipo(request, tipo_id):
         perfil_usuario = Perfil.objects.get(user=request.user)
     except Perfil.DoesNotExist:
         messages.error(request, "No tienes un perfil asociado.")
-        return redirect('inicio')  
-    
+        return redirect('inicio')
+
     if request.method == "POST":
         central_id = request.POST.get("central_id")
         central_seleccionada = get_object_or_404(Central, id=central_id)
@@ -212,26 +212,23 @@ def centrales_por_tipo(request, tipo_id):
             central=central_seleccionada
         )
 
-        # Crear parámetros desde la fotovoltaica
-        parametros = crear_parametros_desde_fotovoltaica(caso)
+        parametros = crear_parametros_desde_tipo_generacion(caso)
 
-        # Calcular LCOE
-        lcoe_valor = parametros._calculo_fotovoltaico()
-
-        if 'lcoe':
-            messages.error(request, "No se pudo calcular el LCOE: resultado vacío.")
-    
-        elif 'lcoe':
-            try:
-                lcoe_valor = float('lcoe')
-                resultado = ResultadoCalculo.objects.create(
-                    caso=caso,
-                    lcoe=lcoe_valor,
-                )
-            except (ValueError, TypeError, KeyError) as e:
-                messages.error(request, f"Ocurrió un error al guardar el resultado: {e}")
+        if not parametros:
+            messages.error(request, "No se pudo crear los parámetros para esta tecnología.")
         else:
-            messages.error(request, "No se pudo calcular el LCOE correctamente.")
+            try:
+                lcoe_valor = parametros.calcular_lcoe()
+                if isinstance(lcoe_valor, dict) and 'error' in lcoe_valor:
+                    messages.error(request, f"No se pudo calcular el LCOE: {lcoe_valor['error']}")
+                else:
+                    resultado = ResultadoCalculo.objects.create(
+                        caso=caso,
+                        lcoe=lcoe_valor,
+                    )
+                    messages.success(request, "Cálculo realizado exitosamente.")
+            except Exception as e:
+                messages.error(request, f"Ocurrió un error al calcular o guardar el resultado: {e}")
 
     return render(request, 'tecnologias/seleccion.html', {
         'tipo': tipo,
@@ -240,29 +237,15 @@ def centrales_por_tipo(request, tipo_id):
         'resultado': resultado,
         'caso': caso,
     })
+
 # ---------------------  CALCULOS LCOE --------------------  
 @login_required
-def crear_caso_y_calcular(request, central_id):
-    central = Central.objects.get(id=central_id)
+def calcular_lcoe_view(request, pk):
+    parametro = get_object_or_404(ParametroFotovoltaica, pk=pk)
+    resultado = parametro.calcular_lcoe()
 
-    caso = CasoCalculo.objects.create(
-        nombre=f"Cálculo de {central.nombre}",
-        usuario=request.user.perfil,
-        central=central
-    )
+    if 'error' in resultado:
+        messages.error(request, f"Error: {resultado['error']}")
+        return redirect('seleccion')
 
-    crear_parametros_desde_fotovoltaica(caso)
-
-    resultado = ResultadoCalculo.objects.create(caso=caso)
-    resultado.save()  
-
-    return redirect('ver_resultado', caso_id=caso.id)
-
-
-def ver_resultado(request, caso_id):
-    caso = CasoCalculo.objects.get(id=caso_id)
-    resultado = caso.resultadocalculo
-    return render(request, 'resultados/result.html', {'caso': caso, 'resultado': resultado})
-
-
-# --------------------- Dashboard ----------------------
+    return render(request, 'seleccion.html', {'resultado': resultado})

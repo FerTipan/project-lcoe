@@ -1,6 +1,6 @@
 from django import forms
 from .models import ResultadoCalculo, TipoElectrica, Central, InformacionCentral, Fotovoltaica
-from .models import CasoCalculo, ParametroCalculo
+from .models import CasoCalculo, ParametroCalculos
 
 class TipoElectricaForm(forms.ModelForm):
     class Meta:
@@ -100,7 +100,6 @@ class FotovoltaicaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FotovoltaicaForm, self).__init__(*args, **kwargs)
 
-        # Aplica clase por defecto si no está en widgets (por si agregas más campos después)
         for field_name, field in self.fields.items():
             if 'class' not in field.widget.attrs:
                 field.widget.attrs['class'] = 'form-control campo-lcoe'
@@ -141,7 +140,7 @@ class CasoYParametrosForm(forms.ModelForm):
             caso.save()
 
             # Crear parámetros ligados al caso
-            ParametroCalculo.objects.create(
+            ParametroCalculos.objects.create(
                 caso=caso,
                 inversion_total=self.cleaned_data['inversion_total'],
                 energia_anual_producida=self.cleaned_data['energia_anual_producida'],

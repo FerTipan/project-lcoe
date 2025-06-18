@@ -132,7 +132,7 @@ class CasoCalculo(models.Model):
     def __str__(self):
         return f'{self.nombre} - {self.fecha.date()}'
 
-class ParametroCalculo(models.Model):
+class ParametroCalculos(models.Model):
     caso = models.OneToOneField(CasoCalculo, on_delete=models.CASCADE)
     tipo_generacion = models.CharField(max_length=100, blank=True, null=True)
 
@@ -144,23 +144,10 @@ class ParametroCalculo(models.Model):
     tasa_crecimiento_energia = models.FloatField(default=0.0)
     costo_operacion_anual = models.FloatField()
 
-    # fotovoltaico
     capital_propio = models.FloatField(blank=True, null=True)
     deuda = models.FloatField(blank=True, null=True)
     porcentaje_capital_propio = models.FloatField(blank=True, null=True)
     porcentaje_deuda = models.FloatField(blank=True, null=True)
-
-    # Interés y financiamiento
-    tasa_interes_periodo = models.FloatField(blank=True, null=True)  # %
-    tasa_interes_anual = models.FloatField(blank=True, null=True)    # %
-    total_periodos = models.IntegerField(blank=True, null=True)
-    anios_gracia = models.IntegerField(blank=True, null=True)
-    periodos_pago = models.IntegerField(blank=True, null=True)
-
-    # Costos
-    costo_produccion = models.FloatField(blank=True, null=True)
-    costo_variable = models.FloatField(blank=True, null=True)
-    costo_anual_oma_mw = models.FloatField(blank=True, null=True)
     degradacion = models.FloatField(blank=True, null=True)
 
     # Datos financieros/económicos adicionales
@@ -179,90 +166,78 @@ class ParametroCalculo(models.Model):
     factor_planta = models.FloatField(blank=True, null=True)
     potencia_nominal = models.FloatField(blank=True, null=True)
 
+    # Interés y financiamiento
+    tasa_interes_periodo = models.FloatField(blank=True, null=True)  # %
+    tasa_interes_anual = models.FloatField(blank=True, null=True)    # %
+    total_periodos = models.IntegerField(blank=True, null=True)
+    anios_gracia = models.IntegerField(blank=True, null=True)
+    periodos_pago = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+class ParametroFotovoltaica(ParametroCalculos):
+    # Financiación
+    tasa_interes_periodo = models.FloatField(blank=True, null=True)  # %
+    tasa_interes_anual = models.FloatField(blank=True, null=True)    # %
+    total_periodos = models.IntegerField(blank=True, null=True)
+    anios_gracia = models.IntegerField(blank=True, null=True)
+    periodos_pago = models.IntegerField(blank=True, null=True)
+
+    # Costos
+    costo_produccion = models.FloatField(blank=True, null=True)
+    costo_variable = models.FloatField(blank=True, null=True)
+    costo_anual_oma_mw = models.FloatField(blank=True, null=True)
+
+
     def calcular_lcoe(self):
-        tipo = self.tipo_generacion.lower() if self.tipo_generacion else ""
-        if tipo == "fotovoltaica":
-            return self._calculo_fotovoltaico()
-        else:
-            return self._calculo_generico()
-
-    def _calculo_generico(self):
-        #  Fórmula estándar
         try:
-            r = self.tasa_descuento
-            d = self.tasa_crecimiento_energia
-            n = int(self.vida_util)
-            energia_anual = self.energia_anual_producida
-            costo_operacion = self.costo_operacion_anual
-            inversion = self.inversion_total
-
-            numerador = inversion
-            denominador = 0
-            for t in range(1, n + 1):
-                numerador += costo_operacion / ((1 + r) ** t)
-                energia_t = energia_anual * ((1 + d) ** t)
-                denominador += energia_t / ((1 + r) ** t)
-
-            if denominador == 0:
-                return None
-            return round(numerador / denominador, 4)
-        except Exception:
-            return None
-
-    def _calculo_fotovoltaico(self):
-        try:
-            # Valores base
             PN = self.potencia_nominal
-            FP = self.factor_planta / 100
+            FP = self.factor_planta / 100 if self.factor_planta else 0
             VU = self.vida_util
             IN = self.inversion_total
-            CP = self.capital_propio
-            CV = self.costo_variable
+            CP = self.capital_propio or 0
+            CV = self.costo_variable or 0
 
-            P_CP = (CP / IN)
-            D = self.deuda
-            P_D = (D / IN) 
-            PDT = self.porcentaje_deuda / 100  
-            TIP = self.tasa_interes_periodo / 100
-            TIA = self.tasa_interes_anual / 100
-            TP = self.total_periodos
-            AG = self.anios_gracia
-            PP = self.periodos_pago / 2 if self.periodos_pago else 0
+            P_CP = (CP / IN) if IN else 0
+            D = self.deuda or 0
+            P_D = (D / IN) if IN else 0 
+            PDT = (self.porcentaje_deuda or 0) / 100  
+            TIP = (self.tasa_interes_periodo or 0) / 100
+            TIA = (self.tasa_interes_anual or 0) / 100
+            TP = self.total_periodos or 0
+            AG = self.anios_gracia or 0
+            PP = (self.periodos_pago or 0) / 2
 
-            B = self.beta
-            MB = self.margen_intermediacion / 100
-            inflacion = self.inflacion / 100
-            economia = self.economia / 100
-            RP = self.riesgo
-            IPR = self.indice_premio / 100
-            TSR = self.sin_riesgo / 100
-            TDM = self.tasa_mercado / 100
-            PRM = self.premio_riesgo_mercado / 100 
-            T = self.impuesto / 100
-            EAP = self.energia_anual_producida
+            B = self.beta or 0
+            MB = (self.margen_intermediacion or 0) / 100
+            inflacion = (self.inflacion or 0) / 100
+            economia = (self.economia or 0) / 100
+            RP = self.riesgo or 0
+            IPR = (self.indice_premio or 0) / 100
+            TSR = (self.sin_riesgo or 0) / 100
+            TDM = (self.tasa_mercado or 0) / 100
+            PRM = (self.premio_riesgo_mercado or 0) / 100 
+            T = (self.impuesto or 0) / 100
+            EAP = self.energia_anual_producida or 0
 
-            cost_P = self.costo_produccion
-            cost_an_p = self.costo_anual_oma_mw
-            degradacion = self.degradacion / 100
+            cost_P = self.costo_produccion or 0
+            cost_an_p = self.costo_anual_oma_mw or 0
+            degradacion = (self.degradacion or 0) / 100
 
-            # Tasa minima aceptable
             tasa_minima = inflacion + IPR + (inflacion * IPR)
 
-            # Beta de apalancamiento
-            af1 = (P_D * (1 - T)) / P_CP
+            af1 = (P_D * (1 - T)) / P_CP if P_CP else 0
             B_AP = B * (1 + af1)
             B_AP_F = B_AP
-            # Costo cap propio
-            CT_CP = TSR + (PRM * (B_AP_F/100)) + IPR
-            
-            # Tasa captacion
+            CT_CP = TSR + (PRM * (B_AP_F / 100)) + IPR
+
             tz_cp = ((1 + inflacion) * (1 + economia) - 1)
             CST_DEU = tz_cp + MB
-            # wacc
-            WACC = round((((P_CP * CT_CP) + (P_D * CST_DEU)) / (P_CP + P_D)), 4)
 
-            # Factor de Recuperacion de capital
-            FRC = WACC * ((1 + WACC) ** VU) / ((1 + WACC) ** VU) 
+            WACC = round((((P_CP * CT_CP) + (P_D * CST_DEU)) / (P_CP + P_D)) if (P_CP + P_D) else 0, 4)
+
+            FRC = WACC * ((1 + WACC) ** VU) / ((1 + WACC) ** VU) if VU else 0
             anualidad = D * FRC
 
             CF_total_1 = cost_P * EAP
@@ -270,35 +245,67 @@ class ParametroCalculo(models.Model):
             CF_total =  CF_total_1 + CF_total_2 
             CV_total = CV * EAP
             costos = CF_total + CV_total
-            t = 1
-            numerador = ((CP) + ((costos) / (1 + WACC) ** t))
-            denominador = ((EAP * ((1 + (degradacion*100)) ** t)) / ((1 + WACC) ** t))
 
-            lcoe_p = (CP + ( costos / (1 + WACC) ** t)) / ((EAP * ((1 + degradacion) ** t)) / ((1 + WACC) ** t))
-            lcoe = round( numerador / denominador , 4) 
-            # numerador / denominador
-            return {
-            'lcoe': round(lcoe, 4),  # LCOE 
-        }
+            t = 1
+            numerador = CP + (costos / ((1 + WACC) ** t)) if WACC else CP + costos
+            denominador = (EAP * ((1 + degradacion) ** t)) / ((1 + WACC) ** t) if WACC else EAP
+
+            lcoe = round(numerador / denominador, 4) if denominador else None
+
+            return lcoe 
         except Exception as e:
             return {"error": str(e)}
+        
+    class ParametroGenerico(ParametroCalculos):
+
+        def calcular_lcoe(self):
+            try:
+                r = self.tasa_descuento
+                d = self.tasa_crecimiento_energia
+                n = int(self.vida_util)
+                energia_anual = self.energia_anual_producida
+                costo_operacion = self.costo_operacion_anual
+                inversion = self.inversion_total
+
+                numerador = inversion
+                denominador = 0
+                for t in range(1, n + 1):
+                    numerador += costo_operacion / ((1 + r) ** t)
+                    energia_t = energia_anual * ((1 + d) ** t)
+                    denominador += energia_t / ((1 + r) ** t)
+
+                if denominador == 0:
+                    return None
+                return round(numerador / denominador, 4)
+            except Exception:
+                return None
+
 
 class ResultadoCalculo(models.Model):
     caso = models.OneToOneField(CasoCalculo, on_delete=models.CASCADE)
     lcoe = models.FloatField(null=True, blank=True)
     fecha_calculo = models.DateTimeField(auto_now_add=True)
     observaciones = models.TextField(null=True, blank=True)
-    #detalle = models.JSONField(null=True, blank=True)
                                
     def save(self, *args, **kwargs):
         try:
-            parametros = self.caso.parametrocalculo
-            if self.caso.central:
-                tipo = self.caso.central.tipo_electrica.nombre.lower()
+            parametros = None
+            tipo = None
+            if hasattr(self.caso, 'parametrofotovoltaica'):
+                parametros = self.caso.parametrofotovoltaica
+                tipo = 'fotovoltaica'
+            elif hasattr(self.caso, 'parametrogenerico'):
+                parametros = self.caso.parametrogenerico
+                tipo = 'genérico'
+            #  elif para otras tecnologías
+
+            if parametros:
+                self.lcoe = parametros.calcular_lcoe()
                 parametros.tipo_generacion = tipo
                 parametros.save()
-            self.lcoe = parametros.calcular_lcoe()
-        except ParametroCalculo.DoesNotExist:
+            else:
+                self.lcoe = None
+        except Exception:
             self.lcoe = None
         super().save(*args, **kwargs)
 
