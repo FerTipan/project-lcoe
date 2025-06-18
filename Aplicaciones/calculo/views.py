@@ -19,7 +19,6 @@ from Aplicaciones.usuarios.decorators import AdminRequiredMixin, UserRequiredMix
 def vista_usuario_calculo(request):
     return render(request, 'calculo/tipoGeneracion.html')
 
-
 class AdminDashboardView(AdminRequiredMixin, TemplateView):
     template_name = 'calculo/tipoGeneracion.html'
 
@@ -179,6 +178,8 @@ def centrales_por_tipo(request, tipo_id):
     for central in centrales:
         if hasattr(central, 'fotovoltaica'):
             tipo_especifico = 'fotovoltaica'
+        elif hasattr(central, 'termica'):
+            tipo_especifico = 'termica'
         else:
             tipo_especifico = 'general'
 
@@ -187,13 +188,12 @@ def centrales_por_tipo(request, tipo_id):
             'nombre': central.nombre,
             'tipo_especifico': tipo_especifico,
             'potencia': central.potencia,
-            'ubicacion': f"{central.provincia}"
+            'ubicacion': f"{central.provincia}",
         })
 
     central_seleccionada = None
     resultado = None
     caso = None
-    resultado_detallado = None
 
     try:
         perfil_usuario = Perfil.objects.get(user=request.user)
@@ -216,15 +216,17 @@ def centrales_por_tipo(request, tipo_id):
         parametros = crear_parametros_desde_fotovoltaica(caso)
 
         # Calcular LCOE
-        resultado_detallado = parametros._calculo_fotovoltaico()
+        lcoe_valor = parametros._calculo_fotovoltaico()
 
-        if resultado_detallado and 'lcoe' in resultado_detallado:
+        if 'lcoe':
+            messages.error(request, "No se pudo calcular el LCOE: resultado vacío.")
+    
+        elif 'lcoe':
             try:
-                lcoe_valor = float(resultado_detallado['lcoe'])
+                lcoe_valor = float('lcoe')
                 resultado = ResultadoCalculo.objects.create(
                     caso=caso,
                     lcoe=lcoe_valor,
-                    detalle=resultado_detallado  # Si quieres guardar todo el dict, asegúrate de que el campo `detalle` lo permita
                 )
             except (ValueError, TypeError, KeyError) as e:
                 messages.error(request, f"Ocurrió un error al guardar el resultado: {e}")
@@ -237,38 +239,7 @@ def centrales_por_tipo(request, tipo_id):
         'central_seleccionada': central_seleccionada,
         'resultado': resultado,
         'caso': caso,
-        'resultado_detallado': resultado_detallado
     })
-
-# ----------- VISUALIZACION DE INFO -------------
-'''@login_required
-def calculo_view(request):
-    centrales = Central.objects.all()
-    central_seleccionada = None
-    resultado = None
-    caso = None
-
-    if request.method == "POST":
-        central_id = request.POST.get("central_id")
-        central_seleccionada = Central.objects.get(id=central_id)
-        
-        caso = CasoCalculo.objects.create(
-            nombre=f"Cálculo de {central_seleccionada.nombre}",
-            #usuario=request.user.perfil,
-            central=central_seleccionada
-        )
-        crear_parametros_desde_fotovoltaica(caso)
-        resultado = ResultadoCalculo.objects.create(caso=caso)
-        resultado.save()
-
-    return render(request, '/calculo_lcoe.html', {
-        'centrales': centrales,
-        'central_seleccionada': central_seleccionada,
-        'caso': caso,
-        'resultado': resultado
-    })
-'''
-
 # ---------------------  CALCULOS LCOE --------------------  
 @login_required
 def crear_caso_y_calcular(request, central_id):
@@ -292,3 +263,6 @@ def ver_resultado(request, caso_id):
     caso = CasoCalculo.objects.get(id=caso_id)
     resultado = caso.resultadocalculo
     return render(request, 'resultados/result.html', {'caso': caso, 'resultado': resultado})
+
+
+# --------------------- Dashboard ----------------------

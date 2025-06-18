@@ -455,7 +455,7 @@
             -3.7988, -79.1248, 
             "Mazar", 
             "Central hidroeléctrica ubicada en la región Sierra.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["hidroelectrica", "sierra"]
         );
 
@@ -463,7 +463,7 @@
             -0.7992, -78.6791, 
             "San Francisco", 
             "Central hidroeléctrica ubicada en la región Sierra.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["hidroelectrica", "sierra"]
         );
 
@@ -472,7 +472,7 @@
             -2.5223, -80.6905, 
             "Cabo de la Vela", 
             "Parque eólico ubicado en la Costa.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["eolica", "costa"]
         );
 
@@ -481,7 +481,7 @@
             -0.7224, -76.1799, 
             "Delfín II", 
             "Central hidroeléctrica ubicada en la región Oriente.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["hidroelectrica", "oriente"]
         );
 
@@ -490,7 +490,7 @@
             -0.9542, -89.6207, 
             "San Cristóbal Solar", 
             "Planta solar en Galápagos.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["solar", "galapagos"]
         );
 
@@ -499,7 +499,7 @@
             -1.5853, -78.0042, 
             "Totorillas", 
             "Central hidroeléctrica ubicada en la región Sierra.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["hidroelectrica", "sierra"]
         );
 
@@ -507,7 +507,7 @@
             -0.8855, -78.3862, 
             "La Esperanza II", 
             "Central hidroeléctrica ubicada en la región Sierra.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["hidroelectrica", "sierra"]
         );
 
@@ -516,7 +516,7 @@
             -1.0198, -77.2378, 
             "Cuyabeno Eólico", 
             "Parque eólico ubicado en la región Oriente.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["eolica", "oriente"]
         );
 
@@ -525,7 +525,7 @@
             -2.0816, -90.5924, 
             "Isla Floreana Hidráulica", 
             "Central hidroeléctrica en la región Galápagos.", 
-            "{% static 'assets/images/logo.png' %}",
+            "{% static 'assets/images/default.jpg' %}",
             ["hidroelectrica", "galapagos"]
         );
 
@@ -567,17 +567,17 @@
             visibleMarkers = 0;
 
             markers.forEach(function(marker) {
-                map.removeLayer(marker); // Quitar todos primero
+                map.removeLayer(marker); 
             });
             
-            if (!filterValue) { // Si se deselecciona una opción específica de filtro (ej. "Seleccione región...")
+            if (!filterValue) { 
                 // Volver a mostrar todos los marcadores si el filtro principal está vacío o se resetea
                  if (!$("#filterType").val()) {
                     markers.forEach(function(marker) {
                         marker.addTo(map);
                         visibleMarkers++;
                     });
-                 } // Si hay un tipo de filtro pero no opción, no mostrar nada o mantener estado previo (actualmente no muestra nada)
+                 } 
             } else {
                 var foundInCurrentFilter = false;
                 markers.forEach(function(marker) {
@@ -601,12 +601,10 @@
             $("#filterOptions").empty().append('<option value="">Seleccione una opción...</option>').prop("disabled", true);
 
             markers.forEach(function(marker) {
-                // Obtener el título del popup de forma segura
                 var popup = marker.getPopup();
                 var title = '';
                 if (popup && typeof popup.getContent === 'function') {
                      var content = popup.getContent();
-                     // Extraer el título del contenido del popup (esto puede necesitar ajuste según la estructura del popupContent)
                      var titleMatch = content.match(/<h3>.*? (.*?)<\/h3>/i);
                      if (titleMatch && titleMatch[1]) {
                          title = titleMatch[1].toLowerCase();
@@ -632,7 +630,7 @@
                 updateStats();
                 map.setView([-0.19910582808506766, -77.68382550457454], 6);
             } else if (visibleMarkers > 0 && searchTerm !== '') {
-                // Opcional: hacer zoom/fit a los marcadores encontrados
+                // hacer zoom/fit a los marcadores encontrados
                 // var group = new L.featureGroup(markers.filter(m => map.hasLayer(m)));
                 // if (Object.keys(group._layers).length > 0) {
                 // map.fitBounds(group.getBounds().pad(0.5));

@@ -1,67 +1,75 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>App LCOE</title>
-    <!--Importando JQuery-->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- jQuery Validate -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
-    <!-- Favicon icon -->
-    <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon"> 
-    <!-- DataTables-->
-    <link href="{% static 'assets/lib/DataTables/datatables.min.css' %}" rel="stylesheet">
-    <script src="{% static 'assets/lib/DataTables/datatables.min.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/plugins/buttons.bootstrap5.min.css' %}"> 
-    <!-- Google Font Family -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
-    <!-- [Tabler Icons] https://tablericons.com -->
-    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/tabler-icons.min.css' %}" >
-    <!-- [Feather Icons] https://feathericons.com -->
-    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/feather.css' %}" >
-    <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/fontawesome.css' %}" >
-    <!-- [Material Icons] https://fonts.google.com/icons -->
-    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/material.css' %}" >
-    <!-- Template CSS Files -->
-    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style.css' %}" id="main-style-link" >
-    <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style-preset.css' %}" >
-    <link rel="stylesheet" href="{% static 'assets/css/tipo.css' %}" >
-    <link rel="stylesheet" href="{% static 'assets/css/lcoe_table.css' %}">
-    <!-- Importancion del IziToast--> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css" integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js" integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-     <!-- File Inputs Libreria
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>App LCOE</title>
+  <!--Importando JQuery-->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- jQuery Validate -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+  <!-- Favicon icon -->
+  <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon">
+  <!-- DataTables-->
+  <link href="{% static 'assets/lib/DataTables/datatables.min.css' %}" rel="stylesheet">
+  <script src="{% static 'assets/lib/DataTables/datatables.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/plugins/buttons.bootstrap5.min.css' %}">
+  <!-- Google Font Family -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
+    id="main-font-link">
+  <!-- [Tabler Icons] https://tablericons.com -->
+  <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/tabler-icons.min.css' %}">
+  <!-- [Feather Icons] https://feathericons.com -->
+  <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/feather.css' %}">
+  <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+  <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/fontawesome.css' %}">
+  <!-- [Material Icons] https://fonts.google.com/icons -->
+  <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/material.css' %}">
+  <!-- Template CSS Files -->
+  <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style.css' %}" id="main-style-link">
+  <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style-preset.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/tipo.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/lcoe_table.css' %}">
+  <!-- Importancion del IziToast-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css"
+    integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"
+    integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- File Inputs Libreria
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.0/js/fileinput.min.js" integrity="sha512-ZOU4ZJnGlvyQ76zoWdOs4Yb7VnhJPRKkssorqt36m9/NDmHs0FrWteaSAsODgSJfBke9vAPLxpO7b1fb2Bmevw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.0/css/fileinput.min.css" integrity="sha512-cvhwKyzOpC1m0Ps5PFVput79SWoJ98fkcV52QEr3aJ1A6hfE6N1wzWFtGH8iYOHp/MHOg6LDlX5ljHoi9BS5SQ==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
-    
-    <!--  Bootstrap Select -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+  <!--  Bootstrap Select -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
 </head>
 <!-- [Head] end -->
 <!-- [Body] Start -->
 
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
-    <!-- [ Pre-loader ] start -->
+  <!-- [ Pre-loader ] start -->
   <div class="loader-bg">
     <div class="loader-track">
       <div class="loader-fill"></div>
     </div>
   </div>
   <!-- [ Pre-loader ] End -->
-   <!-- [ Sidebar Menu ] start -->
+  <!-- [ Sidebar Menu ] start -->
   <nav class="pc-sidebar">
     <div class="navbar-wrapper">
       <div class="m-header">
         <div class="d-flex">
           <a href="{% url 'inicio' %}" class="b-brand text-primary">
-            <img src="{% static 'img/favicon.png' %}" class="img-fluid justify-content-center" style="height: 50px; border-radius: 60px;" alt="logo lcoe"> <!-- logo-lg-->
+            <img src="{% static 'img/favicon.png' %}" class="img-fluid justify-content-center"
+              style="height: 50px; border-radius: 60px;" alt="logo lcoe"> <!-- logo-lg-->
           </a>
         </div>
       </div>
@@ -140,17 +148,20 @@
             <i class="ti ti-brand-chrome"></i>
           </li>
           <li class="pc-item pc-hasmenu">
-            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">Menu
+            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span
+                class="pc-mtext">Menu
                 levels</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
             <ul class="pc-submenu">
               <li class="pc-item"><a class="pc-link" href="#!">Level 2.1</a></li>
               <li class="pc-item pc-hasmenu">
-                <a href="#!" class="pc-link">Level 2.2<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                <a href="#!" class="pc-link">Level 2.2<span class="pc-arrow"><i
+                      data-feather="chevron-right"></i></span></a>
                 <ul class="pc-submenu">
                   <li class="pc-item"><a class="pc-link" href="#!">Level 3.1</a></li>
                   <li class="pc-item"><a class="pc-link" href="#!">Level 3.2</a></li>
                   <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">Level 3.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                    <a href="#!" class="pc-link">Level 3.3<span class="pc-arrow"><i
+                          data-feather="chevron-right"></i></span></a>
                     <ul class="pc-submenu">
                       <li class="pc-item"><a class="pc-link" href="#!">Level 4.1</a></li>
                       <li class="pc-item"><a class="pc-link" href="#!">Level 4.2</a></li>
@@ -163,7 +174,8 @@
         </ul>
         <div class="card text-center">
           <div class="card-body">
-            <img src="{% static 'plantilla/mantis/src/assets/images/img-navbar-card.png' %}" alt="images" class="img-fluid mb-2">
+            <img src="{% static 'plantilla/mantis/src/assets/images/img-navbar-card.png' %}" alt="images"
+              class="img-fluid mb-2">
             <h5>LCOE</h5>
             <p>Más Componentes</p>
           </div>
@@ -174,20 +186,20 @@
   <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
   <header class="pc-header">
     <div class="header-wrapper"> <!-- [Mobile Media Block] start -->
-  <div class="me-auto pc-mob-drp">
-    <ul class="list-unstyled">
-      <!-- ======= Menu collapse Icon ===== -->
-      <li class="pc-h-item pc-sidebar-collapse">
-        <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
-          <i class="ti ti-menu-2"></i>
-        </a>
-      </li>
-      <li class="pc-h-item pc-sidebar-popup">
-        <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
-          <i class="ti ti-menu-2"></i>
-        </a>
-      </li>
-      <!-- <li class="dropdown pc-h-item d-inline-flex d-md-none">
+      <div class="me-auto pc-mob-drp">
+        <ul class="list-unstyled">
+          <!-- ======= Menu collapse Icon ===== -->
+          <li class="pc-h-item pc-sidebar-collapse">
+            <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
+              <i class="ti ti-menu-2"></i>
+            </a>
+          </li>
+          <li class="pc-h-item pc-sidebar-popup">
+            <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
+              <i class="ti ti-menu-2"></i>
+            </a>
+          </li>
+          <!-- <li class="dropdown pc-h-item d-inline-flex d-md-none">
         <a
           class="pc-head-link dropdown-toggle arrow-none m-0"
           data-bs-toggle="dropdown"
@@ -213,181 +225,102 @@
           <input type="search" class="form-control" placeholder="Search here. . .">
         </form>
       </li> -->
-    </ul>
-  </div>
-  <!-- [Mobile Media Block end] -->
-  <div class="ms-auto">
-    <ul class="list-unstyled">
-      <li class="dropdown pc-h-item header-user-profile">
-        <a
-          class="pc-head-link dropdown-toggle arrow-none me-0"
-          data-bs-toggle="dropdown"
-          href="#"
-          role="button"
-          aria-haspopup="false"
-          data-bs-auto-close="outside"
-          aria-expanded="false"
-        >
-          <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image" class="user-avtar">
-          <span>{{ user.first_name }} &nbsp; {{ user.last_name }}</span>
-        </a>
-        <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
-          <div class="dropdown-header">
-            <div class="d-flex mb-1">
-              <div class="flex-shrink-0">
-                <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image" class="user-avtar wid-35">
+        </ul>
+      </div>
+      <!-- [Mobile Media Block end] -->
+      <div class="ms-auto">
+        <ul class="list-unstyled">
+          <li class="dropdown pc-h-item header-user-profile">
+            <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button"
+              aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
+              <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image" class="user-avtar">
+              <span>{{ user.first_name }} &nbsp; {{ user.last_name }}</span>
+            </a>
+            <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
+              <div class="dropdown-header">
+                <div class="d-flex mb-1">
+                  <div class="flex-shrink-0">
+                    <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image"
+                      class="user-avtar wid-35">
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-1">{{ user.first_name }}&nbsp;{{ user.last_name }}</h6>
+                    <span>Usuario</span>
+                  </div>
+                  <a href="{% url 'logout' %}" class="pc-head-link bg-transparent"><i
+                      class="ti ti-power text-danger"></i></a>
+                </div>
               </div>
-              <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1">{{ user.first_name }}&nbsp;{{ user.last_name }}</h6>
-                <span>Usuario</span>
+              <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="drp-t1" data-bs-toggle="tab" data-bs-target="#drp-tab-1"
+                    type="button" role="tab" aria-controls="drp-tab-1" aria-selected="true"><i class="ti ti-user"></i>
+                    Perfil</button>
+                </li>
+              </ul>
+              <div class="tab-content" id="mysrpTabContent">
+                <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1"
+                  tabindex="0">
+                  <a href="#!" class="dropdown-item">
+                    <i class="ti ti-edit-circle"></i>
+                    <span>Editar Perfil</span>
+                  </a>
+                  <a href="#!" class="dropdown-item">
+                    <i class="ti ti-user"></i>
+                    <span>Ver Perfil</span>
+                  </a>
+                  <a href="{% url 'logout' %}" class="dropdown-item">
+                    <i class="ti ti-power"></i>
+                    <span>Cerrar sesión</span>
+                  </a>
+                </div>
+                <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
+                  <a href="#!" class="dropdown-item">
+                    <i class="ti ti-help"></i>
+                    <span>Soporte</span>
+                  </a>
+                </div>
               </div>
-              <a href="{% url 'logout' %}" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
             </div>
-          </div>
-          <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="drp-t1"
-                data-bs-toggle="tab"
-                data-bs-target="#drp-tab-1"
-                type="button"
-                role="tab"
-                aria-controls="drp-tab-1"
-                aria-selected="true"
-                ><i class="ti ti-user"></i> Perfil</button
-              >
-            </li>
-          </ul>
-          <div class="tab-content" id="mysrpTabContent">
-            <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1" tabindex="0">
-              <a href="#!" class="dropdown-item">
-                <i class="ti ti-edit-circle"></i>
-                <span>Editar Perfil</span>
-              </a>
-              <a href="#!" class="dropdown-item">
-                <i class="ti ti-user"></i>
-                <span>Ver Perfil</span>
-              </a>
-              <a href="{% url 'logout' %}" class="dropdown-item">
-                <i class="ti ti-power"></i>
-                <span>Cerrar sesión</span>
-              </a>
-            </div>
-            <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
-              <a href="#!" class="dropdown-item">
-                <i class="ti ti-help"></i>
-                <span>Soporte</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
-   </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </header>
   <!-- [ Header ] end -->
-  
-  
-  
-    <!-- [ Main Content ] start -->
-    <div class="pc-container">
-        <div class="pc-content">
-            {% block content %}
+  <!-- [ Main Content ] start -->
+  <div class="pc-container">
+    <div class="pc-content">
+      {% block content %}
 
-            {% endblock%}
-        </div>
+      {% endblock%}
     </div>
-    <!-- [Page Specific JS] start 
+  </div>
+  <!-- [Page Specific JS] start 
     <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/apexcharts.min.js' %}"></script>
     <script src="{% static 'plantilla/mantis/dist/assets/js/pages/dashboard-default.js' %}"></script>
     [Page Specific JS] end -->
-    <!-- Required Js -->
-    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/simplebar.min.js' %}"></script>
-    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/popper.min.js' %}"></script>
-    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/bootstrap.min.js' %}"></script>
-    <script src="{% static 'plantilla/mantis/dist/assets/js/fonts/custom-font.js' %}"></script>
-    <script src="{% static 'plantilla/mantis/dist/assets/js/pcoded.js' %}"></script>
-    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/feather.min.js' %}"></script>
-
-  <!-- Start Izi Toast --> 
-  {% if messages %}
-    {% for message in messages %}
-      {% if 'success' in message.tags %}
-        <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            iziToast.success({
-              title: "Éxito",
-              message: "{{ message.message|escapejs }}",  <!-- aquí el cambio clave -->
-              position: "topRight",
-              timeout: 4000,
-              close: true,
-              pauseOnHover: true,
-              progressBar: true
-            });
-          });
-        </script>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-
-
-
+  <!-- Required Js -->
+  <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/popper.min.js' %}"></script>
+  <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/simplebar.min.js' %}"></script>
+  <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/bootstrap.min.js' %}"></script>
+  <script src="{% static 'plantilla/mantis/dist/assets/js/fonts/custom-font.js' %}"></script>
+  <script src="{% static 'plantilla/mantis/dist/assets/js/pcoded.js' %}"></script>
+  <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/feather.min.js' %}"></script>
   <script>
-    function confirmarEliminacion(formId) {
-      iziToast.question({
-          timeout: 20000,
-          close: false,
-          overlay: true,
-          displayMode: 'once',
-          title: 'Confirmar Eliminación',
-          message: '¿Estás seguro de que deseas eliminar este elemento?',
-          position: 'center',
-          buttons: [
-              ['<button><b>SI</b></button>', function (instance, toast) {
-                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                  document.getElementById(formId).submit();
-              }, true],
-              ['<button>NO</button>', function (instance, toast) {
-                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-              }]
-          ]
-        });
-      }
-    </script>
-    <script>
-    function confirmarEliminacionclave(formId) {
+    function confirmarEliminacion(pk) {
       iziToast.question({
         timeout: false,
         close: false,
         overlay: true,
         displayMode: 'once',
-        title: 'Advertencia',
-        message: '⚠️ Esto puede estar relacionado con otras tablas (claves foráneas).',
+        title: '¿Confirmar eliminación?',
+        message: 'Está  seguro de eliminar esta información',
         position: 'center',
         buttons: [
-          ['<button>Entiendo, continuar</button>', function (instance, toast) {
+          ['<button><b>Eliminar</b></button>', function (instance, toast) {
+            document.getElementById('form-eliminar-' + pk).submit();
             instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-            iziToast.question({
-              timeout: false,
-              close: false,
-              overlay: true,
-              displayMode: 'once',
-              title: 'Confirmar eliminación',
-              message: '¿Estás completamente seguro de que deseas eliminar este registro?',
-              position: 'center',
-              buttons: [
-                ['<button>Eliminar</button>', function (instance2, toast2) {
-                  instance2.hide({ transitionOut: 'fadeOut' }, toast2, 'button');
-                  document.getElementById(formId).submit(); // eliminar
-                }, true],
-                ['<button>Cancelar</button>', function (instance2, toast2) {
-                  instance2.hide({ transitionOut: 'fadeOut' }, toast2, 'button');
-                }]
-              ]
-            });
-
           }, true],
           ['<button>Cancelar</button>', function (instance, toast) {
             instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
@@ -395,38 +328,73 @@
         ]
       });
     }
-    </script>
-    <!-- End Toast de Confirmacion -->
-     
-    <script>layout_change('light');</script>
+  </script>
+  <!-- Start Izi Toast -->
+   {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == "success" %}
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          iziToast.success({ 
+            title:'Éxito',
+            message:'{{ message|escapejs }}',
+            position:'topRight',
+            timeout:'4000',
+            close:'true',
+            pauseOnHover:'true',
+            progressBar:'true'
+          });
+        });
+      </script>
+      {% elif message.tags == "error" %}
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          iziToast.error({ 
+            title:'Error',
+            message:'{{ message|escapejs }}',
+            position:'topRight',
+            timeout:'4000',
+            close:'true',
+            pauseOnHover:'true',
+            progressBar:'true'
+          });
+        });
+      </script>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  <!-- End Toast de Confirmacion -->
+
+  <script>layout_change('light');</script>
 
 
-    <script>change_box_container('false');</script>
+  <script>change_box_container('false');</script>
 
 
-    <script>layout_rtl_change('false');</script>
+  <script>layout_rtl_change('false');</script>
 
 
-    <script>preset_change("preset-1");</script>
+  <script>preset_change("preset-1");</script>
 
 
-    <script>font_change("Public-Sans");</script>
+  <script>font_change("Public-Sans");</script>
 
-    <style>
-      .btn-circle{
-        border-radius: 800px;
-        height: 30px;
-        width: 30px;        
-      }
-      .section-title {
-        background-color: #3e5a77;
-        color: white;
-        padding: 6px 12px;
-        font-weight: bold;
-        border-radius: 6px;
-        margin-top: 20px;
-      }
-    </style>
+  <style>
+    .btn-circle {
+      border-radius: 800px;
+      height: 30px;
+      width: 30px;
+    }
 
+    .section-title {
+      background-color: #3e5a77;
+      color: white;
+      padding: 6px 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+  </style>
 </body>
+
 </html>

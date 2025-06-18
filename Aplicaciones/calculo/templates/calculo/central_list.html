@@ -69,9 +69,7 @@
                                 <th class="principal">Empresa</th>
                                 <th class="principal">Tipo</th>
                                 <th class="secundario">Potencia</th>
-                                <th class="secundario">Energia Media</th>
                                 <th class="principal">Provincia</th>
-                                <th class="secundario">Cantón</th>
                                 <th class="principal">Año de Operación</th>
                                 <th class="principal">Tipo de Generación</th>
                                 <th class="principal">Acciones</th>
@@ -108,17 +106,15 @@
                                     </span> 
                                 </td>
                                 <td class="secundario">{{ central.potencia}}</td>
-                                <td class="secundario">{{ central.e_media }}</td>
                                 <td class="principal">{{ central.provincia }}</td>
-                                <td class="secundario">{{ central.canton }}</td>
                                 <td class="principal">{{ central.anio_operacion }}</td>
                                 <td>
                                     <span class="badge rounded-3 fw-semibold 
-                                        {% if central.tipo_electrica|lower == 'hidroeléctrica' %}bg-primary text-white
-                                        {% elif central.tipo_electrica|lower == 'termica' %}bg-success text-white
+                                        {% if central.tipo_electrica|lower == 'hidráulica' %}bg-primary text-white
+                                        {% elif central.tipo_electrica|lower == 'térmica' %}bg-success text-white
                                         {% elif central.tipo_electrica|lower == 'eólica' %}bg-info text-white
                                         {% elif central.tipo_electrica|lower == 'fotovoltaica' %}bg-warning text-white
-                                        {% else %}bg-info text-white{% endif %}">
+                                        {% else %}bg-secondary text-white{% endif %}">
                                         {{ central.tipo_electrica|title }}
                                     </span>
                                 </td>

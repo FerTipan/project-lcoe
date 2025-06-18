@@ -25,7 +25,7 @@ class Central(models.Model):
     tipo = models.CharField(max_length=200)
     potencia = models.FloatField()
     provincia = models.CharField(max_length=200)
-    anio_operacion = models.CharField(max_length=200)
+    anio_operacion = models.PositiveIntegerField()
     tipo_electrica = models.ForeignKey(
         TipoElectrica,
         on_delete=models.CASCADE,
@@ -51,7 +51,7 @@ class Fotovoltaica(models.Model):
     energia_bruta_calculada = models.FloatField(editable=False, null=True, blank=True)
 
     factor_planta = models.FloatField(help_text="%")
-    vida_util = models.FloatField(help_text="%")
+    vida_util = models.IntegerField(help_text="%")
     degradacion = models.FloatField(help_text="%")
 
     # Inversión
@@ -134,12 +134,12 @@ class CasoCalculo(models.Model):
 
 class ParametroCalculo(models.Model):
     caso = models.OneToOneField(CasoCalculo, on_delete=models.CASCADE)
-    tipo_generacion = models.CharField(max_length=100, blank=True, null=True)  # Detectado automáticamente
+    tipo_generacion = models.CharField(max_length=100, blank=True, null=True)
 
     # Campos genéricos
     inversion_total = models.FloatField()
     energia_anual_producida = models.FloatField()
-    vida_util = models.FloatField()
+    vida_util = models.IntegerField()
     tasa_descuento = models.FloatField()
     tasa_crecimiento_energia = models.FloatField(default=0.0)
     costo_operacion_anual = models.FloatField()
@@ -179,7 +179,6 @@ class ParametroCalculo(models.Model):
     factor_planta = models.FloatField(blank=True, null=True)
     potencia_nominal = models.FloatField(blank=True, null=True)
 
-
     def calcular_lcoe(self):
         tipo = self.tipo_generacion.lower() if self.tipo_generacion else ""
         if tipo == "fotovoltaica":
@@ -188,7 +187,7 @@ class ParametroCalculo(models.Model):
             return self._calculo_generico()
 
     def _calculo_generico(self):
-        # Usar fórmula estándar
+        #  Fórmula estándar
         try:
             r = self.tasa_descuento
             d = self.tasa_crecimiento_energia
@@ -252,16 +251,15 @@ class ParametroCalculo(models.Model):
             # Beta de apalancamiento
             af1 = (P_D * (1 - T)) / P_CP
             B_AP = B * (1 + af1)
-            
+            B_AP_F = B_AP
             # Costo cap propio
-            af2 = (PRM * (B_AP /100))
-            CT_CP = TSR + af2 + IPR
+            CT_CP = TSR + (PRM * (B_AP_F/100)) + IPR
             
             # Tasa captacion
             tz_cp = ((1 + inflacion) * (1 + economia) - 1)
             CST_DEU = tz_cp + MB
             # wacc
-            WACC = (((P_CP * CT_CP) + (P_D * CST_DEU)) / (P_CP + P_D))
+            WACC = round((((P_CP * CT_CP) + (P_D * CST_DEU)) / (P_CP + P_D)), 4)
 
             # Factor de Recuperacion de capital
             FRC = WACC * ((1 + WACC) ** VU) / ((1 + WACC) ** VU) 
@@ -272,30 +270,15 @@ class ParametroCalculo(models.Model):
             CF_total =  CF_total_1 + CF_total_2 
             CV_total = CV * EAP
             costos = CF_total + CV_total
+            t = 1
+            numerador = ((CP) + ((costos) / (1 + WACC) ** t))
+            denominador = ((EAP * ((1 + (degradacion*100)) ** t)) / ((1 + WACC) ** t))
 
-            numerador = ((CP + costos) / ((1 + WACC) ** 1))
-
-            denominador = ((EAP * ((1 + degradacion) ** 1)) / ((1 + WACC) ** 1))
-
-            lcoe = round( numerador / denominador , 2)
-
-            # Diccionario 
+            lcoe_p = (CP + ( costos / (1 + WACC) ** t)) / ((EAP * ((1 + degradacion) ** t)) / ((1 + WACC) ** t))
+            lcoe = round( numerador / denominador , 4) 
+            # numerador / denominador
             return {
             'lcoe': round(lcoe, 4),  # LCOE 
-            'PN': round(PN, 2), 'FP': round(FP, 2), 'VU': round(VU, 2), 'IN': round(IN, 2),
-            'CP': round(CP, 2), 'CV': round(CV, 2), 'P_CP': round(P_CP, 2), 'D': round(D, 2),
-            'P_D': round(P_D, 2), 'PDT': round(PDT, 2), 'TIP': round(TIP, 4), 'TIA': round(TIA, 4),
-            'TP': round(TP, 2), 'AG': round(AG, 2), 'PP': round(PP, 2), 'B': round(B, 2),
-            'MB': round(MB, 4), 'inflacion': round(inflacion, 4), 'economia': round(economia, 4),
-            'RP': round(RP, 2), 'IPR': round(IPR, 4), 'TSR': round(TSR, 4), 'TDM': round(TDM, 4),
-            'PRM': round(PRM, 4), 'T': round(T, 4), 'EAP': round(EAP, 2), 'cost_P': round(cost_P, 2),
-            'cost_an_p': round(cost_an_p, 2), 'tasa_minima': round(tasa_minima, 4), 'af1': round(af1, 4),
-            'B_AP': round(B_AP, 4), 'af2': round(af2, 4), 'CT_CP': round(CT_CP, 4),
-            'tz_cp': round(tz_cp, 4), 'CST_DEU': round(CST_DEU, 4), 'WACC': round(WACC, 4),
-            'degradacion': round(degradacion, 4), 'FRC': round(FRC, 4), 'anualidad': round(anualidad, 2),
-            'CF_total': round(CF_total, 2), 'CV_total': round(CV_total, 2), 'costos': round(costos, 2),
-            'numerador': round(numerador, 2), 'denominador': round(denominador, 2),
-            'CF_total_1': round(CF_total_1, 2), 'CF_total_2': round(CF_total_2, 2) 
         }
         except Exception as e:
             return {"error": str(e)}
@@ -305,7 +288,7 @@ class ResultadoCalculo(models.Model):
     lcoe = models.FloatField(null=True, blank=True)
     fecha_calculo = models.DateTimeField(auto_now_add=True)
     observaciones = models.TextField(null=True, blank=True)
-    detalle = models.JSONField(null=True, blank=True)
+    #detalle = models.JSONField(null=True, blank=True)
                                
     def save(self, *args, **kwargs):
         try:
