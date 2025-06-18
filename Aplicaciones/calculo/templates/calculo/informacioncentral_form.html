@@ -1,8 +1,95 @@
 {% extends "plantilla.html" %}
 {% block content %}
-<h2>{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Información Técnica</h2>
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Ficha</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb -item">
+                        <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                            Tipos de Generación
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'info_list' %}" class="pc-head-link ms-0">
+                            Listado de Fichas
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Información Técnica</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row py-2">
+    <h2 style="color:#5b81ad"><i class="ti ti-bookmark"></i>{% if form.instance.pk %}Editar{% else %}Nueva{% endif %}  Información Técnica</h2>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card px-5">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!--  <div class="form-group row">
+                                {{ form.as_p }}
+                                <label class="col-lg-6 col-form-label">Capacidad</label>
+                                <div class="col-lg-6">
+                                    {{ form.capacidad }}
+                                </div>
+                            </div> -->
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Vida Útil</label>
+                                <div class="col-lg-6">
+                                    {{ form.capacidad }}
+                                </div> 
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Vida Útil</label>
+                                <div class="col-lg-6">
+                                    {{ form.vida_util }}
+                                </div> 
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Año</label>
+                                <div class="col-lg-6">
+                                    {{ form.anio }}
+                                </div> 
+                            </div>
+                       
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Factor Planta</label>
+                                <div class="col-lg-6">
+                                    {{ form.factor_planta }}
+                                </div> 
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Inversión</label>
+                                <div class="col-lg-6">
+                                    {{ form.inversion }}
+                                </div> 
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Central</label>
+                                <div class="col-lg-6">
+                                    {{ form.central }}
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}

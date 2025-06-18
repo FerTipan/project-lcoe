@@ -1,72 +1,59 @@
-* {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
 body {
-    margin: 0;
-    padding: 0;
+    background: linear-gradient(to right, #ece9e6, #ffffff);
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #f8f9fa;
-}
+    justify-content: center;
+  }
 
-/* Estilos del botón */
-.btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.btn:hover {
-    background-color: #0056b3;
-}
-
-.login-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-/* Estilos del formulario */
-.form-group {
-    text-align: left;
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-input {
+  .login-container {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 900px;
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+  }
 
-.submit-btn {
-    width: 100%;
-    padding: 10px;
+  .login-image {
+    background: url('assets/images/landing_page.png') center/cover no-repeat;
+  }
+
+  .login-form {
+    padding: 2.5rem;
+  }
+
+  .form-control {
+    border-radius: 0.75rem;
+  }
+
+  .btn-primary {
+    background-color: #4a90e2;
     border: none;
-    background-color: #28a745;
-    color: white;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-}
+    border-radius: 0.75rem;
+  }
 
-.submit-btn:hover {
-    background-color: #218838;
-}
+  .btn-primary:hover {
+    background-color: #357ab8;
+  }
+
+  .btn-google {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 0.75rem;
+    color: #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-google:hover {
+    background-color: #f7f7f7;
+  }
+
+  @media (max-width: 768px) {
+    .login-image {
+      display: none;
+    }
+  }

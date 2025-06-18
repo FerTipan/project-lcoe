@@ -1,0 +1,14 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

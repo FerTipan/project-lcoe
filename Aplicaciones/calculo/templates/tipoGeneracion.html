@@ -1,119 +1,54 @@
 {% extends "plantilla.html" %}
 {% block content %}
 {% load static %}
-
-<style>
-    body {
-        background-color: #f0f8ff;
-        margin: 0;
-    }
-    /* Contenedor de tarjeta rectangular */
-    .card-rectangle {
-        aspect-ratio: 6/3; /* Relación más rectangular (4:3) */
-        width: 90%; /* Ancho reducido para mejor centrado */
-        position: relative;
-        overflow: hidden;
-        margin: 0 auto; /* Centrado horizontal */
-        border-radius: 15px;
-    }
-
-    /* Ajuste de imagen */
-    .card-img-custom {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
-
-    /* Efecto hover */
-    .card-hover:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease-in-out;
-    }
-
-    /* Ajuste para el contenido */
-    .card-img-overlay {
-        background: rgba(0, 0, 0, 0.4);
-    }
-
-    /* Centrado de columnas */
-    .centered-cols {
-        display: flex;
-        justify-content: center;
-    }
-</style>
-
 <!-- Encabezado -->
 <div class="text-center my-4">
     <h1 class="fw-bold">Tipo de Generación Eléctrica</h1>
     <p class="text-muted">Seleccione el tipo de Generación</p>
 </div>
-<div class="row mb-4">
-    <div class="col-md-12">
-        <div class="btn-sm justify-content-center align-items-center">
-            <a href="{% url 'central_list' %}" class="btn btn-outline-primary">Centrales</a>
-            <a href="{% url 'tipoelectrica_list' %}" class="btn btn-outline-secondary">Tipos de Central</a>
-            <a href="{% url 'info_list' %}" class="btn btn-outline-success">Información Técnica</a>
-        </div>
-    </div>
-</div>
+<style>
+    body {background-color: #f0f8ff;margin: 0;}
+</style>
  <!-- Contenedor de tarjetas -->
 <div class="container">
     <div class="row g-4 centered-cols"> 
         {% for tipo in tipos %}
-        <!-- Tarjeta Hidráulica -->
-        <div class="col-md-5"> <!-- Columnas más estrechas -->
+        <!-- Tarjetas Tipo Generación -->
+        <div class="col-md-5">
             <a href="{% url 'centrales_por_tipo' tipo.id %}" class="text-decoration-none">
-                <div class="card text-white shadow-lg card-hover card-rectangle"> 
-                    <img src="{% static 'img/tipoGeneracion/hidraulica.jpg' %}" class="card-img card-img-custom" alt="Hidráulica">
-                    <div class="card-img-overlay d-flex flex-column justify-content-between">
-                        <h5 class="card-title">{{ tipo.nombre }}</h5>
-                        <p class="card-text mb-0">Generación {{ tipo.nombre }}</p>
+                <div class="card-rectangle card-hover position-relative text-white text-center">
+                    <!-- Imagen oculta inicialmente -->
+                    {% if tipo.foto_tipo %}
+                        <img src="{{ tipo.foto_tipo.url }}" class="card-img-custom" alt="Tipo de Generación">
+                    {% else %}
+                        <img src="{% static 'assets/images/default.jpg' %}" class="card-img-custom" alt="Imagen por defecto">
+                    {% endif %}
+        
+                    <div class="card-icon">
+                        {% if "hidráulica" in tipo.nombre|lower %}
+                            <i class="fas fa-water"></i>
+                        {% elif "fotovoltaica" in tipo.nombre|lower %}
+                            <i class="fas fa-sun"></i>
+                        {% elif "eólica" in tipo.nombre|lower %}
+                            <i class="fas fa-wind"></i>
+                        {% elif "térmica" in tipo.nombre|lower %}
+                            <i class="fas fa-fire"></i>
+                        {% else %}
+                            <i class="fas fa-bolt"></i>
+                        {% endif %}
+                    </div>
+        
+                    <!-- Texto al hacer hover -->
+                    <div class="card-overlay-text">
+                        <h5 class="card-title">{{ tipo.nombre|lower|capfirst }}</h5>
+                        <p class="card-text">Generación {{ tipo.nombre|lower|capfirst }}</p>
                     </div>
                 </div>
             </a>
         </div>
         {% endfor %}
-
-        <!-- Tarjeta Térmica 
-        <div class="col-md-5">
-            <a href="{% url 'termica' %}" class="text-decoration-none">
-                <div class="card text-white shadow-lg card-hover card-rectangle">
-                    <img src="{% static 'img/tipoGeneracion/termica.jpg' %}" class="card-img card-img-custom" alt="Térmica">
-                    <div class="card-img-overlay d-flex flex-column justify-content-between">
-                        <h5 class="card-title">Térmica</h5>
-                        <p class="card-text mb-0">Generación Térmica</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        Tarjeta Fotovoltaica 
-        <div class="col-md-5">
-            <a href="{% url 'solar' %}" class="text-decoration-none">
-                <div class="card text-white shadow-lg card-hover card-rectangle">
-                    <img src="{% static 'img/tipoGeneracion/solar.jpg' %}" class="card-img card-img-custom" alt="Fotovoltaica">
-                    <div class="card-img-overlay d-flex flex-column justify-content-between">
-                        <h5 class="card-title">Fotovoltaica</h5>
-                        <p class="card-text mb-0">Generación Fotovoltaica</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        Tarjeta Eólica 
-        <div class="col-md-5">
-            <a href="{% url 'eolica' %}" class="text-decoration-none">
-                <div class="card text-white shadow-lg card-hover card-rectangle">
-                    <img src="{% static 'img/tipoGeneracion/eolica.jpg' %}" class="card-img card-img-custom" alt="Eólica">
-                    <div class="card-img-overlay d-flex flex-column justify-content-between">
-                        <h5 class="card-title">Eólica</h5>
-                        <p class="card-text mb-0">Generación Eólica</p>
-                    </div>
-                </div>
-            </a>
-        </div>-->
-
     </div>
-</div>
+</div> 
+<!-- Tarjetas Tipo Generación -->
 <br>
 {% endblock %}

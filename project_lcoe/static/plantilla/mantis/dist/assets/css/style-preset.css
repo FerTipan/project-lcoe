@@ -42,7 +42,7 @@ h2 {
 [data-pc-preset=preset-1] {
   --pc-sidebar-active-color: #1890ff;
   --bs-blue: #1890ff;
-  --bs-primary: #1890ff;
+  --bs-primary: #1373cc;
   --bs-primary-rgb: 24, 144, 255;
   --bs-primary-light: #e8f4ff;
   --bs-link-color: #1890ff;
@@ -53,21 +53,21 @@ h2 {
 }
 [data-pc-preset=preset-1] .bg-light-primary {
   background: #e8f4ff;
-  color: #1890ff;
+  color: #1373cc;
 }
 [data-pc-preset=preset-1] .link-primary {
-  color: #1890ff !important;
+  color: #1373cc !important;
 }
 [data-pc-preset=preset-1] .link-primary:hover, [data-pc-preset=preset-1] .link-primary:focus {
   color: #1373cc !important;
 }
 [data-pc-preset=preset-1] .btn-primary {
   --bs-btn-color: #ffffff;
-  --bs-btn-bg: #1890ff;
-  --bs-btn-border-color: #1890ff;
+  --bs-btn-bg: #1373cc;
+  --bs-btn-border-color: #1373cc;
   --bs-btn-hover-color: #ffffff;
-  --bs-btn-hover-bg: #147ad9;
-  --bs-btn-hover-border-color: #1373cc;
+  --bs-btn-hover-bg: #1164b1;
+  --bs-btn-hover-border-color: #1468b6;
   --bs-btn-focus-shadow-rgb: 59, 161, 255;
   --bs-btn-active-color: #ffffff;
   --bs-btn-active-bg: #1373cc;

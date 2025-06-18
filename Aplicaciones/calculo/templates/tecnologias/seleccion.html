@@ -1,0 +1,459 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+    }
+    .list-group-item {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+    .list-group-item.active {
+        background-color: #dee0e4;
+        border-color: #0d6efd;
+    }
+    .central-img {
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .badge-tipo {
+        font-size: 0.8em;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+    .tab-content {
+        padding: 20px;
+        background-color: white;
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 10px 10px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-6">
+        <!-- Botón que abre modal -->
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalResultados">
+        Ver detalles de cálculo
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalResultados" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles del cálculo de LCOE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                {% for clave, valor in resultado.items %}
+                    <li><strong>{{ clave }}:</strong> {{ valor }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold">Centrales de Generación {{ tipo.nombre |lower|capfirst }}</h2>
+            <p class="lead text-muted">Seleccione una central para ver sus detalles</p>
+        </div>
+        <div class="col-md-4">
+            {% if tipo|lower == "hidráulica" %}
+                <a
+                    class="btn btn-primary float-end mb-3 text-white" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#nuevoCasoModal">
+                    <i class="ti ti-plus"></i> Nuevo caso
+                </a>
+            {% elif tipo|lower == "fotovoltaica" %}
+                <a 
+                    class="btn btn-warning float-end mb-3 text-white" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#nuevoCasoModal">
+                    <i class="ti ti-plus"></i> Agregar nuevo
+                </a>
+            {% elif tipo|lower == "térmica" %}
+                <a 
+                    class="btn btn-danger float-end mb-3 text-white" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#nuevoCasoModal">
+                    <i class="ti ti-plus"></i> Crear nuevo
+                </a>
+            {% elif tipo|lower == "eólica" %}
+                <a 
+                    class="btn btn-info float-end mb-3 text-white" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#nuevoCasoModal">
+                    <i class="ti ti-plus"></i> Crear nuevo
+                </a>
+            {% else %}
+                <a 
+                    class="btn btn-secondary float-end" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#nuevoCasoModal">
+                    <i class="ti ti-plus"></i> Otra acción
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="nuevoCasoModal" tabindex="-1" aria-labelledby="nuevoCasoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-4">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nuevoCasoLabel"><i class="fa fa-plus me-2"></i>Agregar nuevo caso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                <div class="mb-3">
+                    <label for="campo1" class="form-label">Potencia</label>
+                    <input id="campo1" name="campo1" type="text" class="form-control" placeholder="Ingrese algo">
+                </div>
+                <div class="mb-3">
+                    <label for="campo2" class="form-label"></label>
+                    <input id="campo2" name="campo2" type="number" class="form-control" placeholder="Ingrese un número">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    Calcular
+                </button>
+                </form>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="row">
+        
+    </div>
+    <style>
+        .scrollable-list {
+            scrollbar-width: thin;
+        }
+        
+        .central-item {
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            
+        }
+        
+        .central-item:hover:not(.active) {
+            background-color: #f1ecec;
+            border-left: 3px solid #1479df;
+        }
+        
+        .central-item.active {
+            border-left: 3px solid #1479df;
+        }
+    </style>
+    <div class="row">
+        <!-- Lista de Centrales -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-light text-black d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-bolt me-2"></i>Listado de Centrales
+                    </div>
+                    <input type="text" id="central-search" class="form-control form-control-sm w-50" placeholder="Buscar central...">
+                </div>
+                <div class="card-body p-0">
+                    <form method="post" id="central-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="central_id" id="selected-central">
+                        <div class="list-group list-group-flush scrollable-list" style="max-height: 450px; overflow-y: auto;">
+                            {% for c in centrales %}
+                            <div class="list-group-item list-group-item-action central-item {% if central_seleccionada and c.id == central_seleccionada.id %}active bg-primary text-white{% endif %}" 
+                                data-id="{{ c.id }}" 
+                                onclick="selectCentral(this);">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ c.nombre }}</h6>
+                                        <small class="text-muted {% if central_seleccionada and c.id == central_seleccionada.id %}text-white{% endif %}">
+                                            {{ c.tipo_especifico|title }}
+                                        </small>
+                                    </div>
+                                    {% if central_seleccionada and c.id == central_seleccionada.id %}
+                                        <i class="fas fa-check"></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>         
+
+        <script>
+            function selectCentral(element) {
+                const centralId = element.dataset.id;
+                
+                // Resetear todas las selecciones
+                document.querySelectorAll('.central-item').forEach(item => {
+                    item.classList.remove('active', 'bg-primary', 'text-white');
+                    const smallText = item.querySelector('small');
+                    if(smallText) {
+                        smallText.classList.add('text-muted');
+                        smallText.classList.remove('text-white');
+                    }
+                });
+                
+                // Marcar como seleccionado
+                element.classList.add('active', 'bg-primary', 'text-white');
+                const smallText = element.querySelector('small');
+                if(smallText) {
+                    smallText.classList.remove('text-muted');
+                    smallText.classList.add('text-white');
+                }
+                
+                document.getElementById('selected-central').value = centralId;
+                document.getElementById('central-form').submit();
+            }
+            
+            // Función de búsqueda
+            document.getElementById('central-search')?.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.central-item').forEach(item => {
+                    item.style.display = item.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                });
+            });
+        </script>
+
+        <!-- Panel de Visualización -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span id="titulo-central">
+                        {% if central_seleccionada %}
+                            {{ central_seleccionada.nombre }}
+                        {% else %}
+                            Seleccione una central
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="card-body" id="panel-central">
+                    {% if not central_seleccionada %}
+                        <div class="text-center py-5 text-muted" id="panel-vacio">
+                            <i class="fas fa-bolt fa-3x mb-3"></i>
+                            <p>Seleccione una central del listado para ver sus detalles</p>
+                        </div>
+                    {% else %}
+                        <div id="panel-detalle">
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-4">
+                                    {% if central_seleccionada.foto_central %}
+                                        <img src="{{ central_seleccionada.foto_central.url }}" 
+                                            alt="{{ central_seleccionada.nombre }}" 
+                                            class="img-fluid rounded shadow mb-3"
+                                            style="max-height: 200px;">
+                                    {% else %}
+                                        <div class="bg-light p-4 rounded">
+                                            <i class="fas fa-image fa-4x text-muted"></i>
+                                            <p class="mt-2 mb-0">Sin imagen</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-8">
+                                    <h4 class="mb-4">{{ central_seleccionada.nombre }}</h4>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <h6 class="text-muted mb-1"><i class="fas fa-map-marker-alt me-2"></i>Ubicación</h6>
+                                                <p>{{ central_seleccionada.ubicacion }}</p>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <h6 class="text-muted mb-1"><i class="fas fa-building me-2"></i>Empresa</h6>
+                                                <p>{{ central_seleccionada.empresa }}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <h6 class="text-muted mb-1"><i class="fas fa-bolt me-2"></i>Capacidad / Potencia</h6>
+                                                <p>{{ central_seleccionada.potencia }} [MW]</p>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <h6 class="text-muted mb-1"><i class="fas fa-calendar-alt me-2"></i>Inicio operación</h6>
+                                                <p>{{ central_seleccionada.anio_operacion }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    
+                                    {% if resultado %}
+                                    <div class="mt-4 pt-3 border-top">
+                                        <h5><i class="fas fa-calculator me-2"></i>Resultado del Cálculo LCOE</h5>
+                                        <div class="alert alert-success mt-3">
+                                            <div class="d-flex justify-content-between">
+                                                <strong>LCOE:</strong>
+                                                <span class="badge bg-primary rounded-pill fs-6">
+                                                    {{ resultado.lcoe }} USD/kWh
+                                                </span>
+                                            </div>
+                                            <small class="text-muted">Calculado el {{ resultado.fecha_calculo }}</small>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <style>
+            #panel-detalle h6 {
+                font-size: 0.85rem;
+            }
+            
+            #panel-vacio {
+                transition: all 0.3s ease;
+            }
+            
+            .img-central {
+                max-height: 200px;
+                object-fit: cover;
+                border-radius: 5px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+        </style>
+
+        <script>
+            // Función para actualizar el panel al seleccionar una central
+            function selectCentral(element) {
+                const centralId = element.dataset.id;
+                document.getElementById('selected-central').value = centralId;
+                document.getElementById('central-form').submit();
+                
+                // Mostrar loading mientras se actualiza
+                const panel = document.getElementById('panel-central');
+                panel.innerHTML = `
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="mt-3">Cargando información de la central...</p>
+                    </div>
+                `;
+            }
+        </script>
+        
+    </div>
+</div>
+
+<!-- Template para los detalles -->
+<template id="template-detalle">
+    <div>
+        <ul class="nav nav-tabs mb-3" id="centralTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button">Datos Generales</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tecnica-tab" data-bs-toggle="tab" data-bs-target="#tecnica" type="button">Ficha Técnica</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="centralTabsContent">
+            <div class="tab-pane fade show active" id="general" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="central-foto" src="" class="img-fluid rounded mb-3" alt="Foto de la central" style="max-height: 200px;">
+                    </div>
+                    <div class="col-md-8">
+                        <h4 id="central-nombre"></h4>
+                        <p class="text-muted" id="central-empresa"></p>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <p><i class="fas fa-map-marker-alt"></i> <strong>Ubicación:</strong> <span id="central-ubicacion"></span></p>
+                                <p><i class="fas fa-bolt"></i> <strong>Potencia:</strong> <span id="central-potencia"></span> MW</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><i class="fas fa-chart-line"></i> <strong>Energía Media:</strong> <span id="central-energia"></span> MWh</p>
+                                <p><i class="fas fa-calendar-alt"></i> <strong>Año Operación:</strong> <span id="central-anio"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Localización</h5>
+                        <p><strong>Provincia:</strong> <span id="central-provincia"></span></p>
+                        <p><strong>Cantón:</strong> <span id="central-canton"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tecnica" role="tabpanel">
+                <div id="ficha-tecnica-content"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Templates para fichas técnicas -->
+<template id="template-termica">
+    <div>
+        <h4>Central Térmica</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Costos de Operación (USD)</h5>
+                <table class="table table-sm">
+                    <tr><th>Producción:</th><td id="ct-produccion"></td></tr>
+                    <tr><th>Operación y Mantenimiento:</th><td id="ct-om"></td></tr>
+                    <tr><th>Administración:</th><td id="ct-administracion"></td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h5>Costos Específicos (USD)</h5>
+                <table class="table table-sm">
+                    <tr><th>Combustible:</th><td id="ct-combustible"></td></tr>
+                    <tr><th>Transporte:</th><td id="ct-transporte"></td></tr>
+                    <tr><th>Lubricación:</th><td id="ct-lubricacion"></td></tr>
+                    <tr><th>Agua:</th><td id="ct-agua"></td></tr>
+                    <tr><th>Mantenimiento:</th><td id="ct-mantenimiento"></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="template-fotovoltaica">
+    <div>
+        <h4>Central Fotovoltaica</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Costos de Operación (USD)</h5>
+                <table class="table table-sm">
+                    <tr><th>Producción:</th><td id="cf-produccion"></td></tr>
+                    <tr><th>Operación y Mantenimiento:</th><td id="cf-om"></td></tr>
+                    <tr><th>Variables:</th><td id="cf-variables"></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</template>
+{% endblock %}

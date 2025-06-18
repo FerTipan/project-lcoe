@@ -1,0 +1,115 @@
+.table-lcoe th {
+    background-color: #1373cc; 
+    color: white;
+    text-align: center;
+}
+.table-lcoe th.principal {
+    width: 15%;
+}
+.table-lcoe th.secundario {
+    width: 10%;
+}
+.table-lcoe td {
+    vertical-align: middle;
+}
+.table-lcoe img {
+    border-radius: 5px;
+}
+
+/* Acordition */
+
+.accordion-lcoe{
+    background-color: #3e5a77;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 20px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: background-color 0.4s ease;
+}
+
+/* */
+/* Contenedor visual del input */
+.campo-lcoe {
+    display: flex;
+    align-items: center;
+    padding: 2px 5px;
+    min-height: 30px;          
+    border: 1px solid #cad3df; 
+    border-radius: 5px;       
+    background-color: #fff;
+    transition: border-color .3s ease, box-shadow .3s ease;
+}
+
+.campo-lcoe input,
+.campo-lcoe select,
+.campo-lcoe textarea {
+    width: 100%;
+    border: none !important;  
+    background: transparent !important;
+    font-size: .9rem;
+    outline: none;             
+    padding: 0;               
+    color: #333;
+}
+
+/* Efecto focus global */
+.campo-lcoe:focus-within {
+    border-color: #6ca8ec;
+    box-shadow: 0 0 4px rgba(108,168,236,.4);
+}
+
+/* Etiquetas */
+.form-label {
+    font-weight: 600;
+    font-size: .9rem;
+    margin-bottom: .35rem;
+    color: #333;
+}
+
+
+/* ----- data Tables ------- */
+.dt-button.custom-blue {
+    background-color: #1373cc !important;
+    border-color: #007bff !important;
+    color: white !important;
+    border-radius: 15px !important;
+    padding: 6px 12px;
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.dt-button.custom-blue:hover {
+    background-color: #0056b3 !important;
+    border-color: #0056b3 !important;
+}
+
+.dt-buttons {
+    margin-bottom: 10px;
+}
+
+
+/* Estilo del buscador */
+div.dataTables_filter {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+div.dataTables_filter input {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px 10px;
+    outline: none;
+}
+
+/* Espaciado general del contenedor */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+}
