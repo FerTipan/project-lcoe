@@ -4,162 +4,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>App LCOE</title>
+  <meta name="description" content="Aplicación web para cálculo y análisis del Costo Nivelado de Energía (LCOE) en Ecuador">
+  <title>LCOE App | Calculadora de Costo Nivelado de Energía</title>
 
   <!-- Favicon -->
   <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="{% static 'assets/images/apple-touch-icon.png' %}">
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
 
-  <!-- Icon Fonts -->
-  <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/fontawesome.css' %}" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- Template CSS -->
   <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/css/inicio/landing.css' %}">
   <style>
-    * {
-      box-sizing: border-box;
-    }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family:sans-serif;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    .video-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      z-index: -1;
-    }
-
-    .header {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 2;
-    }
-
-    .btn-signin {
-      padding: 10px 20px;
-      font-weight: 600;
-      font-size: 1rem;
-      background-color: #ffffffcc;
-      color: #000;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .btn-signin:hover {
-      background-color: #0d6efd;
-      color: #fff;
-    }
-
-    .container {
-      position: relative;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 0 1rem;
-      text-align: center;
-      z-index: 1;
-    }
-
-    .title {
-      font-size: 4rem;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-
-    .title1, .title2 {
-      display: inline-block;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .title1 {
-      background-image: linear-gradient(to right, #000, #4a90e2);
-    }
-
-    .title2 {
-      background-image: linear-gradient(to right, #4a90e2, #000);
-    }
-
-    .description {
-      font-size: 1.2rem;
-      max-width: 800px;
-      margin-top: 1.5rem;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-      animation: fadeIn 1.5s ease-in-out;
-    }
-
-    .btn-iniciar {
-      font-size: 1.1rem;
-      font-weight: bold;
-      padding: 12px 30px;
-      border-radius: 8px;
-      border: 2px solid #1373cc;
-      background-color: transparent;
-      color: #fff;
-      transition: all 0.3s ease;
-    }
-
-    .btn-iniciar:hover {
-      background-color: #4a90e2;
-      color: #fff;
-    }
-
-    @media (max-width: 768px) {
-      .title {
-        font-size: 2.5rem;
-      }
-
-      .description {
-        font-size: 1rem;
-        padding: 0 1rem;
-      }
-
-      .btn-iniciar {
-        font-size: 1rem;
-        padding: 10px 24px;
-      }
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
 
 <body>
   <!-- Fondo de video -->
-  <video class="video-background" autoplay muted loop>
+  <video class="video-background" autoplay muted loop playsinline>
     <source src="{% static 'assets/video/video-inicio.mp4' %}" type="video/mp4" />
+    Tu navegador no soporta videos HTML5.
   </video>
 
   <!-- Capa oscura -->
@@ -167,19 +38,115 @@
 
   <!-- Botón de acceso -->
   <div class="header">
-    <a href="{% url 'login' %}" class="btn-signin">Acceso</a>
+    <a href="{% url 'login' %}" class="btn-signin">
+      <i class="fas fa-sign-in-alt"></i> Acceso
+    </a>
   </div>
 
-  <!-- Contenido principal -->
-  <div class="container">
+  <!-- Sección Hero -->
+  <section class="hero">
     <h1 class="title">
       <span class="title1">LCOE</span> <span class="title2">APP</span>
     </h1>
     <p class="description">
-      <strong>Aplicación web de cálculo y análisis del Costo Nivelado de Energía (LCOE)
-      en el sector eléctrico ecuatoriano.</strong>
+      Aplicación web de cálculo y análisis del <span class="">Costo Nivelado de Energía (LCOE)</span><br>
+      para el sector eléctrico ecuatoriano.
     </p>
-    <a href="{% url 'login' %}" class="btn-iniciar">Iniciar</a>
-  </div>
+    
+    <div class="btn-group">
+      <a href="{% url 'login' %}" class="btn-iniciar">
+        <i class="fas fa-rocket"></i> Iniciar
+      </a>
+      <a href="#features" class="btn-iniciar btn-secondary">
+        <i class="fas fa-info-circle"></i> Saber más
+      </a>
+    </div>
+    
+    <a href="#features" class="scroll-down">
+      <i class="fas fa-chevron-down"></i>
+    </a>
+  </section>
+  
+  <!-- Sección de Características -->
+  <section id="features" class="features-section">
+    <h2 class="section-title">Características Principales</h2>
+    
+    <div class="features-container">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h3 class="feature-title">Cálculo Precise</h3>
+        <p class="feature-description">
+          Modelo creado para el cálculo del LCOE con parámetros ajustables según las necesidades específicas de cada proyecto energético.
+        </p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3 class="feature-title">Análisis Comparativo</h3>
+        <p class="feature-description">
+          Compare diferentes tecnologías de generación energética y evalúe su competitividad en el mercado eléctrico ecuatoriano.
+        </p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-database"></i>
+        </div>
+        <h3 class="feature-title">Base de Datos Actualizada</h3>
+        <p class="feature-description">
+          Acceso a información actualizada de costos, tarifas y parámetros técnicos relevantes para el sector energético nacional.
+        </p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-file-export"></i>
+        </div>
+        <h3 class="feature-title">Reportes Personalizados</h3>
+        <p class="feature-description">
+          Genere reportes detallados y gráficos profesionales para presentar sus análisis y resultados.
+        </p>
+      </div> 
+  </section>
+
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+    
+    const video = document.querySelector('.video-background');
+    video.addEventListener('error', () => {
+      video.style.display = 'none';
+      document.querySelector('.overlay').style.background = 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)';
+    });
+
+    // Efecto de aparición gradual para las tarjetas de características
+    const featureCards = document.querySelectorAll('.feature-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    featureCards.forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = `all 0.5s ease ${index * 0.1}s`;
+      observer.observe(card);
+    });
+  </script>
 </body>
 </html>

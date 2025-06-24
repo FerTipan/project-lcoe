@@ -1,3 +1,4 @@
+/* ----------------- Estilos tablas  --------------------*/
 .table-lcoe th {
     background-color: #1373cc; 
     color: white;
@@ -31,8 +32,8 @@
     transition: background-color 0.4s ease;
 }
 
-/* */
-/* Contenedor visual del input */
+
+/* -----------  Contenedor visual del input  -----------------*/
 .campo-lcoe {
     display: flex;
     align-items: center;
@@ -56,13 +57,11 @@
     color: #333;
 }
 
-/* Efecto focus global */
 .campo-lcoe:focus-within {
     border-color: #6ca8ec;
     box-shadow: 0 0 4px rgba(108,168,236,.4);
 }
 
-/* Etiquetas */
 .form-label {
     font-weight: 600;
     font-size: .9rem;
@@ -108,7 +107,6 @@ div.dataTables_filter input {
     outline: none;
 }
 
-/* Espaciado general del contenedor */
 .container {
     max-width: 1200px;
     margin: 40px auto;
