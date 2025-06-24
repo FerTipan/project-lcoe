@@ -11,7 +11,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- jQuery Validate -->
   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-
   <!-- Favicon icon -->
   <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon">
   <!-- DataTables-->
@@ -22,38 +21,40 @@
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
     id="main-font-link">
-  <!-- [Tabler Icons] https://tablericons.com -->
+  <!-- Tabler Icons https://tablericons.com -->
   <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/tabler-icons.min.css' %}">
-  <!-- [Feather Icons] https://feathericons.com -->
+  <!-- Feather Icons https://feathericons.com -->
   <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/feather.css' %}">
-  <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+  <!-- Font Awesome Icons https://fontawesome.com/icons -->
   <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/fontawesome.css' %}">
-  <!-- [Material Icons] https://fonts.google.com/icons -->
+  <!-- [Material Icons https://fonts.google.com/icons -->
   <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/fonts/material.css' %}">
   <!-- Template CSS Files -->
   <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style.css' %}" id="main-style-link">
   <link rel="stylesheet" href="{% static 'plantilla/mantis/dist/assets/css/style-preset.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/css/tipo.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/css/lcoe_table.css' %}">
-  <!-- Importancion del IziToast-->
+  <link rel="stylesheet" href="{% static 'assets/css/tipoGeneracion/tipo.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/administracion/lcoe_table.css' %}">
+  <!-- Sweet Alert-->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+  <!-- Notyf CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" rel="stylesheet" />
+  <!-- Importancion del IziToast
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css"
     integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"
     integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
   <!-- File Inputs Libreria
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.0/js/fileinput.min.js" integrity="sha512-ZOU4ZJnGlvyQ76zoWdOs4Yb7VnhJPRKkssorqt36m9/NDmHs0FrWteaSAsODgSJfBke9vAPLxpO7b1fb2Bmevw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.0/css/fileinput.min.css" integrity="sha512-cvhwKyzOpC1m0Ps5PFVput79SWoJ98fkcV52QEr3aJ1A6hfE6N1wzWFtGH8iYOHp/MHOg6LDlX5ljHoi9BS5SQ==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
 
-  <!--  Bootstrap Select -->
+  <!--  Bootstrap Select 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script> -->
 </head>
 <!-- [Head] end -->
 <!-- [Body] Start -->
-
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
   <!-- [ Pre-loader ] start -->
   <div class="loader-bg">
@@ -82,30 +83,30 @@
             </a>
           </li>
           <li class="pc-item pc-caption">
-            <label>Administrador</label>
+            <label>Configuraciones</label>
             <i class="ti ti-user"></i>
           </li>
           <li class="pc-item">
             <a href="{% url 'central_list' %}" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-bookmark"></i></span>
-              <span class="pc-mtext">Lista Centrales</span>
+              <span class="pc-micon"><i class="ti ti-settings"></i></span>
+              <span class="pc-mtext">Centrales</span>
             </a>
           </li>
           <li class="pc-item">
             <a href="{% url 'tipoelectrica_list' %}" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-clipboard"></i></span>
-              <span class="pc-mtext">Lista Tipo de Generación</span>
+              <span class="pc-micon"><i class="ti ti-settings"></i></span>
+              <span class="pc-mtext">Tipo de Generación</span>
             </a>
           </li>
           <li class="pc-item">
             <a href="{% url 'fotovoltaica_list' %}" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-bookmark"></i></span>
-              <span class="pc-mtext">Lista Fotovoltaicas</span>
+              <span class="pc-micon"><i class="ti ti-settings"></i></span>
+              <span class="pc-mtext">Fotovoltaicas</span>
             </a>
           </li>
           <li class="pc-item">
             <a href="{% url 'info_list' %}" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-file"></i></span>
+              <span class="pc-micon"><i class="ti ti-settings"></i></span>
               <span class="pc-mtext">Información Técnica</span>
             </a>
           </li>
@@ -199,32 +200,6 @@
               <i class="ti ti-menu-2"></i>
             </a>
           </li>
-          <!-- <li class="dropdown pc-h-item d-inline-flex d-md-none">
-        <a
-          class="pc-head-link dropdown-toggle arrow-none m-0"
-          data-bs-toggle="dropdown"
-          href="#"
-          role="button"
-          aria-haspopup="false"
-          aria-expanded="false"
-        >
-          <i class="ti ti-search"></i>
-        </a>
-        <div class="dropdown-menu pc-h-dropdown drp-search">
-          <form class="px-3">
-            <div class="form-group mb-0 d-flex align-items-center">
-              <i data-feather="search"></i>
-              <input type="search" class="form-control border-0 shadow-none" placeholder="Search here. . .">
-            </div>
-          </form>
-        </div>
-      </li>
-      <li class="pc-h-item d-none d-md-inline-flex">
-        <form class="header-search">
-          <i data-feather="search" class="icon-search"></i>
-          <input type="search" class="form-control" placeholder="Search here. . .">
-        </form>
-      </li> -->
         </ul>
       </div>
       <!-- [Mobile Media Block end] -->
@@ -234,7 +209,7 @@
             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button"
               aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
               <img src="{% static 'assets/images/user/avatar-9.jpg' %}" alt="user-image" class="user-avtar">
-              <span>{{ user.first_name }} &nbsp; {{ user.last_name }}</span>
+              <span>{{ user.first_name }}&nbsp;{{ user.last_name }}</span>
             </a>
             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
               <div class="dropdown-header">
@@ -274,12 +249,12 @@
                     <span>Cerrar sesión</span>
                   </a>
                 </div>
-                <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
+                <!--<div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
                   <a href="#!" class="dropdown-item">
                     <i class="ti ti-help"></i>
                     <span>Soporte</span>
                   </a>
-                </div>
+                </div>-->
               </div>
             </div>
           </li>
@@ -296,74 +271,33 @@
       {% endblock%}
     </div>
   </div>
-  <!-- [Page Specific JS] start 
-    <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/apexcharts.min.js' %}"></script>
-    <script src="{% static 'plantilla/mantis/dist/assets/js/pages/dashboard-default.js' %}"></script>
-    [Page Specific JS] end -->
-  <!-- Required Js -->
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Notyf JS -->
+  <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
   <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/popper.min.js' %}"></script>
   <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/simplebar.min.js' %}"></script>
   <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/bootstrap.min.js' %}"></script>
   <script src="{% static 'plantilla/mantis/dist/assets/js/fonts/custom-font.js' %}"></script>
   <script src="{% static 'plantilla/mantis/dist/assets/js/pcoded.js' %}"></script>
   <script src="{% static 'plantilla/mantis/dist/assets/js/plugins/feather.min.js' %}"></script>
+  <script src="{% static 'assets/js/notificaciones.js' %}"></script>
+
   <script>
-    function confirmarEliminacion(pk) {
-      iziToast.question({
-        timeout: false,
-        close: false,
-        overlay: true,
-        displayMode: 'once',
-        title: '¿Confirmar eliminación?',
-        message: 'Está  seguro de eliminar esta información',
-        position: 'center',
-        buttons: [
-          ['<button><b>Eliminar</b></button>', function (instance, toast) {
-            document.getElementById('form-eliminar-' + pk).submit();
-            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-          }, true],
-          ['<button>Cancelar</button>', function (instance, toast) {
-            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-          }]
-        ]
-      });
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+      const mensajes = [
+        {% for message in messages %}
+          {
+            tipo: "{{ message.tags }}",
+            texto: "{{ message|escapejs }}"
+          }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ];
+
+      mostrarNotificaciones(mensajes);
+    });
   </script>
-  <!-- Start Izi Toast -->
-   {% if messages %}
-    {% for message in messages %}
-      {% if message.tags == "success" %}
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          iziToast.success({ 
-            title:'Éxito',
-            message:'{{ message|escapejs }}',
-            position:'topRight',
-            timeout:'4000',
-            close:'true',
-            pauseOnHover:'true',
-            progressBar:'true'
-          });
-        });
-      </script>
-      {% elif message.tags == "error" %}
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          iziToast.error({ 
-            title:'Error',
-            message:'{{ message|escapejs }}',
-            position:'topRight',
-            timeout:'4000',
-            close:'true',
-            pauseOnHover:'true',
-            progressBar:'true'
-          });
-        });
-      </script>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-  <!-- End Toast de Confirmacion -->
 
   <script>layout_change('light');</script>
 

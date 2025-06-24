@@ -1,3 +1,4 @@
+/* ------------------ Estilos: Tipos de Generacion ------------------- */
 .centered-cols {
     display: flex;
     justify-content: center;
@@ -59,7 +60,6 @@
     opacity: 1;
 }
 
-/* Ícono inicial centrado */
 .card-icon {
     font-size: 4rem;
     z-index: 3;

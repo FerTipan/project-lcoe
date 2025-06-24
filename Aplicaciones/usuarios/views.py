@@ -1,34 +1,51 @@
-#from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.views import View
-
-
-'''def login_view(request):
-    return render(request, 'usuarios/login.html')
+from .forms import CustomLoginForm, RegisterForm
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 @login_required
-def redireccion_por_rol(request):
-    if request.user.groups.filter(name='Admin').exists():
-        return redirect('dashboard_admin')  # vista - admin
-    else:
-        return redirect('tipoGeneracion')  # vista - usuario
-    
-@login_required
-def dashboard_admin(request):
-    return render(request, 'usuarios/dashboard_admin.html')'''
-
-
 def custom_logout(request):
     logout(request)
     return redirect('inicio')
 
 class CustomLoginView(LoginView):
     template_name = 'usuarios/login.html'
+    authentication_form = CustomLoginForm
 
+    def form_invalid(self, form):
+        messages.error(self.request, "Usuario o contraseña incorrectos.")
+        return super().form_invalid(form)
+
+def registro_view(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+            messages.success(request, "Registro exitoso. Ahora puede iniciar sesión.")
+            return redirect('login')
+        else:
+            messages.error(request, "Por favor corrija los errores.")
+    else:
+        form = RegisterForm()
+    return render(request, 'usuarios/registro.html', {'form': form})
+
+LoginRequiredMixin
 class RedirectAfterLoginView(View):
     def get(self, request, *args, **kwargs):
         if request.user.perfil.es_admin:
-            return redirect('admin-dashboard')
+            return redirect('dashboard_admin')
+        return redirect('tipoGeneracion')
+
+@login_required
+def vista_administrador(request):
+    if request.user.perfil.es_admin:
+        return render(request, 'usuarios/dashboard_admin.html')
+    else:
+        messages.error(request, "No tienes permisos para acceder a esta página.")
         return redirect('tipoGeneracion')
