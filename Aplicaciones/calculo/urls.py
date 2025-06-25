@@ -39,6 +39,8 @@ urlpatterns = [
     path('informacion/editar/<int:pk>/', views.InformacionCentralUpdateView.as_view(), name='info_update'),
     path('informacion/eliminar/<int:pk>/', views.InformacionCentralDeleteView.as_view(), name='info_delete'),
     
+    path('calculo/detalle/<int:caso_id>/', views.detalle_calculo_lcoe, name='detalle_calculo_lcoe')
+
     #path('tipo/<int:tipo_id>/', views.centrales_por_tipo, name='centrales_por_tipo'),
 
     #---- nuevo
