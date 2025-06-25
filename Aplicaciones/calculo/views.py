@@ -249,3 +249,14 @@ def calcular_lcoe_view(request, pk):
         return redirect('seleccion')
 
     return render(request, 'seleccion.html', {'resultado': resultado})
+
+def detalle_calculo_lcoe(request, caso_id):
+    try:
+        caso = CasoCalculo.objects.get(pk=caso_id)
+        if hasattr(caso, 'parametrofotovoltaica'):
+            resultado = caso.parametrofotovoltaica.calcular_lcoe()
+            return JsonResponse(resultado)
+        else:
+            return JsonResponse({"error": "El caso no tiene datos fotovoltaicos."})
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
