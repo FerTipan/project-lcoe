@@ -23,12 +23,5 @@ def asignar_grupo_y_perfil_usuario_social(sender, instance, created, **kwargs):
         Perfil.objects.get_or_create(user=usuario, defaults={'es_admin': False})
 
 @receiver(post_save, sender=User)
-def crear_o_actualizar_perfil_usuario(sender, instance, created, **kwargs):
-    if created:
-        Perfil.objects.create(user=instance)
-    else:
-        # Solo guarda si existe el perfil
-        try:
-            instance.perfil.save()
-        except Perfil.DoesNotExist:
-            Perfil.objects.create(user=instance)
+def crear_o_actualizar_perfil_usuario(sender, instance, **kwargs):
+    Perfil.objects.get_or_create(user=instance)

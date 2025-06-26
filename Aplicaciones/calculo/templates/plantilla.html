@@ -1,7 +1,8 @@
+{% load user_filters %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -82,6 +83,9 @@
               <span class="pc-mtext">Inicio</span>
             </a>
           </li>
+          {% if user.is_authenticated %}
+            {% if user|has_group:"Admin" %}
+
           <li class="pc-item pc-caption">
             <label>Configuraciones</label>
             <i class="ti ti-user"></i>
@@ -110,7 +114,9 @@
               <span class="pc-mtext">Información Técnica</span>
             </a>
           </li>
+          {% elif user|has_group:"Usuario" %}
 
+          
           <li class="pc-item pc-caption">
             <label>Tecnologías</label>
             <i class="ti ti-dashboard"></i>
@@ -173,6 +179,10 @@
             </ul>
           </li>
         </ul>
+      </div>
+      {% endif %}
+      {% endif %}
+
         <div class="card text-center">
           <div class="card-body">
             <img src="{% static 'plantilla/mantis/src/assets/images/img-navbar-card.png' %}" alt="images"
