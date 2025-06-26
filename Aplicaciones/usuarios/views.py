@@ -39,13 +39,13 @@ LoginRequiredMixin
 class RedirectAfterLoginView(View):
     def get(self, request, *args, **kwargs):
         if request.user.perfil.es_admin:
-            return redirect('dashboard_admin')
+            return redirect('tipoGeneracion')
         return redirect('tipoGeneracion')
 
 @login_required
 def vista_administrador(request):
     if request.user.perfil.es_admin:
-        return render(request, 'usuarios/dashboard_admin.html')
+        return render(request, 'tipoGeneracion.html')
     else:
         messages.error(request, "No tienes permisos para acceder a esta página.")
         return redirect('tipoGeneracion')

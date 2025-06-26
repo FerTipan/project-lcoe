@@ -26,7 +26,7 @@ class Central(models.Model):
     tipo = models.CharField(max_length=200)
     potencia = models.DecimalField(max_digits=15, decimal_places=6, help_text="MW")
     provincia = models.CharField(max_length=200)
-    anio_operacion = models.PositiveIntegerField()
+    anio_operacion = models.CharField()
     tipo_electrica = models.ForeignKey(
         TipoElectrica,
         on_delete=models.CASCADE,
@@ -39,7 +39,7 @@ class Central(models.Model):
 class Fotovoltaica(models.Model):
     central = models.OneToOneField('Central', on_delete=models.CASCADE, related_name='fotovoltaica')
 
-    anio_ingreso = models.PositiveIntegerField()
+    anio_ingreso = models.CharField()
     numero_paneles = models.IntegerField()
     sistema = models.CharField(max_length=100)
 
