@@ -24,6 +24,7 @@
     .list-group-item.active {
         background-color: #dee0e4;
         border-color: #0d6efd;
+        color:black;
     }
     .central-img {
         max-height: 200px;
@@ -172,7 +173,7 @@
                     </div>
                     <input type="text" id="central-search" class="form-control form-control-sm w-50" placeholder="Buscar central...">
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-2">
                     <form method="post" id="central-form">
                         {% csrf_token %}
                         <input type="hidden" name="central_id" id="selected-central">
@@ -238,7 +239,7 @@
         <!-- Panel de Visualización -->
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-light text-black d-flex align-items-center">
                     <i class="fas fa-info-circle me-2"></i>
                     <span id="titulo-central">
                         {% if central_seleccionada %}
@@ -363,95 +364,4 @@
         
     </div>
 </div>
-
-<!-- Template para los detalles -->
-<template id="template-detalle">
-    <div>
-        <ul class="nav nav-tabs mb-3" id="centralTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button">Datos Generales</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="tecnica-tab" data-bs-toggle="tab" data-bs-target="#tecnica" type="button">Ficha Técnica</button>
-            </li>
-        </ul>
-        <div class="tab-content" id="centralTabsContent">
-            <div class="tab-pane fade show active" id="general" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-4">
-                        <img id="central-foto" src="" class="img-fluid rounded mb-3" alt="Foto de la central" style="max-height: 200px;">
-                    </div>
-                    <div class="col-md-8">
-                        <h4 id="central-nombre"></h4>
-                        <p class="text-muted" id="central-empresa"></p>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <p><i class="fas fa-map-marker-alt"></i> <strong>Ubicación:</strong> <span id="central-ubicacion"></span></p>
-                                <p><i class="fas fa-bolt"></i> <strong>Potencia:</strong> <span id="central-potencia"></span> MW</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><i class="fas fa-chart-line"></i> <strong>Energía Media:</strong> <span id="central-energia"></span> MWh</p>
-                                <p><i class="fas fa-calendar-alt"></i> <strong>Año Operación:</strong> <span id="central-anio"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Localización</h5>
-                        <p><strong>Provincia:</strong> <span id="central-provincia"></span></p>
-                        <p><strong>Cantón:</strong> <span id="central-canton"></span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="tecnica" role="tabpanel">
-                <div id="ficha-tecnica-content"></div>
-            </div>
-        </div>
-    </div>
-</template>
-
-<!-- Templates para fichas técnicas -->
-<template id="template-termica">
-    <div>
-        <h4>Central Térmica</h4>
-        <div class="row">
-            <div class="col-md-6">
-                <h5>Costos de Operación (USD)</h5>
-                <table class="table table-sm">
-                    <tr><th>Producción:</th><td id="ct-produccion"></td></tr>
-                    <tr><th>Operación y Mantenimiento:</th><td id="ct-om"></td></tr>
-                    <tr><th>Administración:</th><td id="ct-administracion"></td></tr>
-                </table>
-            </div>
-            <div class="col-md-6">
-                <h5>Costos Específicos (USD)</h5>
-                <table class="table table-sm">
-                    <tr><th>Combustible:</th><td id="ct-combustible"></td></tr>
-                    <tr><th>Transporte:</th><td id="ct-transporte"></td></tr>
-                    <tr><th>Lubricación:</th><td id="ct-lubricacion"></td></tr>
-                    <tr><th>Agua:</th><td id="ct-agua"></td></tr>
-                    <tr><th>Mantenimiento:</th><td id="ct-mantenimiento"></td></tr>
-                </table>
-            </div>
-        </div>
-    </div>
-</template>
-
-<template id="template-fotovoltaica">
-    <div>
-        <h4>Central Fotovoltaica</h4>
-        <div class="row">
-            <div class="col-md-6">
-                <h5>Costos de Operación (USD)</h5>
-                <table class="table table-sm">
-                    <tr><th>Producción:</th><td id="cf-produccion"></td></tr>
-                    <tr><th>Operación y Mantenimiento:</th><td id="cf-om"></td></tr>
-                    <tr><th>Variables:</th><td id="cf-variables"></td></tr>
-                </table>
-            </div>
-        </div>
-    </div>
-</template>
 {% endblock %}

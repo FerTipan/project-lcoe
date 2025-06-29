@@ -294,4 +294,24 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Busca el primer campo con error
+    var errorField = document.querySelector('.is-invalid, .errorlist + input, .errorlist + select, .errorlist + textarea');
+    if (errorField) {
+        // Busca el acordeón padre y expándelo si está colapsado
+        var accordionCollapse = errorField.closest('.accordion-collapse');
+        if (accordionCollapse && !accordionCollapse.classList.contains('show')) {
+            var collapseId = accordionCollapse.id;
+            var button = document.querySelector('[data-bs-target="#' + collapseId + '"]');
+            if (button) {
+                button.click();
+            }
+        }
+        // Enfoca el campo con error
+        errorField.focus();
+    }
+});
+</script>
+<!-- filepath: c:\project-thesis\project-lcoe\Aplicaciones\calculo\templates\fotovoltaica\form.html -->
 {% endblock %}

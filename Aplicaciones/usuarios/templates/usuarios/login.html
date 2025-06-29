@@ -82,8 +82,11 @@
         <div class="d-grid mb-4">
           <button type="button" class="btn btn-google py-2">
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google icon" width="20" />
-            {% if user.is_authenticated == 'Admin' %}
-              <span class="ms-2">Sesión activa: {{ user.first_name }} (<a href="{% url 'logout' %}" class="text-decoration-none">Salir</a>)</span>
+            {% if user.is_authenticated %}
+              <span class="ms-2">
+                Sesión activa: {{ user.first_name }} 
+                (<a href="{% url 'logout' %}" class="text-decoration-none">Salir</a>)
+              </span>
             {% else %}
               <a href="{% url 'social:begin' 'google-oauth2' %}?next=/tipoGeneracion/" class="text-decoration-none ms-2">Google</a>
             {% endif %}

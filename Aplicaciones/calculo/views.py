@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from Aplicaciones.usuarios.models import Perfil
 from django.views.generic import TemplateView
 from Aplicaciones.usuarios.decorators import AdminRequiredMixin, UserRequiredMixin
+from django.urls import reverse
 
 @login_required
 def vista_usuario_calculo(request):
@@ -216,6 +217,7 @@ def centrales_por_tipo(request, tipo_id):
 
         if not parametros:
             messages.error(request, "No se pudo crear los parámetros para esta tecnología.")
+            return redirect('centrales_por_tipo', tipo_id=tipo_id)
         else:
             try:
                 lcoe_valor = parametros.calcular_lcoe()
@@ -229,6 +231,19 @@ def centrales_por_tipo(request, tipo_id):
                     messages.success(request, "Cálculo realizado exitosamente.")
             except Exception as e:
                 messages.error(request, f"Ocurrió un error al calcular o guardar el resultado: {e}")
+            return redirect(f"{reverse('centrales_por_tipo', args=[tipo_id])}?caso_id={caso.id}")
+
+    # --- GET ---
+    caso_id = request.GET.get("caso_id")
+    if caso_id:
+        try:
+            caso = CasoCalculo.objects.get(pk=caso_id)
+            central_seleccionada = caso.central
+            resultado = ResultadoCalculo.objects.filter(caso=caso).last()
+        except CasoCalculo.DoesNotExist:
+            caso = None
+            central_seleccionada = None
+            resultado = None
 
     return render(request, 'tecnologias/seleccion.html', {
         'tipo': tipo,
@@ -237,7 +252,6 @@ def centrales_por_tipo(request, tipo_id):
         'resultado': resultado,
         'caso': caso,
     })
-
 # ---------------------  CALCULOS LCOE --------------------  
 @login_required
 def calcular_lcoe_view(request, pk):

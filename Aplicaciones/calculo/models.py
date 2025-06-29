@@ -145,7 +145,7 @@ class ParametroCalculos(models.Model):
     porcentaje_deuda = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
     degradacion = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
 
-    # Datos financieros/económicos adicionales
+    # Datos financieros/económicos
     beta = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
     impuesto = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
     margen_intermediacion = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
@@ -177,45 +177,50 @@ class ParametroFotovoltaica(ParametroCalculos):
     costo_anual_oma_mw = models.DecimalField(max_digits=10, decimal_places=6, blank=True, null=True)
 
     def calcular_lcoe(self):
+        from decimal import Decimal, getcontext
+        getcontext().prec = 40
         try:
-            # Conversión segura con Decimal
-            PN = Decimal(self.potencia_nominal or 0)
-            FP = Decimal(self.factor_planta or 0) / Decimal('100')
-            VU = Decimal(self.vida_util or 0)
-            IN = Decimal(self.inversion_total or 0)
-            CP = Decimal(self.capital_propio or 0)
-            CV = Decimal(self.costo_variable or 0)
+            # Conversión a Decimal
+            def to_decimal(val):
+                return Decimal(str(val)) if val is not None else Decimal('0')
+
+            PN = to_decimal(self.potencia_nominal)
+            FP = to_decimal(self.factor_planta) / Decimal('100')
+            VU = to_decimal(self.vida_util)
+            IN = to_decimal(self.inversion_total)
+            CP = to_decimal(self.capital_propio)
+            CV = to_decimal(self.costo_variable)
 
             P_CP = (CP / IN) if IN else Decimal('0')
-            D = Decimal(self.deuda or 0)
+            D = to_decimal(self.deuda)
             P_D = (D / IN) if IN else Decimal('0')
-            PDT = Decimal(self.porcentaje_deuda or 0) / Decimal('100')
-            TIP = Decimal(self.tasa_interes_periodo or 0) / Decimal('100')
-            TIA = Decimal(self.tasa_interes_anual or 0) / Decimal('100')
-            TP = Decimal(self.total_periodos or 0)
-            AG = Decimal(self.anios_gracia or 0)
-            PP = Decimal(self.periodos_pago or 0) / Decimal('2')
+            PDT = to_decimal(self.porcentaje_deuda) / Decimal('100')
+            TIP = to_decimal(self.tasa_interes_periodo) / Decimal('100')
+            TIA = to_decimal(self.tasa_interes_anual) / Decimal('100')
+            TP = to_decimal(self.total_periodos)
+            AG = to_decimal(self.anios_gracia)
+            PP = to_decimal(self.periodos_pago) / Decimal('2') if self.periodos_pago else Decimal('0')
 
-            B = Decimal(self.beta or 0)
-            MB = Decimal(self.margen_intermediacion or 0) / Decimal('100')
-            inflacion = Decimal(self.inflacion or 0) / Decimal('100')
-            economia = Decimal(self.economia or 0) / Decimal('100')
-            RP = Decimal(self.riesgo or 0)
-            IPR = Decimal(self.indice_premio or 0) / Decimal('100')
-            TSR = Decimal(self.sin_riesgo or 0) / Decimal('100')
-            TDM = Decimal(self.tasa_mercado or 0) / Decimal('100')
-            PRM = Decimal(self.premio_riesgo_mercado or 0) / Decimal('100')
-            T = Decimal(self.impuesto or 0) / Decimal('100')
-            EAP = Decimal(self.energia_anual_producida or 0)
+            B = to_decimal(self.beta)
+            MB = to_decimal(self.margen_intermediacion) / Decimal('100')
+            inflacion = to_decimal(self.inflacion) / Decimal('100')
+            economia = to_decimal(self.economia) / Decimal('100')
+            RP = to_decimal(self.riesgo)
+            IPR = to_decimal(self.indice_premio) / Decimal('100')
+            TSR = to_decimal(self.sin_riesgo) / Decimal('100')
+            TDM = to_decimal(self.tasa_mercado) / Decimal('100')
+            PRM = to_decimal(self.premio_riesgo_mercado) / Decimal('100')
+            T = to_decimal(self.impuesto) / Decimal('100')
+            EAP = to_decimal(self.energia_anual_producida)
 
-            cost_P = Decimal(self.costo_produccion or 0)
-            cost_an_p = Decimal(self.costo_anual_oma_mw or 0)
-            degradacion = Decimal(self.degradacion or 0) / Decimal('100')
+            cost_P = to_decimal(self.costo_produccion)
+            cost_an_p = to_decimal(self.costo_anual_oma_mw)
+            degradacion = to_decimal(self.degradacion) / Decimal('100')
 
             # Tasa minima 
             tasa_minima = inflacion + IPR + (inflacion * IPR)
 
-            # Ajuste de beta con apalancamiento financiero
+            # Ajuste beta con apalancamiento financiero
             af1 = (P_D * (1 - T)) / P_CP if P_CP else Decimal('0')
             B_AP = B * (1 + af1)
             CT_CP = TSR + (PRM * (B_AP / Decimal('100'))) + IPR
@@ -224,9 +229,8 @@ class ParametroFotovoltaica(ParametroCalculos):
             tz_cp = ((1 + inflacion) * (1 + economia) - 1)
             CST_DEU = tz_cp + MB
 
-            # WACC (costo promedio ponderado de capital)
+            # WACC
             WACC = ((P_CP * CT_CP) + (P_D * CST_DEU)) / (P_CP + P_D) if (P_CP + P_D) else Decimal('0')
-            WACC = WACC.quantize(Decimal('0.0001'))
 
             # Anualidad de la deuda 
             FRC = WACC * ((1 + WACC) ** VU) / (((1 + WACC) ** VU) - 1) if VU and WACC else Decimal('0')
@@ -236,20 +240,33 @@ class ParametroFotovoltaica(ParametroCalculos):
             CF_total_1 = cost_P * EAP
             CF_total_2 = cost_an_p * EAP
             CF_total = CF_total_1 + CF_total_2
+            # Costo variable total
             CV_total = CV * EAP
+            # Suma de costos 
             costos = CF_total + CV_total
 
             # Año base t = 1
-            t = 1
-            numerador = CP + (costos / ((1 + WACC) ** t)) if WACC else CP + costos
-            denominador = (EAP * ((1 - degradacion) ** t)) / ((1 + WACC) ** t) if WACC else EAP
+            t = Decimal('1')
 
-            lcoe = numerador / denominador if denominador else None
+            # Fórmula unificada para lcoe
+            if WACC != 0 and EAP != 0:
+                lcoe =(CP+(costos/(1+WACC)**1))/((EAP*(1+degradacion)**1))/((1+WACC)**1)
+            else:
+                lcoe = None
+
+            #  prints
+            print("Potencia nominal:", PN)
+            print("Factor planta:", FP)
+            print("WACC:", WACC)
+            print("Anualidad:", anualidad)
+            print("Costos:", costos)
+            print("LCOE:", lcoe)
+
             return lcoe.quantize(Decimal('0.0001')) if lcoe else None
 
         except Exception as e:
             return {"error": str(e)}
-        
+
     class ParametroGenerico(ParametroCalculos):
 
         def calcular_lcoe(self):
