@@ -74,7 +74,7 @@
             <p class="lead text-muted">Seleccione una central para ver sus detalles</p>
         </div>
         <div class="col-md-4">
-            {% if tipo|lower == "hidráulica" %}
+            {% if tipo|lower == "hidraulica" %}
                 <a
                     class="btn btn-primary float-end mb-3 text-white" 
                     data-bs-toggle="modal" 
@@ -88,14 +88,14 @@
                     data-bs-target="#nuevoCasoModal">
                     <i class="ti ti-plus"></i> Agregar nuevo
                 </a>
-            {% elif tipo|lower == "térmica" %}
+            {% elif tipo|lower == "termica" %}
                 <a 
                     class="btn btn-danger float-end mb-3 text-white" 
                     data-bs-toggle="modal" 
                     data-bs-target="#nuevoCasoModal">
                     <i class="ti ti-plus"></i> Crear nuevo
                 </a>
-            {% elif tipo|lower == "eólica" %}
+            {% elif tipo|lower == "eolica" %}
                 <a 
                     class="btn btn-info float-end mb-3 text-white" 
                     data-bs-toggle="modal" 
@@ -113,31 +113,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="nuevoCasoModal" tabindex="-1" aria-labelledby="nuevoCasoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content p-4">
-            <div class="modal-header">
-                <h5 class="modal-title" id="nuevoCasoLabel"><i class="fa fa-plus me-2"></i>Agregar nuevo caso</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                <div class="mb-3">
-                    <label for="campo1" class="form-label">Potencia</label>
-                    <input id="campo1" name="campo1" type="text" class="form-control" placeholder="Ingrese algo">
-                </div>
-                <div class="mb-3">
-                    <label for="campo2" class="form-label"></label>
-                    <input id="campo2" name="campo2" type="number" class="form-control" placeholder="Ingrese un número">
-                </div>
-                <button type="submit" class="btn btn-primary w-100">
-                    Calcular
-                </button>
-                </form>
-            </div>
-            </div>
-        </div>
-        </div>
+        {% include "resultados/modal.html" %}
     </div>
     <div class="row">
         
