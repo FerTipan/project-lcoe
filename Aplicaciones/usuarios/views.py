@@ -6,6 +6,7 @@ from .forms import CustomLoginForm, RegisterForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from .models import Perfil
 
 @login_required
 def custom_logout(request):
@@ -27,10 +28,13 @@ def registro_view(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password1'])
             user.save()
+            
+            Perfil.objects.get_or_create(user=user)
+
             messages.success(request, "Registro exitoso. Ahora puede iniciar sesión.")
             return redirect('login')
         else:
-            messages.error(request, "Por favor corrija los errores.")
+            messages.error(request, "Por favor llena los campos.")
     else:
         form = RegisterForm()
     return render(request, 'usuarios/registro.html', {'form': form})

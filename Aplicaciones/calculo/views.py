@@ -1,14 +1,15 @@
+from decimal import Decimal
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import  TipoElectrica, Central, InformacionCentral, Fotovoltaica, CasoCalculo, ResultadoCalculo , ParametroFotovoltaica
-from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm, FotovoltaicaForm
+from .models import  TipoElectrica, Central, InformacionCentral, Fotovoltaica, Termica, CasoCalculo, ResultadoCalculo , ParametroFotovoltaica
+from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm, FotovoltaicaForm, TermicaForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
 import json
-from .services import crear_parametros_desde_fotovoltaica, crear_parametros_desde_tipo_generacion
+from .services import crear_parametros_desde_tipo_generacion
 from django.contrib.auth.decorators import login_required
 # Importacion de la app usuarios
 from Aplicaciones.usuarios.models import Perfil
@@ -117,6 +118,44 @@ class FotovoltaicaUpdateView(UpdateView):
 class FotovoltaicaDeleteView(DeleteView):
     model = Fotovoltaica
     success_url = reverse_lazy('fotovoltaica_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Central fotovoltaica eliminada correctamente.')
+        return super().delete(request, *args, **kwargs)
+    
+
+# -------------- Termica -----------------
+class TermicaListView(ListView):
+    model = Termica
+    template_name = 'termica/listaT.html'
+
+    def get_queryset(self):
+        return Termica.objects.filter(central__tipo_electrica__nombre__icontains='termica')
+
+class TermicaCreateView(CreateView):
+    model = Termica
+    form_class = TermicaForm
+    template_name = 'termica/formT.html'
+    success_url = reverse_lazy('termica_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Central termica agregada correctamente.')
+        return super().form_valid(form)
+    
+
+class TermicaUpdateView(UpdateView):
+    model = Termica
+    form_class = TermicaForm
+    template_name = 'termica/formT.html'
+    success_url = reverse_lazy('termica_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Central termica actualizada correctamente.')
+        return super().form_valid(form)
+
+class TermicaDeleteView(DeleteView):
+    model = Termica
+    success_url = reverse_lazy('termica_list')
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Central fotovoltaica eliminada correctamente.')
@@ -252,25 +291,104 @@ def centrales_por_tipo(request, tipo_id):
         'resultado': resultado,
         'caso': caso,
     })
-# ---------------------  CALCULOS LCOE --------------------  
+# ---------------------  Nuevo caso CALCULOS LCOE --------------------  
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import matplotlib.pyplot as plt
+import io
+import base64
+
 @login_required
-def calcular_lcoe_view(request, pk):
-    parametro = get_object_or_404(ParametroFotovoltaica, pk=pk)
-    resultado = parametro.calcular_lcoe()
+@csrf_exempt
+def nuevo_caso_calculo(request):
+    if request.method == 'POST':
+        try:
+            nombre = request.POST.get('nombre')
+            central_id = request.POST.get('central_id')
+            comparar_con_id = request.POST.get('comparar_con_id')
+            central = Central.objects.get(id=central_id) if central_id else None
 
-    if 'error' in resultado:
-        messages.error(request, f"Error: {resultado['error']}")
-        return redirect('seleccion')
+            caso = CasoCalculo.objects.create(
+                nombre=nombre,
+                usuario=request.user.perfil,
+                central=central,
+                es_simulacion=True
+            )
 
-    return render(request, 'seleccion.html', {'resultado': resultado})
+            parametros = ParametroFotovoltaica.objects.create(
+                caso=caso,
+                potencia_nominal=request.POST.get('potencia_nominal'),
+                factor_planta=request.POST.get('factor_planta'),
+                vida_util=request.POST.get('vida_util'),
+                inversion_total=request.POST.get('inversion_total'),
+                porcentaje_capital_propio=request.POST.get('porcentaje_capital_propio'),
+                porcentaje_deuda=request.POST.get('porcentaje_deuda'),
+                capital_propio=request.POST.get('capital_propio'),
+                deuda=request.POST.get('deuda'),
+                costo_variable=request.POST.get('costo_variable'),
+                costo_produccion=request.POST.get('costo_produccion'),
+                costo_anual_oma_mw=request.POST.get('costo_anual_oma_mw'),
+                energia_anual_producida=request.POST.get('energia_anual_producida'),
+                tasa_interes_periodo=request.POST.get('tasa_interes_periodo'),
+                tasa_interes_anual=request.POST.get('tasa_interes_anual'),
+                total_periodos=request.POST.get('total_periodos'),
+                anios_gracia=request.POST.get('anios_gracia'),
+                periodos_pago=request.POST.get('periodos_pago'),
+                beta=request.POST.get('beta'),
+                margen_intermediacion=request.POST.get('margen_intermediacion'),
+                inflacion=request.POST.get('inflacion'),
+                economia=request.POST.get('economia'),
+                riesgo=request.POST.get('riesgo'),
+                sin_riesgo=request.POST.get('sin_riesgo'),
+                tasa_mercado=request.POST.get('tasa_mercado'),
+                premio_riesgo_mercado=request.POST.get('premio_riesgo_mercado'),
+                impuesto=request.POST.get('impuesto'),
+                degradacion=request.POST.get('degradacion'),
+                tasa_descuento=Decimal(request.POST["tasa_descuento"]),
+            )
 
-def detalle_calculo_lcoe(request, caso_id):
-    try:
-        caso = CasoCalculo.objects.get(pk=caso_id)
-        if hasattr(caso, 'parametrofotovoltaica'):
-            resultado = caso.parametrofotovoltaica.calcular_lcoe()
-            return JsonResponse(resultado)
-        else:
-            return JsonResponse({"error": "El caso no tiene datos fotovoltaicos."})
-    except Exception as e:
-        return JsonResponse({"error": str(e)})
+            resultado = ResultadoCalculo.objects.create(caso=caso)
+
+            if resultado.lcoe is None:
+                return JsonResponse({
+                    "status": "error",
+                    "message": "No se pudo calcular el LCOE. Verifique los datos ingresados."
+                })
+
+            # Comparar con otra tecnología existente si se proporcionó
+            lcoe_base = float(resultado.lcoe)
+            nombres = ["Nuevo Caso"]
+            valores = [lcoe_base]
+
+            if comparar_con_id:
+                central_comp = Central.objects.get(id=comparar_con_id)
+                caso_existente = CasoCalculo.objects.filter(central=central_comp).last()
+                if caso_existente and hasattr(caso_existente, 'resultadocalculo') and caso_existente.resultadocalculo.lcoe:
+                    nombres.append(central_comp.nombre)
+                    valores.append(float(caso_existente.resultadocalculo.lcoe))
+
+            # Generar gráfica con matplotlib
+            fig, ax = plt.subplots()
+            ax.bar(nombres, valores, color=["#4CAF50", "#FF9800"])
+            ax.set_ylabel("LCOE (USD/kWh)")
+            ax.set_title("Comparación de LCOE")
+
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+            image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+            buf.close()
+
+            return JsonResponse({
+                "status": "ok",
+                "lcoe": lcoe_base,
+                "nombre": caso.nombre,
+                "id": caso.id,
+                "grafico": image_base64
+            })
+
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+
+    return JsonResponse({"status": "error", "message": "Método no permitido"})

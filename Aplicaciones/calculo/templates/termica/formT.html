@@ -8,14 +8,14 @@
                     <h5 class="m-b-10">Centrales</h5>
                 </div>
                 <ul class="breadcrumb">
-                    <li class="breadcrumb -item">
+                    <li class="breadcrumb-item">
                         <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
-                            Tipos de Generación / 
+                            Tipos de Generación /
                         </a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{% url 'fotovoltaica_list' %}" class="pc-head-link ms-0">
-                            &nbsp;Lista de Centrales Fotovoltaicas
+                        <a href="{% url 'termica_list' %}" class="pc-head-link ms-0">
+                            &nbsp;Lista de Centrales Térmicas
                         </a>
                     </li>
                     <li class="breadcrumb-item" aria-current="page">{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Central</li>
@@ -30,10 +30,10 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <div class="section-title">Centrales Fotovoltaicas</div>
+                        <div class="section-title">Centrales Térmicas</div>
                     </div>
                     <div class="col-md-8 text-end">
-                        <p style="color:#1373cc"><i class="ti ti-bookmark"></i>{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Central Fotovoltaica</p>
+                        <p style="color:#1373cc"><i class="ti ti-bookmark"></i>{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Central Térmica</p>
                     </div>
                 </div>
                 <br>
@@ -55,17 +55,17 @@
                             </div>
                         {% endif %}
 
-                        <div class="accordion" id="accordionExample">
+                        <div class="accordion" id="accordionTermica">
+                            <!-- Información General -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button accordion-lcoe" style="background-color: #1373cc; color:white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     Información General
                                 </button>
                                 </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionTermica">
                                 <div class="accordion-body">
                                     <strong class="mb-3 d-block">Información General</strong>
-
                                     <div class="row g-3">
                                         <div class="col-md-3">
                                             <label class="form-label">Central</label>
@@ -73,53 +73,50 @@
                                                 {{ form.central }}
                                             </div>
                                         </div>
-
                                         <div class="col-md-3">
-                                            <label class="form-label">Año de Ingreso</label>
+                                            <label class="form-label">Año de Instalación</label>
                                             <div class="campo-lcoe">
-                                                {{ form.anio_ingreso }}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <label class="form-label">Número Paneles</label>
-                                            <div class="campo-lcoe">
-                                                {{ form.numero_paneles }}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <label class="form-label">Sistema</label>
-                                            <div class="campo-lcoe">
-                                                {{ form.sistema }}
+                                                {{ form.anio_instalacion }}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Potencia nominal [%]</label>
+                                            <label class="form-label">Potencia Nominal (MW)</label>
                                             <div class="campo-lcoe">
                                                 {{ form.potencia_nominal }}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Potencia efectiva</label>
+                                            <label class="form-label">Potencia Efectiva (MW)</label>
                                             <div class="campo-lcoe">
                                                 {{ form.potencia_efectiva }}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Factor Planta</label>
+                                            <label class="form-label">Factor Planta (%)</label>
                                             <div class="campo-lcoe">
                                                 {{ form.factor_planta }}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Vida Útil</label>
+                                            <label class="form-label">Tipo Turbina</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.tipo_turbina }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">N° Turbinas</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.n_turbina }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Vida Útil (años)</label>
                                             <div class="campo-lcoe">
                                                 {{ form.vida_util }}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Degradación [%]</label>
+                                            <label class="form-label">Degradación (%)</label>
                                             <div class="campo-lcoe">
                                                 {{ form.degradacion }}
                                             </div>
@@ -128,17 +125,18 @@
                                 </div>
                                 </div>
                             </div>
+                            <!-- Financiamiento -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingTwo">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                     Financiamiento
                                 </button>
                                 </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionTermica">
                                 <div class="accordion-body">
                                     <div class="row g-3">
                                         <div class="col-md-3">
-                                            <label class="form-label">Inversión Total</label>
+                                            <label class="form-label">Inversión Total (USD)</label>
                                             <div class="campo-lcoe">
                                                 {{ form.inversion_total }}
                                             </div>
@@ -150,21 +148,19 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Acreedor</label>
-                                            <div class="campo-lcoe">
-                                                {{ form.acreedor }}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3">
                                             <label class="form-label">% Deuda</label>
                                             <div class="campo-lcoe">
                                                 {{ form.porcentaje_deuda }}
                                             </div>
                                         </div>
-                                    
                                         <div class="col-md-3">
-                                            <label class="form-label">Tasa Interes por Periodo</label>
+                                            <label class="form-label">Acreedor</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.acreedor }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Tasa Interés por Periodo (%)</label>
                                             <div class="campo-lcoe">
                                                 {{ form.tasa_interes_periodo }}
                                             </div>
@@ -181,49 +177,178 @@
                                                 {{ form.anios_pago_total }}
                                             </div>
                                         </div>
-                                    
                                         <div class="col-md-3">
-                                            <label class="form-label">Años de gracia</label>
+                                            <label class="form-label">Años de Gracia</label>
                                             <div class="campo-lcoe">
                                                 {{ form.anios_gracia }}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                </div>
                             </div>
+                            <!-- Costos de O&M -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    Costos Totales
+                                    Costos de O&M
                                 </button>
                                 </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionTermica">
                                 <div class="accordion-body">
                                     <div class="row g-3">
                                         <div class="col-md-3">
-                                            <label class="form-label">Costos Variable</label>
+                                            <label class="form-label">Costo Producción</label>
                                             <div class="campo-lcoe">
-                                                {{ form.costo_variable }}
+                                                {{ form.costo_produccion }}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Costos de Producción</label>
+                                            <label class="form-label">% O&M</label>
                                             <div class="campo-lcoe">
-                                                {{ form.costo_produccion }}
+                                                {{ form.porcentaje_oma }}
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <!-- Administración -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    Administración
+                                </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionTermica">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Gastos Administración</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.gastos_administracion }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">PT Unidad Negocio (%)</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.pt_unidad_negocio }}
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <!-- Combustibles -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                    Combustibles
+                                </button>
+                                </h2>
+                                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionTermica">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Tipo Combustible A</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.tp_combustible_a }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">USD/Galón</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.usd_galon }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Galones/Año</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.gal_anio }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Tipo Combustible P</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.tp_combustible_p }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">USD/Galón 1</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.usd_galon_1 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Galones/Año 1</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.gal_anio_1 }}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 </div>
                             </div>
-                            </div>
+                            <!-- Costos Operativos -->
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFour">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                <h2 class="accordion-header" id="headingSix">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                    Costos Operativos
+                                </button>
+                                </h2>
+                                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordionTermica">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Transporte</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.transporte }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Lubricantes/Químicos</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.lub_quim }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Agua Potable</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.agua_p }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Mantenimiento OIM/MOAM</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.mantenimiento_oim_moam }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Control Ambiental</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.ctrl_amb }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Servicios Auxiliares</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.srv_aux }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <!-- Parámetros Económicos -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingSeven">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
                                     Parámetros Económicos
                                 </button>
                                 </h2>
-                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionTermica">
                                 <div class="accordion-body">
                                     <div class="row g-3">
                                         <div class="col-md-3">
@@ -233,7 +358,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Margen</label>
+                                            <label class="form-label">Margen Intermediación</label>
                                             <div class="campo-lcoe">
                                                 {{ form.margen_intermediacion }}
                                             </div>
@@ -282,13 +407,13 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <br>
                     <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a href="{% url 'fotovoltaica_list' %}" class="btn btn-danger">Cancelar</a>
+                    <a href="{% url 'termica_list' %}" class="btn btn-danger">Cancelar</a>
                 </form>
             </div>
         </div>
@@ -296,7 +421,6 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Busca el primer campo con error
     var errorField = document.querySelector('.is-invalid, .errorlist + input, .errorlist + select, .errorlist + textarea');
     if (errorField) {
         var accordionCollapse = errorField.closest('.accordion-collapse');
@@ -307,7 +431,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.click();
             }
         }
-        // Enfoca el campo con error
         errorField.focus();
     }
 });
