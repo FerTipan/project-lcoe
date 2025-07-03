@@ -1,7 +1,7 @@
 import unicodedata
-from .models import ParametroFotovoltaica, CasoCalculo, ParametroTermica
+from .models import ParametroFotovoltaica, CasoCalculo, ParametroTermica, ParametroEolica, ParametroHidraulica
 from typing import Union
-ParametroGenerico = Union[ParametroFotovoltaica, ParametroTermica]
+ParametroGenerico = Union[ParametroFotovoltaica, ParametroTermica, ParametroEolica, ParametroHidraulica]
 
 def quitar_tildes(s):
     return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
@@ -16,17 +16,17 @@ def crear_parametros_desde_tipo_generacion(caso: CasoCalculo) -> ParametroGeneri
         return crear_parametros_desde_fotovoltaica(caso)
     elif tipo == 'termica':
         return crear_parametros_desde_termica(caso)
-    '''elif tipo == 'eólica':
+    elif tipo == 'eólica':
         return crear_parametros_desde_eolica(caso)
-    elif tipo == 'hidroeléctrica':
-        return crear_parametros_desde_hidroelectrica(caso) '''
+    elif tipo == 'hidraulica':
+        return crear_parametros_desde_hidraulica(caso)
 
     return None
 
 def crear_parametros_desde_fotovoltaica(caso: CasoCalculo) -> ParametroFotovoltaica:
     fotovoltaica = caso.central.fotovoltaica
 
-    parametros = ParametroFotovoltaica.objects.create(  # usa la subclase concreta
+    parametros = ParametroFotovoltaica.objects.create(  # usamos la subclase concreta
         caso=caso,
         tipo_generacion='Fotovoltaica',
         inversion_total=fotovoltaica.inversion_total,
@@ -56,6 +56,7 @@ def crear_parametros_desde_fotovoltaica(caso: CasoCalculo) -> ParametroFotovolta
         total_periodos=fotovoltaica.total_periodos,
         anios_gracia=fotovoltaica.anios_gracia,
         periodos_pago=fotovoltaica.periodos_pago,
+
         # Costos específicos de fotovoltaica
         costo_produccion=fotovoltaica.costo_produccion,
         costo_variable=fotovoltaica.costo_variable,
@@ -63,7 +64,7 @@ def crear_parametros_desde_fotovoltaica(caso: CasoCalculo) -> ParametroFotovolta
     )
     return parametros
 
-# ----------------------------------- TERMICA ----------------------------
+# --------------------------------- TERMICA ------------------------------
 def crear_parametros_desde_termica(caso: CasoCalculo) -> ParametroTermica:
     termica = caso.central.termica
 
@@ -117,6 +118,101 @@ def crear_parametros_desde_termica(caso: CasoCalculo) -> ParametroTermica:
         mantenimiento_oim_moam=termica.mantenimiento_oim_moam,
         ctrl_amb=termica.ctrl_amb,
         srv_aux=termica.srv_aux,
+    )
+
+    return parametros
+
+# --------------------------------- EOLICA ------------------------------
+def crear_parametros_desde_eolica(caso: CasoCalculo) -> ParametroEolica:
+    eolica = caso.central.eolica
+    parametros = ParametroEolica.objects.create(  
+        caso=caso,
+        tipo_generacion='Eolica',
+        inversion_total=eolica.inversion_total,
+        energia_anual_producida=eolica.energia_anual_producida,
+        vida_util=eolica.vida_util,
+        tasa_descuento=0.08,  
+        tasa_crecimiento_energia=0.0,
+        costo_operacion_anual=0,
+        costo_fijo_anual=eolica.costo_fijo_anual,
+        potencia_nominal=eolica.potencia_nominal,
+        capital_propio=eolica.capital_propio,
+        deuda=eolica.deuda,
+        porcentaje_capital_propio=eolica.porcentaje_capital_propio,
+        porcentaje_deuda=eolica.porcentaje_deuda,
+        tasa_interes_periodo=eolica.tasa_interes_periodo,
+        tasa_interes_anual=eolica.tasa_interes_anual,
+        total_periodos=eolica.total_periodos,
+        anios_gracia=eolica.anios_gracia,
+        periodos_pago=eolica.periodos_pago,
+        costo_inversion=eolica.costo_inversion,
+        costo_fijo_mw=eolica.costo_fijo_mw,
+        costo_fijo_kw=eolica.costo_fijo_kw,
+        degradacion = eolica.degradacion,
+        beta=eolica.beta,
+        impuesto=eolica.impuesto,
+        sin_riesgo=eolica.sin_riesgo,
+        inflacion=eolica.inflacion,
+        economia=eolica.economia,
+        margen_intermediacion=eolica.margen_intermediacion,
+        indice_premio=eolica.indice_premio,
+        premio_riesgo_mercado=eolica.premio_riesgo_mercado,
+        tasa_mercado=eolica.tasa_mercado,
+        riesgo=eolica.riesgo,
+        factor_planta=eolica.factor_planta,
+        combustible=eolica.combustible,
+        transporte=eolica.transporte,   
+        lubricantes=eolica.lubricantes,
+        agua=eolica.agua,
+        mantenimiento=eolica.mantenimiento,
+        control=eolica.control,
+        servicios=eolica.servicios,
+        seguros=eolica.seguros,
+        personal=eolica.personal,
+    )
+
+    return parametros
+
+# --------------------------------- HIDRAULICA ------------------------------
+def crear_parametros_desde_hidraulica(caso: CasoCalculo) -> ParametroHidraulica:
+    hidraulica = caso.central.hidraulica
+
+    parametros = ParametroHidraulica.objects.create(  
+        caso=caso,
+        tipo_generacion='Hidraulica',
+        inversion_total=hidraulica.inversion_total,
+        energia_anual_producida=hidraulica.energia_anual_producida,
+        vida_util=hidraulica.vida_util,
+        tasa_descuento=0.08,  
+        tasa_crecimiento_energia=0.0,
+        costo_operacion_anual=hidraulica.costo_operacion,
+        potencia_nominal=hidraulica.potencia_nominal,
+        capital_propio=hidraulica.capital_propio,
+        deuda=hidraulica.deuda,
+        porcentaje_capital_propio=hidraulica.porcentaje_capital_propio,
+        porcentaje_deuda=hidraulica.porcentaje_deuda,
+        tasa_interes_periodo=hidraulica.tasa_interes_periodo,
+        tasa_interes_anual=hidraulica.tasa_interes_anual,
+        total_periodos=hidraulica.total_periodos,
+        anios_gracia=hidraulica.anios_gracia,
+        periodos_pago=hidraulica.periodos_pago,
+        costo_produccion=hidraulica.costo_produccion,
+        costo_operacion=hidraulica.costo_operacion,
+        costo_variable=hidraulica.costo_variable,
+        costo_administracion=hidraulica.costo_administracion,
+        costo_mantenimiento=hidraulica.costo_mantenimiento,
+        degradacion = hidraulica.degradacion,
+        beta=hidraulica.beta,
+        impuesto=hidraulica.impuesto,
+        sin_riesgo=hidraulica.sin_riesgo,
+        inflacion=hidraulica.inflacion,
+        economia=hidraulica.economia,
+        margen_intermediacion=hidraulica.margen_intermediacion,
+        indice_premio=hidraulica.indice_premio,
+        premio_riesgo_mercado=hidraulica.premio_riesgo_mercado,
+        tasa_mercado=hidraulica.tasa_mercado,
+        riesgo=hidraulica.riesgo,
+        factor_planta=hidraulica.factor_planta
     )
 
     return parametros

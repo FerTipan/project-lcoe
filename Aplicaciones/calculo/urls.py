@@ -10,8 +10,8 @@ urlpatterns = [
     path('vista', vista_usuario_calculo, name='vista_usuario_calculo'),
     path('tipoGeneracion/', views.tipoGeneracion, name='tipoGeneracion'),
     path('mapa/', views.mapa, name='mapa'),
-
     path('mapa/<str:pagina>/', views.mapa_detalle, name='mapa_detalle'),
+    
     # Eleccion tipo
     path('centrales/<int:tipo_id>/', views.centrales_por_tipo, name='centrales_por_tipo'),
 
@@ -38,6 +38,18 @@ urlpatterns = [
     path('termica/crear/', views.TermicaCreateView.as_view(), name='termica_create'),
     path('termica/<int:pk>/editar/', views.TermicaUpdateView.as_view(), name='termica_update'),
     path('termica/<int:pk>/eliminar/', views.TermicaDeleteView.as_view(), name='termica_delete'),
+
+    # Eolica
+    path('eolica/', views.EolicaListView.as_view(), name='eolica_list'),
+    path('eolica/crear/', views.EolicaCreateView.as_view(), name='eolica_create'),
+    path('eolica/<int:pk>/editar/', views.EolicaUpdateView.as_view(), name='eolica_update'),
+    path('eolica/<int:pk>/eliminar/', views.EolicaDeleteView.as_view(), name='eolica_delete'),
+
+    # Hidraulica
+    path('hidraulica/', views.HidraulicaListView.as_view(), name='hidraulica_list'),
+    path('hidraulica/crear/', views.HidraulicaCreateView.as_view(), name='hidraulica_create'),
+    path('hidraulica/<int:pk>/editar/', views.HidraulicaUpdateView.as_view(), name='hidraulica_update'),
+    path('hidraulica/<int:pk>/eliminar/', views.HidraulicaDeleteView.as_view(), name='hidraulica_delete'),
 
     # InformacionCentral
     path('informacion/', views.InformacionCentralListView.as_view(), name='info_list'),

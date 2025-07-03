@@ -3,12 +3,11 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import  TipoElectrica, Central, InformacionCentral, Fotovoltaica, Termica, CasoCalculo, ResultadoCalculo , ParametroFotovoltaica
-from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm, FotovoltaicaForm, TermicaForm
+from .models import  TipoElectrica, Central, InformacionCentral, Fotovoltaica, Termica, Eolica, Hidraulica, CasoCalculo, ResultadoCalculo , ParametroFotovoltaica, ParametroEolica, ParametroHidraulica
+from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm, FotovoltaicaForm, TermicaForm, EolicaForm, HidraulicaForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
-import json
 from .services import crear_parametros_desde_tipo_generacion
 from django.contrib.auth.decorators import login_required
 # Importacion de la app usuarios
@@ -21,13 +20,21 @@ from django.urls import reverse
 def vista_usuario_calculo(request):
     return render(request, 'calculo/tipoGeneracion.html')
 
+def inicio(request):
+    return render(request, 'inicio.html')
+
+@login_required
+def tipoGeneracion(request):
+    tipos = TipoElectrica.objects.all()
+    return render(request, 'tipoGeneracion.html', {'tipos': tipos})
+
 class AdminDashboardView(AdminRequiredMixin, TemplateView):
     template_name = 'calculo/tipoGeneracion.html'
 
 class UserDashboardView(UserRequiredMixin, TemplateView):
     template_name = 'calculo/tipoGeneracion.html'
 
-# TipoElectrica
+# ------------------------------- TIPO ELECTRICA -----------------------------------
 class TipoElectricaListView(ListView):
     model = TipoElectrica
 
@@ -39,7 +46,7 @@ class TipoElectricaCreateView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, 'Tipo de Generación creada correctamente')
         return super().form_valid(form)
-
+    
 class TipoElectricaUpdateView(UpdateView):
     model = TipoElectrica
     form_class = TipoElectricaForm
@@ -57,7 +64,7 @@ class TipoElectricaDeleteView(DeleteView):
         messages.success(request, 'Tipo de Generación eliminado correctamente')
         return super().delete(request, *args, **kwargs)
 
-# Central
+# ------------------------------- CENTRAL -----------------------------------
 class CentralListView(ListView):
     model = Central
 
@@ -78,7 +85,7 @@ class CentralUpdateView(UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Datos de la Central actualizados correctamente')
         return super().form_valid(form)
-
+    
 class CentralDeleteView(DeleteView):
     model = Central
     success_url = reverse_lazy('central_list')
@@ -86,7 +93,8 @@ class CentralDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Central eliminada correctamente')
         return super().delete(request, *args, **kwargs)
-    
+
+# ------------------------------- FOTOVOLTAICA -----------------------------------
 class FotovoltaicaListView(ListView):
     model = Fotovoltaica
     template_name = 'fotovoltaica/lista.html'
@@ -124,7 +132,7 @@ class FotovoltaicaDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
     
 
-# -------------- Termica -----------------
+# ------------------------------- TERMICA -----------------------------------
 class TermicaListView(ListView):
     model = Termica
     template_name = 'termica/listaT.html'
@@ -142,7 +150,6 @@ class TermicaCreateView(CreateView):
         messages.success(self.request, 'Central termica agregada correctamente.')
         return super().form_valid(form)
     
-
 class TermicaUpdateView(UpdateView):
     model = Termica
     form_class = TermicaForm
@@ -160,7 +167,80 @@ class TermicaDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Central fotovoltaica eliminada correctamente.')
         return super().delete(request, *args, **kwargs)
+
+# ------------------------------- EOLICA -----------------------------------
+class EolicaListView(ListView):
+    model = Eolica
+    template_name = 'eolica/listaE.html'
+
+    def get_queryset(self):
+        return Eolica.objects.filter(central__tipo_electrica__nombre__icontains='eolica')
     
+class EolicaCreateView(CreateView):
+    model = Eolica
+    form_class = EolicaForm
+    template_name = 'eolica/formE.html'
+    success_url = reverse_lazy('eolica_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Central eolica agregada correctamente.')
+        return super().form_valid(form)
+    
+
+class EolicaUpdateView(UpdateView):
+    model = Eolica
+    form_class = EolicaForm
+    template_name = 'eolica/formE.html'
+    success_url = reverse_lazy('eolica_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Central eolica actualizada correctamente.')
+        return super().form_valid(form)
+
+class EolicaDeleteView(DeleteView):
+    model = Eolica
+    success_url = reverse_lazy('eolica_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Central eolica eliminada correctamente.')
+        return super().delete(request, *args, **kwargs)
+ 
+# ------------------------------- HIDRAULICA -----------------------------------
+class HidraulicaListView(ListView):
+    model = Hidraulica
+    template_name = 'hidraulica/listaH.html'
+
+    def get_queryset(self):
+        return Hidraulica.objects.filter(central__tipo_electrica__nombre__icontains='hidraulica')
+    
+class HidraulicaCreateView(CreateView):
+    model = Hidraulica
+    form_class = HidraulicaForm  
+    template_name = 'hidraulica/formH.html'
+    success_url = reverse_lazy('hidraulica_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Central hidraulica agregada correctamente.')
+        return super().form_valid(form)
+    
+class HidraulicaUpdateView(UpdateView):
+    model = Hidraulica
+    form_class = HidraulicaForm  
+    template_name = 'hidraulica/formH.html'
+    success_url = reverse_lazy('hidraulica_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Central hidroeléctrica actualizada correctamente.')
+        return super().form_valid(form)
+    
+class HidraulicaDeleteView(DeleteView):
+    model = Hidraulica
+    success_url = reverse_lazy('hidraulica_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Central hidroeléctrica eliminada correctamente.')
+        return super().delete(request, *args, **kwargs)
+
 # InformacionCentral
 class InformacionCentralListView(ListView):
     model = InformacionCentral
@@ -191,13 +271,6 @@ class InformacionCentralDeleteView(DeleteView):
         messages.success(request, 'Datos eliminados correctamente')
         return super().delete(request, *args, **kwargs)
 
-def inicio(request):
-    return render(request, 'inicio.html')
-
-def tipoGeneracion(request):
-    tipos = TipoElectrica.objects.all()
-    return render(request, 'tipoGeneracion.html', {'tipos': tipos})
-
 def mapa(request):
     lugares = [
         {"nombre": "Lugar 1", "lat": -1.8312, "lng": -78.1834},
@@ -208,7 +281,7 @@ def mapa(request):
 def mapa_detalle(request, pagina):
     return render(request, f'tecnologias/{pagina}.html')
 
-# ------------- Centrales por tipo --------------
+# ------------------------------- CENTRALES POR TIPO -----------------------------------
 @login_required
 def centrales_por_tipo(request, tipo_id):
     tipo = get_object_or_404(TipoElectrica, id=tipo_id)
@@ -220,6 +293,10 @@ def centrales_por_tipo(request, tipo_id):
             tipo_especifico = 'fotovoltaica'
         elif hasattr(central, 'termica'):
             tipo_especifico = 'termica'
+        elif hasattr(central, 'eolica'):
+            tipo_especifico = 'eolica'
+        elif hasattr(central, 'hidraulica'):
+            tipo_especifico = 'hidraulica'
         else:
             tipo_especifico = 'general'
 
