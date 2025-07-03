@@ -140,19 +140,34 @@
                   </a>
                 </li>
               </ul>
-              </li>
-              <li class="pc-item pc-hasmenu">
-              <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">Menu
-                  levels</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
               <ul class="pc-submenu">
-                <li class="pc-item"><a class="pc-link" href="#!">Level 2.1</a></li>
+                <li class="pc-item">
+                  <a href="{% url 'eolica_list' %}" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-wind"></i></span>
+                    Eólicas
+                  </a>
+                </li>
+              </ul>
+              <ul class="pc-submenu">
+                <li class="pc-item">
+                  <a href="{% url 'hidraulica_list' %}" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-water"></i></span>
+                    Hidráulica
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <!--<li class="pc-item pc-hasmenu">
+              <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-building-factory"></i></span><span class="pc-mtext">Gestión de Centrales
+                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+              <ul class="pc-submenu">
                 <li class="pc-item pc-hasmenu">
-                  <a href="#!" class="pc-link">Level 2.2<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                  <a href="{% url 'central_list' %}" class="pc-link">Centrales Eléctricas<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                   <ul class="pc-submenu">
-                    <li class="pc-item"><a class="pc-link" href="#!">Level 3.1</a></li>
-                    <li class="pc-item"><a class="pc-link" href="#!">Level 3.2</a></li>
+                    <li class="pc-item"><a class="pc-link" href="{% url 'termica_list' %}">Térmicas</a></li>
+                    <li class="pc-item"><a class="pc-link" href="{% url 'hidraulica_list' %}">Hidraulicas</a></li>
                     <li class="pc-item pc-hasmenu">
-                      <a href="#!" class="pc-link">Level 3.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                      <a href="#!" class="pc-link">Eólicas<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                       <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="#!">Level 4.1</a></li>
                         <li class="pc-item"><a class="pc-link" href="#!">Level 4.2</a></li>
@@ -169,19 +184,13 @@
                 </li>
               </ul>
             </li>
-          </ul>
-            <li class="pc-item">
-              <a href="{% url 'tipoelectrica_list' %}" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-settings"></i></span>
-                <span class="pc-mtext">Tipo de Generación</span>
-              </a>
-            </li>
-            <li class="pc-item">
-              <a href="{% url 'info_list' %}" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-settings"></i></span>
-                <span class="pc-mtext">Información Técnica</span>
-              </a>
-            </li>
+          </ul>-->
+          <li class="pc-item">
+            <a href="{% url 'tipoelectrica_list' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-settings"></i></span>
+              <span class="pc-mtext">Tipo de Generación</span>
+            </a>
+          </li>
           {% elif user|has_group:"Usuario" %}
               <li class="pc-item pc-caption">
                 <label>Tecnologías</label>

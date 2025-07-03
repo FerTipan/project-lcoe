@@ -1,0 +1,363 @@
+{% extends "plantilla.html" %}
+{% block content %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Centrales</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb -item">
+                        <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                            Tipos de Generación / 
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'info_list' %}" class="pc-head-link ms-0">
+                            &nbsp;Lista de Centrales Hidroeléctricas
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Central</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card px-4">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="section-title">Centrales Eolicas</div>
+                    </div>
+                    <div class="col-md-8 text-end">
+                        <p style="color:#1373cc"><i class="ti ti-bookmark"></i>{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Central Eolica</p>
+                    </div>
+                </div>
+                <br>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button accordion-lcoe" style="background-color: #1373cc; color:white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Información General
+                                </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong class="mb-3 d-block">Información General</strong>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Central</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.central }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">Año Construccion</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.anio_construccion }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">Número Turbinas</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.numero_turbinas }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">Tipo turbina</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.tipo_turbina }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Potencia nominal</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.potencia_nominal }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Potencia efectiva</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.potencia_efectiva }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">Factor Planta</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.factor_planta }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Vida Útil</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.vida_util }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Degradación</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.degradacion }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Financiamiento
+                                </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Inversión Total</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.inversion_total }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Porcentaje CP</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.porcentaje_capital_propio }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Acreedor</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.acreedor }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">Porcentaje Deuda</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.porcentaje_deuda }}
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="col-md-3">
+                                            <label class="form-label">Tasa Interes por Periodo</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.tasa_interes_periodo }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Periodos por Año</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.periodos_por_anio }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Años de Pago Total</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.anios_pago_total }}
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="col-md-3">
+                                            <label class="form-label">Años de gracia</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.anios_gracia }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Costos Totales
+                                </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Costos de Inversion</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.costo_inversion }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Combustible</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.combustible }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Transporte</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.transporte }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Lubricantes, quimicos, etc</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.lubricantes }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Agua Potable</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.agua }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Mantenimiento</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.mantenimiento }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Control Ambiental</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.control }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Servicio Auxiliar</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.servicios }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Seguros y garantias</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.seguros }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Personal</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.personal }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    Parámetros Económicos
+                                </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Beta</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.beta }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Margen</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.margen_intermediacion }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Inflación</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.inflacion }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Economía</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.economia }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Riesgo</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.riesgo }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Sin Riesgo</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.sin_riesgo }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Tasa de Mercado</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.tasa_mercado }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Premio Riesgo Mercado</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.premio_riesgo_mercado }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Impuestos</label>
+                                            <div class="campo-lcoe">
+                                                {{ form.impuesto }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{% url 'eolica_list' %}" class="btn btn-danger">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Busca el primer campo con error
+    var errorField = document.querySelector('.is-invalid, .errorlist + input, .errorlist + select, .errorlist + textarea');
+    if (errorField) {
+        var accordionCollapse = errorField.closest('.accordion-collapse');
+        if (accordionCollapse && !accordionCollapse.classList.contains('show')) {
+            var collapseId = accordionCollapse.id;
+            var button = document.querySelector('[data-bs-target="#' + collapseId + '"]');
+            if (button) {
+                button.click();
+            }
+        }
+        errorField.focus();
+    }
+});
+</script>
+{% endblock %}
