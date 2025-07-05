@@ -16,7 +16,7 @@ def crear_parametros_desde_tipo_generacion(caso: CasoCalculo) -> ParametroGeneri
         return crear_parametros_desde_fotovoltaica(caso)
     elif tipo == 'termica':
         return crear_parametros_desde_termica(caso)
-    elif tipo == 'eólica':
+    elif tipo == 'eolica':
         return crear_parametros_desde_eolica(caso)
     elif tipo == 'hidraulica':
         return crear_parametros_desde_hidraulica(caso)
@@ -133,7 +133,7 @@ def crear_parametros_desde_eolica(caso: CasoCalculo) -> ParametroEolica:
         vida_util=eolica.vida_util,
         tasa_descuento=0.08,  
         tasa_crecimiento_energia=0.0,
-        costo_operacion_anual=0,
+        #costo_operacion_anual=0,
         costo_fijo_anual=eolica.costo_fijo_anual,
         potencia_nominal=eolica.potencia_nominal,
         capital_propio=eolica.capital_propio,
@@ -185,7 +185,7 @@ def crear_parametros_desde_hidraulica(caso: CasoCalculo) -> ParametroHidraulica:
         vida_util=hidraulica.vida_util,
         tasa_descuento=0.08,  
         tasa_crecimiento_energia=0.0,
-        costo_operacion_anual=hidraulica.costo_operacion,
+        #costo_operacion_anual=hidraulica.costo_operacion,
         potencia_nominal=hidraulica.potencia_nominal,
         capital_propio=hidraulica.capital_propio,
         deuda=hidraulica.deuda,

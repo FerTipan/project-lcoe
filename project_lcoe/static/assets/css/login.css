@@ -247,6 +247,10 @@
     .login-form {
       padding: 2rem;
     }
+
+    .register-form {
+      padding: 2rem;
+    }
     
     .lcoe-decoration {
       display: none;

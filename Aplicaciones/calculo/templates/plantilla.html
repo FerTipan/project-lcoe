@@ -109,6 +109,16 @@
               </ul>
             </li>
             <li class="pc-item pc-caption">
+              <label>Tipo de Generación Eléctrica</label>
+              <i class="ti ti-bolt"></i>
+            </li>
+            <li class="pc-item">
+              <a href="{% url 'tipoelectrica_list' %}" class="pc-link">
+                <span class="pc-micon"><i class="ti ti-settings"></i></span>
+                <span class="pc-mtext">Tipo de Generación</span>
+              </a>
+            </li>
+            <li class="pc-item pc-caption">
               <label>Centrales Eléctricas</label>
               <i class="ti ti-power"></i>
             </li>
@@ -119,7 +129,7 @@
               <ul class="pc-submenu">
                 <li class="pc-item">
                   <a class="pc-link" href="{% url 'central_list' %}">
-                    <span class="pc-micon"><i class="ti ti-bolt"></i></span>
+                    <span class="pc-micon"><i class="ti ti-crane"></i></span>
                     Centrales
                   </a>
                 </li>
@@ -127,7 +137,7 @@
               <ul class="pc-submenu">
                 <li class="pc-item">
                   <a href="{% url 'fotovoltaica_list' %}" class="pc-link">
-                    <span class="pc-micon"><i class="ti ti-bolt"></i></span>
+                    <span class="pc-micon"><i class="ti ti-sun"></i></span>
                     Fotovoltaicas
                   </a>
                 </li>
@@ -135,7 +145,7 @@
               <ul class="pc-submenu">
                 <li class="pc-item">
                   <a href="{% url 'termica_list' %}" class="pc-link">
-                    <span class="pc-micon"><i class="ti ti-sun"></i></span>
+                    <span class="pc-micon"><i class="ti ti-battery-charging"></i></span>
                     Térmicas
                   </a>
                 </li>
@@ -151,7 +161,7 @@
               <ul class="pc-submenu">
                 <li class="pc-item">
                   <a href="{% url 'hidraulica_list' %}" class="pc-link">
-                    <span class="pc-micon"><i class="ti ti-water"></i></span>
+                    <span class="pc-micon"><i class="ti ti-droplet"></i></span>
                     Hidráulica
                   </a>
                 </li>
@@ -185,12 +195,6 @@
               </ul>
             </li>
           </ul>-->
-          <li class="pc-item">
-            <a href="{% url 'tipoelectrica_list' %}" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-settings"></i></span>
-              <span class="pc-mtext">Tipo de Generación</span>
-            </a>
-          </li>
           {% elif user|has_group:"Usuario" %}
               <li class="pc-item pc-caption">
                 <label>Tecnologías</label>

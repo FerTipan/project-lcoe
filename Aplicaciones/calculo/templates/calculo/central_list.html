@@ -94,7 +94,7 @@
                                     <td >{{ central.empresa }}</td>
                                     <td >
                                         <span class="badge rounded-3 fw-semibold 
-                                        {% if central.tipo == 'Hidroeléctrica' %} bg-primary 
+                                        {% if central.tipo == 'hidraulica' %} bg-primary 
                                         {% elif central.tipo == 'GAS' %} bg-warning 
                                         {% elif central.tipo == 'VAPOR' %} bg-success 
                                         {% else %} bg-light text-dark
@@ -107,9 +107,9 @@
                                     <td class="principal">{{ central.anio_operacion }}</td>
                                     <td>
                                         <span class="badge rounded-3 fw-semibold 
-                                            {% if central.tipo_electrica|lower == 'hidráulica' %}bg-primary text-white
-                                            {% elif central.tipo_electrica|lower == 'térmica' %}bg-success text-white
-                                            {% elif central.tipo_electrica|lower == 'eólica' %}bg-info text-white
+                                            {% if central.tipo_electrica|lower == 'hidraulica' %}bg-primary text-white
+                                            {% elif central.tipo_electrica|lower == 'termica' %}bg-success text-white
+                                            {% elif central.tipo_electrica|lower == 'eolica' %}bg-info text-white
                                             {% elif central.tipo_electrica|lower == 'fotovoltaica' %}bg-warning text-white
                                             {% else %}bg-secondary text-white{% endif %}">
                                             {{ central.tipo_electrica|title }}
