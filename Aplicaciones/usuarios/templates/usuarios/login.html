@@ -276,5 +276,159 @@
       });
     });
   </script>
+
+
+<!-- Agrega jQuery antes del script de validación -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    // Configuración de Notyf
+    const notyf = new Notyf({
+      duration: 5000,
+      position: {
+        x: 'right',
+        y: 'top',
+      },
+      types: [
+        {
+          type: 'success',
+          background: 'green',
+          icon: {
+            className: 'material-icons',
+            tagName: 'i',
+            text: 'check'
+          }
+        },
+        {
+          type: 'error',
+          background: 'red',
+          icon: {
+            className: 'material-icons',
+            tagName: 'i',
+            text: 'error'
+          }
+        },
+        {
+          type: 'warning',
+          background: 'orange',
+          icon: {
+            className: 'material-icons',
+            tagName: 'i',
+            text: 'warning'
+          }
+        },
+        {
+          type: 'info',
+          background: 'blue',
+          icon: {
+            className: 'material-icons',
+            tagName: 'i',
+            text: 'info'
+          }
+        }
+      ]
+    });
+
+    // Validación del formulario
+    $('form').submit(function(e) {
+      e.preventDefault();
+      
+      // Limpiar errores previos
+      $('.is-invalid').removeClass('is-invalid');
+      $('.invalid-feedback').remove();
+      
+      let isValid = true;
+      
+      // Validar campo de usuario
+      const username = $('#username').val().trim();
+      if (username === '') {
+        $('#username').addClass('is-invalid');
+        $('#username').after('<div class="invalid-feedback">Por favor ingrese su usuario</div>');
+        isValid = false;
+      } else if (username.length < 4) {
+        $('#username').addClass('is-invalid');
+        $('#username').after('<div class="invalid-feedback">El usuario debe tener al menos 4 caracteres</div>');
+        isValid = false;
+      }
+      
+      // Validar campo de contraseña
+      const password = $('#password').val().trim();
+      if (password === '') {
+        $('#password').addClass('is-invalid');
+        $('#password').after('<div class="invalid-feedback">Por favor ingrese su contraseña</div>');
+        isValid = false;
+      } else if (password.length < 6) {
+        $('#password').addClass('is-invalid');
+        $('#password').after('<div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres</div>');
+        isValid = false;
+      }
+      
+      if (isValid) {
+        // Si todo es válido, enviar el formulario
+        this.submit();
+      } else {
+        // Mostrar notificación de error
+        notyf.error('Por favor corrija los errores en el formulario');
+      }
+    });
+
+    // Validación en tiempo real para el campo de usuario
+    $('#username').on('input', function() {
+      const username = $(this).val().trim();
+      if (username.length > 0 && username.length < 4) {
+        $(this).addClass('is-invalid');
+        if (!$('.invalid-feedback', $(this).parent()).length) {
+          $(this).after('<div class="invalid-feedback">El usuario debe tener al menos 4 caracteres</div>');
+        }
+      } else {
+        $(this).removeClass('is-invalid');
+        $('.invalid-feedback', $(this).parent()).remove();
+      }
+    });
+
+    // Validación en tiempo real para el campo de contraseña
+    $('#password').on('input', function() {
+      const password = $(this).val().trim();
+      if (password.length > 0 && password.length < 6) {
+        $(this).addClass('is-invalid');
+        if (!$('.invalid-feedback', $(this).parent()).length) {
+          $(this).after('<div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres</div>');
+        }
+      } else {
+        $(this).removeClass('is-invalid');
+        $('.invalid-feedback', $(this).parent()).remove();
+      }
+    });
+
+    // Efecto de hover en los inputs
+    $('.form-control').hover(
+      function() {
+        $(this).css('border-color', '#0af0fc');
+        $(this).css('box-shadow', '0 0 0 0.25rem rgba(10, 240, 252, 0.25)');
+      },
+      function() {
+        if (!$(this).hasClass('is-invalid')) {
+          $(this).css('border-color', '');
+          $(this).css('box-shadow', '');
+        }
+      }
+    );
+
+    // Efecto al enfocar los inputs
+    $('.form-control').focus(function() {
+      $(this).css('border-color', '#0af0ff');
+      $(this).css('box-shadow', '0 0 0 0.25rem rgba(10, 240, 252, 0.25)');
+    });
+
+    $('.form-control').blur(function() {
+      if (!$(this).hasClass('is-invalid')) {
+        $(this).css('border-color', '');
+        $(this).css('box-shadow', '');
+      }
+    });
+  });
+</script>
 </body>
 </html>
