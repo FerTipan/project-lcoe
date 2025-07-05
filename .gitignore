@@ -10,8 +10,6 @@ __pycache__/
 */__pycache__/
 *.pyc
 *.pyo
-*.py[cod]
-*$py.class
 
 # Configuración local
 .env

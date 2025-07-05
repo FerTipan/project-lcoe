@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+
 import os
 from pathlib import Path
 from decouple import config
@@ -149,7 +150,7 @@ LOGOUT_REDIRECT_URL = 'inicio'
 
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR,'project_lcoe/static'),)
+STATICFILES_DIRS=(os.path.join(BASE_DIR,'universidad/static'),)
 
 MEDIA_URL = 'media/'    
 MEDIA_ROOT = (os.path.join(BASE_DIR,'project_lcoe/media'))
