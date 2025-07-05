@@ -1,0 +1,308 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Tipo</h5>
+                </div>
+                <ul class="breadcrumb">
+                <li class="breadcrumb-item">Tipo de Generación</li>
+
+                <li class="breadcrumb-item" aria-current="page">{{ tipo.nombre }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active text-uppercase" id="central-tab" data-bs-toggle="tab" href="#central" role="tab" aria-controls="central" aria-selected="true">Central</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-uppercase" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Ficha Técnica</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-uppercase" id="calcule-tab" data-bs-toggle="tab" href="#calcule" role="tab" aria-controls="calcule" aria-selected="false">Cálculo LCOE</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="central" role="tabpanel" aria-labelledby="central-tab">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="col-md-6">
+                                <div class="card-header">
+                                    <h5>Generación {{ tipo.nombre }}</h5>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <select class="form-control" id="exampleFormControlSelect1">
+                                                <option disabled selected>-- Seleccione la Central</option>
+                                                {% for central in centrales %}
+                                                    <option value="{{ central.id }}">{{ central.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Datos Generales</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <style> .cont{ display: flex; justify-content: center;align-items: center;}.img-term{ width: 50%; height: 50%;}</style>
+                                    <div class="input-group input-group-sm cont">
+                                        <span class="input-group-text badge bg-yellow-500">★</span>
+                                        <img src="{% static 'img/tipoGeneracion/termica.jpg' %}" class="img-fluid card-img-custom img-term" alt="Térmica">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group badge bg-yellow-500">Capacidad Central</span>
+                                        <input type="text" id="cap-central" name="cap-central" class="form-control">
+                                        <span class="input-group-text">[MW]</span>
+                                      </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group badge bg-yellow-500">Vida Útil</span>
+                                      <input type="text" id="vida" name="vida" class="form-control">
+                                      <span class="input-group-text">[# Años]</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text badge bg-yellow-500">Inversión Total</span>
+                                      <input type="text" id="inv" name="inv" class="form-control">
+                                      <span class="input-group-text">[USD]</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text badge bg-yellow-500">Factor Planta</span>
+                                      <input type="text" id="facto" name="facto" class="form-control">
+                                      <span class="input-group-text">[ % ]</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text badge badge bg-yellow-500">Año</span>
+                                      <input type="text" id="anio" name="anio" class="form-control">
+                                      <span class="input-group-text">[aaaa]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Costos Fijos</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row mb-2">
+                                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos de Producción</label>
+                                    <div class="col-lg-5 col-md-9 col-sm-12">
+                                        <div class="typeahead">
+                                            <input class="form-control" id="cst-produc" name="cst-produc" type="text" dir="ltr" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos O&M</label>
+                                    <div class="col-lg-5 col-md-9 col-sm-12">
+                                        <div class="typeahead">
+                                            <input class="form-control" id="cst-om" name="cst-om" type="text" dir="ltr" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Costos Variables</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row mb-2">
+                                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos</label>
+                                    <div class="col-lg-5 col-md-9 col-sm-12">
+                                        <div class="typeahead">
+                                            <input class="form-control" id="cst-v" name="cst-v" type="text" dir="ltr" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button class="badge bg-warning border border-success" style="padding: 20px; border-radius: 50px;">Nuevo Caso</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Ficha Técnica</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group badge bg-yellow-500">Capacidad Central</span>
+                                        <input type="text" id="cap-central" name="cap-central" class="form-control">
+                                        <span class="input-group-text">[MW]</span>
+                                      </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group badge bg-yellow-500">Vida Útil</span>
+                                      <input type="text" id="vida" name="vida" class="form-control">
+                                      <span class="input-group-text">[# Años]</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text badge bg-yellow-500">Inversión Total</span>
+                                      <input type="text" id="inv" name="inv" class="form-control">
+                                      <span class="input-group-text">[USD]</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text badge bg-yellow-500">Factor Planta</span>
+                                      <input type="text" id="facto" name="facto" class="form-control">
+                                      <span class="input-group-text">[ % ]</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text badge badge bg-yellow-500">Año</span>
+                                      <input type="text" id="anio" name="anio" class="form-control">
+                                      <span class="input-group-text">[aaaa]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Costos Fijos</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row mb-2">
+                                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos de Producción</label>
+                                    <div class="col-lg-5 col-md-9 col-sm-12">
+                                        <div class="typeahead">
+                                            <input class="form-control" id="cst-produc" name="cst-produc" type="text" dir="ltr" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos O&M</label>
+                                    <div class="col-lg-5 col-md-9 col-sm-12">
+                                        <div class="typeahead">
+                                            <input class="form-control" id="cst-om" name="cst-om" type="text" dir="ltr" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Costos Variables</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row mb-2">
+                                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Costos</label>
+                                    <div class="col-lg-5 col-md-9 col-sm-12">
+                                        <div class="typeahead">
+                                            <input class="form-control" id="cst-v" name="cst-v" type="text" dir="ltr" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button class="badge bg-success border border-primary" style="padding: 20px; border-radius: 50px;">Calcular LCOE</button>&nbsp;
+                            <button class="badge bg-warning border border-success" style="padding: 20px; border-radius: 50px;">Nuevo Caso</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="calcule" role="tabpanel" aria-labelledby="calcule-tab">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="card-title">El valor del LCOE es:</span>
+                        <div class="alert alert-info rounded-4 shadow-sm p-3 text-center w-100" style="max-width: 400px; margin: auto;">
+                            <h5 class="mb-2">Resultado</h5>
+                            <p class="mb-0 display-6 fw-bold" id="resultado">---------- </p>
+                        </div>
+                          
+                    </div>
+                </div>
+
+                <div class="card text-center shadow rounded-4 p-3" style="max-width: 400px; margin: auto;">
+                    <div class="card-header bg-primary text-white fw-bold">
+                      Resultado
+                    </div>
+                    <div class="card-body">
+                      <p class="card-text display-6 fw-semibold" id="resultado">-----</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectCentral = document.getElementById('exampleFormControlSelect1');
+    
+        selectCentral.addEventListener('change', function () {
+            const centralId = this.value;
+            if (!centralId) return;
+    
+            fetch(`/ajax/info-central/${centralId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+    
+                    document.getElementById('cap-central').value = data.capacidad;
+                    document.getElementById('vida').value = data.vida_util;
+                    document.getElementById('inv').value = data.inversion_total;
+                    document.getElementById('facto').value = data.factor_planta;
+                    document.getElementById('anio').value = data.anio;
+    
+                    document.getElementById('cst-produc').value = data.costo_fijo_produccion;
+                    document.getElementById('cst-om').value = data.costo_om;
+                    document.getElementById('cst-v').value = data.costo_variable;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    });
+    </script>
+    
+{% endblock %}

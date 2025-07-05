@@ -1,0 +1,467 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'assets/css/administracion/seleccion.css' %}">
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Centrales</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                            Tipos de Generación
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">Centrales Térmicas</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Centrales Térmicas</h2>
+            <div>
+                <a href="{% url 'termica_create' %}" class="btn btn-primary mb-0">
+                    <i class="ti ti-plus"></i> Agregar
+                </a>
+                <div class="btn-group" role="group">
+                    <button onclick="mostrarDetalles();" id="btn_ver_detalles" 
+                            class="btn btn-outline-primary me-2" title="Mostrar detalles">
+                        <i class="ti ti-eye"></i>
+                    </button>
+                    <button onclick="ocultarDetalles();" class="btn btn-outline-success btn-lcoe" 
+                            id="btn_ocultar_detalles" style="display:none;" title="Ocultar detalles">
+                        <i class="fa fa-eye-slash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="cards-container">
+    {% for termica in object_list %}
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <div class="card card-lcoe h-100">
+            <div class="card-icon-container">
+                <i class="ti ti-fire card-icon-bg"></i>
+            </div>
+            <div class="card-content">
+                <div class="card-header">
+                    <div class="header-icons">
+                        <i class="ti ti-fire"></i>
+                        <i class="ti ti-coin"></i>
+                        <i class="ti ti-chart-line"></i>
+                        <i class="ti ti-battery"></i>
+                    </div>
+                    <h5 class="card-title">{{ termica.central }}</h5>
+                    <div class="card-badge">{{ termica.tipo_turbina }}</div>
+                </div>
+                <div class="card-body">
+                    <div class="principal-info">
+                        <div class="info-item">
+                            <i class="ti ti-bolt"></i>
+                            <div>
+                                <span class="info-label">Potencia Nominal</span>
+                                <span class="info-value">{{ termica.potencia_nominal|floatformat:"3" }} MW</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="ti ti-battery-charging"></i>
+                            <div>
+                                <span class="info-label">Energía Anual Producida</span>
+                                <span class="info-value">{{ termica.energia_anual_producida }} MWh/año</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="ti ti-chart-line"></i>
+                            <div>
+                                <span class="info-label">Factor Planta</span>
+                                <span class="info-value">{{ termica.factor_planta }} %</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="secundario-info" style="display:none;">
+                        <div class="accordion" id="accordionDetails{{ termica.pk }}">
+                            <!-- Sección Generación -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseGeneracion{{ termica.pk }}">
+                                        <i class="ti ti-fire me-2"></i> Datos de Generación
+                                    </button>
+                                </h2>
+                                <div id="collapseGeneracion{{ termica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ termica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Año Instalación:</span>
+                                            <strong>{{ termica.anio_instalacion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tipo Turbina:</span>
+                                            <strong>{{ termica.tipo_turbina }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>N° Turbinas:</span>
+                                            <strong>{{ termica.n_turbina }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Potencia Efectiva:</span>
+                                            <strong>{{ termica.potencia_efectiva }} MW</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Vida Útil:</span>
+                                            <strong>{{ termica.vida_util }} años</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Degradación:</span>
+                                            <strong>{{ termica.degradacion }} %</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Sección Financiera -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseFinancieros{{ termica.pk }}">
+                                        <i class="ti ti-coin me-2"></i> Datos Financieros
+                                    </button>
+                                </h2>
+                                <div id="collapseFinancieros{{ termica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ termica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Inversión Total:</span>
+                                            <strong>{{ termica.inversion_total }} USD</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Capital Propio:</span>
+                                            <strong>{{ termica.capital_propio }} USD</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Acreedor:</span>
+                                            <strong>{{ termica.acreedor }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Deuda:</span>
+                                            <strong>{{ termica.deuda }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Interés Anual:</span>
+                                            <strong>{{ termica.tasa_interes_anual }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Interés Periodo:</span>
+                                            <strong>{{ termica.tasa_interes_periodo }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Periodos por Año:</span>
+                                            <strong>{{ termica.periodos_por_anio }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Años de Pago:</span>
+                                            <strong>{{ termica.anios_pago_total }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Total Periodos:</span>
+                                            <strong>{{ termica.total_periodos }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Años de Gracia:</span>
+                                            <strong>{{ termica.anios_gracia }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Periodos Gracia:</span>
+                                            <strong>{{ termica.periodos_gracia }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Periodos Pago:</span>
+                                            <strong>{{ termica.periodos_pago }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Sección de Costos -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseCostos{{ termica.pk }}">
+                                        <i class="ti ti-cash me-2"></i> Costos
+                                    </button>
+                                </h2>
+                                <div id="collapseCostos{{ termica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ termica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Costos Producción:</span>
+                                            <strong>{{ termica.costo_produccion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>% O&M:</span>
+                                            <strong>{{ termica.porcentaje_oma }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Costo O&M:</span>
+                                            <strong>{{ termica.costo_oma }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Costo O&M USD:</span>
+                                            <strong>{{ termica.costo_oma_usd }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Gastos Administración:</span>
+                                            <strong>{{ termica.gastos_administracion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>PT Unidad Negocio:</span>
+                                            <strong>{{ termica.pt_unidad_negocio }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Costo Administración:</span>
+                                            <strong>{{ termica.costo_administracion }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Sección Combustibles -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseCombustibles{{ termica.pk }}">
+                                        <i class="ti ti-gas-station me-2"></i> Combustibles
+                                    </button>
+                                </h2>
+                                <div id="collapseCombustibles{{ termica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ termica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Tipo Combustible A:</span>
+                                            <strong>{{ termica.tp_combustible_a }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>USD/Galón:</span>
+                                            <strong>{{ termica.usd_galon }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Galones/Año:</span>
+                                            <strong>{{ termica.gal_anio }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tipo Combustible P:</span>
+                                            <strong>{{ termica.tp_combustible_p }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>USD/Galón 1:</span>
+                                            <strong>{{ termica.usd_galon_1 }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Galones/Año 1:</span>
+                                            <strong>{{ termica.gal_anio_1 }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>USD CB Total:</span>
+                                            <strong>{{ termica.usd_cb_total }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Sección Costos Operativos -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseOperativos{{ termica.pk }}">
+                                        <i class="ti ti-tools me-2"></i> Costos Operativos
+                                    </button>
+                                </h2>
+                                <div id="collapseOperativos{{ termica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ termica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Transporte:</span>
+                                            <strong>{{ termica.transporte }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Lubricantes/Químicos:</span>
+                                            <strong>{{ termica.lub_quim }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Agua P:</span>
+                                            <strong>{{ termica.agua_p }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Mantenimiento OIM/MOAM:</span>
+                                            <strong>{{ termica.mantenimiento_oim_moam }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Control Ambiental:</span>
+                                            <strong>{{ termica.ctrl_amb }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Servicios Auxiliares:</span>
+                                            <strong>{{ termica.srv_aux }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Sección de Indicadores -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseIndicadores{{ termica.pk }}">
+                                        <i class="ti ti-chart-line me-2"></i> Indicadores
+                                    </button>
+                                </h2>
+                                <div id="collapseIndicadores{{ termica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ termica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Beta:</span>
+                                            <strong>{{ termica.beta }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Margen Intermediación:</span>
+                                            <strong>{{ termica.margen_intermediacion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Inflación:</span>
+                                            <strong>{{ termica.inflacion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Economía:</span>
+                                            <strong>{{ termica.economia }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Riesgo:</span>
+                                            <strong>{{ termica.riesgo }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Índice Premio:</span>
+                                            <strong>{{ termica.indice_premio }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Sin Riesgo:</span>
+                                            <strong>{{ termica.sin_riesgo }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Mercado:</span>
+                                            <strong>{{ termica.tasa_mercado }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Premio Riesgo Mercado:</span>
+                                            <strong>{{ termica.premio_riesgo_mercado }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Impuesto:</span>
+                                            <strong>{{ termica.impuesto }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'termica_update' termica.pk %}" 
+                           class="btn btn-action btn-edit" title="Editar">
+                            <i class="ti ti-pencil"></i>
+                        </a>
+                        <button class="btn btn-action btn-primary toggle-details" 
+                                data-target="secundario-info-{{ termica.pk }}" 
+                                title="Ver más detalles">
+                            <i class="ti ti-chevron-down"></i>
+                        </button>
+                        <form method="POST" action="{% url 'termica_delete' termica.pk %}" 
+                              class="d-inline delete-form">
+                            {% csrf_token %}
+                            <button type="button" onclick="confirmarEliminacion(this)" 
+                                    class="btn btn-action btn-delete" title="Eliminar">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar esta planta térmica?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarDetalles() {
+        $(".secundario-info").slideDown();
+        $("#btn_ver_detalles").hide();
+        $("#btn_ocultar_detalles").show();
+    }
+    function ocultarDetalles() {
+        $(".secundario-info").slideUp();
+        $("#btn_ver_detalles").show();
+        $("#btn_ocultar_detalles").hide();
+    }
+    function confirmarEliminacion(button) {
+        const form = $(button).closest('form');
+        $('#confirmDeleteModal').modal('show');
+        $('#confirmDeleteButton').off().on('click', function() {
+            form.submit();
+        });
+    }
+    $(document).on('click', '.toggle-details', function() {
+        const card = $(this).closest('.card-lcoe');
+        const details = card.find('.secundario-info');
+        const icon = $(this).find('i');
+        details.slideToggle(function() {
+            if (details.is(':visible')) {
+                icon.removeClass('ti-chevron-down').addClass('ti-chevron-up');
+                $(this).closest('.card-lcoe').css('box-shadow', '0 10px 25px rgba(0, 86, 179, 0.3)');
+            } else {
+                icon.removeClass('ti-chevron-up').addClass('ti-chevron-down');
+                $(this).closest('.card-lcoe').css('box-shadow', '0 4px 12px rgba(0, 86, 179, 0.1)');
+            }
+        });
+    });
+    $(document).ready(function() {
+        $('[title]').tooltip();
+        ocultarDetalles();
+    });
+</script>
+{% endblock %}

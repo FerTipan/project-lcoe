@@ -1,16 +1,40 @@
 # Entorno virtual
 venv/
+.venv/
+env/
+ENV/
+.env/
 
 # Archivos compilados de Python
 __pycache__/
+*/__pycache__/
 *.pyc
 *.pyo
 
 # Configuración local
 .env
 
-# Base de datos SQLite (si usas una)
+# Base de datos SQLite
+*.sqlite3
+*.db
 db.sqlite3
+Calculo.db
+
 
 # Archivos estáticos generados
 staticfiles/
+media/
+
+
+# Configuración de editores
+.vscode/
+.idea/
+
+# Archivos temporales
+*.log
+.DS_Store
+Thumbs.db 
+
+# --- Archivos de configuración de base de datos de PostgreSQL (si tuvieras dumps) ---
+*.sql
+*.dump

@@ -1,0 +1,433 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'assets/css/administracion/seleccion.css' %}">
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Centrales</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                            Tipos de Generación
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">Centrales eólicas</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Centrales eólicas</h2>
+            <div>
+                <a href="{% url 'eolica_create' %}" class="btn btn-primary mb-0">
+                    <i class="ti ti-plus"></i> Agregar
+                </a>
+                
+                <div class="btn-group" role="group">
+                    <button onclick="mostrarDetalles();" id="btn_ver_detalles" 
+                            class="btn btn-outline-primary me-2" title="Mostrar detalles">
+                        <i class="ti ti-eye"></i>
+                    </button>
+                    <button onclick="ocultarDetalles();" class="btn btn-outline-success btn-lcoe" 
+                            id="btn_ocultar_detalles" style="display:none;" title="Ocultar detalles">
+                        <i class="fa fa-eye-slash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="cards-container">
+    {% for eolica in object_list %}
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <div class="card card-lcoe h-100">
+            <div class="card-icon-container">
+                <i class="ti ti-solar-panel card-icon-bg"></i>
+            </div>
+            <div class="card-content">
+                <div class="card-header">
+                    <div class="header-icons">
+                        <i class="ti ti-sun"></i>
+                        <i class="ti ti-coin"></i>
+                        <i class="ti ti-chart-line"></i>
+                        <i class="ti ti-battery"></i>
+                    </div>
+                    <h5 class="card-title">{{ eolica.central }}</h5>
+                    <div class="card-badge">{{ eolica.tipo_turbina }}</div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="principal-info">
+                        <div class="info-item">
+                            <i class="ti ti-bolt"></i>
+                            <div>
+                                <span class="info-label">Potencia Nominal</span>
+                                <span class="info-value">{{ eolica.potencia_nominal|floatformat:"3" }} MW</span>                            
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="ti ti-battery-charging"></i>
+                            <div>
+                                <span class="info-label">Energía Anual Producida</span>
+                                <span class="info-value">{{ eolica.energia_anual_producida }} MWh/año</span>
+                            </div>
+                        </div>
+                
+                        <div class="info-item">
+                            <i class="ti ti-chart-line"></i>
+                            <div>
+                                <span class="info-label">Factor Planta</span>
+                                <span class="info-value">{{ eolica.factor_planta }} %</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="secundario-info" style="display:none;">
+                        <div class="accordion" id="accordionDetails{{ eolica.pk }}">
+                            <!-- Sección Generación -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseGeneracion{{ eolica.pk }}">
+                                        <i class="ti ti-sun me-2"></i> Datos de Generación
+                                    </button>
+                                </h2>
+                                <div id="collapseGeneracion{{ eolica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ eolica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Año de Construccion:</span>
+                                            <strong>{{ eolica.anio_construccion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>N° Turbinas:</span>
+                                            <strong>{{ eolica.numero_turbinas }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tipo Turbina:</span>
+                                            <strong>{{ eolica.tipo_turbina }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Potencia Efectiva:</span>
+                                            <strong>{{ eolica.potencia_efectiva }} MWp</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Energía Bruta:</span>
+                                            <strong>{{ eolica.energia_bruta_calculada }} GWh</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Vida Útil:</span>
+                                            <strong>{{ eolica.vida_util }} años</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Degradación:</span>
+                                            <strong>{{ eolica.degradacion }} %</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sección Financiera -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseFinancieros{{ eolica.pk }}">
+                                        <i class="ti ti-coin me-2"></i> Datos Financieros
+                                    </button>
+                                </h2>
+                                <div id="collapseFinancieros{{ eolica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ eolica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Inversión Total:</span>
+                                            <strong>{{ eolica.inversion_total }} USD</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Capital Propio:</span>
+                                            <strong>{{ eolica.capital_propio }} USD</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Acreedor:</span>
+                                            <strong>{{ eolica.acreedor }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Deuda:</span>
+                                            <strong>{{ eolica.deuda }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Interés Anual:</span>
+                                            <strong>{{ eolica.tasa_interes_anual }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Interés Periodo:</span>
+                                            <strong>{{ eolica.tasa_interes_periodo }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Periodos por Año:</span>
+                                            <strong>{{ eolica.periodos_por_anio }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Años de Pago:</span>
+                                            <strong>{{ eolica.anios_pago_total }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Total Periodos:</span>
+                                            <strong>{{ eolica.total_periodos }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Años de Gracia:</span>
+                                            <strong>{{ eolica.anios_gracia }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Periodos Gracia:</span>
+                                            <strong>{{ eolica.periodos_gracia }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Periodos Pago:</span>
+                                            <strong>{{ eolica.periodos_pago }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Años de Pago:</span>
+                                            <strong>{{ eolica.anios_pago }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sección de Costos -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseCostos{{ eolica.pk }}">
+                                        <i class="ti ti-cash me-2"></i> Costos
+                                    </button>
+                                </h2>
+                                <div id="collapseCostos{{ eolica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ eolica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Costo Inversión:</span>
+                                            <strong>{{ eolica.costo_inversion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Costo Fijo Anual:</span>
+                                            <strong>{{ eolica.costo_fijo_anual }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Costo Fijo (MW):</span>
+                                            <strong>{{ eolica.costo_fijo_mw }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Costo Fijo (KW):</span>
+                                            <strong>{{ eolica.costo_fijo_kw }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Combustible:</span>
+                                            <strong>{{ eolica.combustible }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Transporte:</span>
+                                            <strong>{{ eolica.transporte }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Lubricantes, quimicos, etc:</span>
+                                            <strong>{{ eolica.lubricantes }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Agua Potable:</span>
+                                            <strong>{{ eolica.agua }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Mantenimiento:</span>
+                                            <strong>{{ eolica.mantenimiento }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Control Ambiental:</span>
+                                            <strong>{{ eolica.control }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Servicios Auxiliares:</span>
+                                            <strong>{{ eolica.servicios }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Seguros y Garantias:</span>
+                                            <strong>{{ eolica.seguros }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Personal:</span>
+                                            <strong>{{ eolica.personal }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sección de Indicadores -->
+                            <div class="accordion-item lcoe-accordion">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseIndicadores{{ eolica.pk }}">
+                                        <i class="ti ti-chart-line me-2"></i> Indicadores
+                                    </button>
+                                </h2>
+                                <div id="collapseIndicadores{{ eolica.pk }}" 
+                                     class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionDetails{{ eolica.pk }}">
+                                    <div class="accordion-body">
+                                        <div class="detail-item">
+                                            <span>Beta:</span>
+                                            <strong>{{ eolica.beta }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Margen Intermediación:</span>
+                                            <strong>{{ eolica.margen_intermediacion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Inflación:</span>
+                                            <strong>{{ eolica.inflacion }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Interés Economía:</span>
+                                            <strong>{{ eolica.economia }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Riesgo País:</span>
+                                            <strong>{{ eolica.riesgo }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Índice Premio Riesgo:</span>
+                                            <strong>{{ eolica.indice_premio }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Descuento Sin Riesgo:</span>
+                                            <strong>{{ eolica.sin_riesgo }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Descuento Mercado:</span>
+                                            <strong>{{ eolica.tasa_mercado }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Premio Riesgo Mercado:</span>
+                                            <strong>{{ eolica.premio_riesgo_mercado }}</strong>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span>Tasa Impuestos:</span>
+                                            <strong>{{ eolica.impuesto }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'eolica_update' eolica.pk %}" 
+                           class="btn btn-action btn-edit" title="Editar">
+                            <i class="ti ti-pencil"></i>
+                        </a>
+                        
+                        <button class="btn btn-action btn-primary toggle-details" 
+                                data-target="secundario-info-{{ eolica.pk }}" 
+                                title="Ver más detalles">
+                            <i class="ti ti-chevron-down"></i>
+                        </button>
+                        
+                        <form method="POST" action="{% url 'eolica_delete' eolica.pk %}" 
+                              class="d-inline delete-form">
+                            {% csrf_token %}
+                            <button type="button" onclick="confirmarEliminacion(this)" 
+                                    class="btn btn-action btn-delete" title="Eliminar">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar esta planta eolica?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarDetalles() {
+        $(".secundario-info").slideDown();
+        $("#btn_ver_detalles").hide();
+        $("#btn_ocultar_detalles").show();
+    }
+    
+    function ocultarDetalles() {
+        $(".secundario-info").slideUp();
+        $("#btn_ver_detalles").show();
+        $("#btn_ocultar_detalles").hide();
+    }
+    
+    function confirmarEliminacion(button) {
+        const form = $(button).closest('form');
+        $('#confirmDeleteModal').modal('show');
+        
+        $('#confirmDeleteButton').off().on('click', function() {
+            form.submit();
+        });
+    }
+    
+    $(document).on('click', '.toggle-details', function() {
+        const card = $(this).closest('.card-lcoe');
+        const details = card.find('.secundario-info');
+        const icon = $(this).find('i');
+        
+        details.slideToggle(function() {
+            if (details.is(':visible')) {
+                icon.removeClass('ti-chevron-down').addClass('ti-chevron-up');
+                $(this).closest('.card-lcoe').css('box-shadow', '0 10px 25px rgba(0, 86, 179, 0.3)');
+            } else {
+                icon.removeClass('ti-chevron-up').addClass('ti-chevron-down');
+                $(this).closest('.card-lcoe').css('box-shadow', '0 4px 12px rgba(0, 86, 179, 0.1)');
+            }
+        });
+    });
+    
+    $(document).ready(function() {
+        $('[title]').tooltip();
+        
+        ocultarDetalles();
+    });
+</script>
+{% endblock %}

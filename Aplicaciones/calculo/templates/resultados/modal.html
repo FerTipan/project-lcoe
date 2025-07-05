@@ -1,0 +1,173 @@
+<style>
+    .campo-lcoe {
+        font-size: 0.9em;
+    }
+    .resultado-lcoe {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+    .grafico-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+<!-- Modal Nuevo Caso -->
+<div class="modal fade" id="nuevoCasoModal" tabindex="-1" aria-labelledby="nuevoCasoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nuevoCasoLabel"><i class="fa fa-plus me-2"></i>Agregar nuevo caso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-nuevo-caso">
+                    {% csrf_token %}
+                    <input type="hidden" name="central_id" value="{{ central_seleccionada.id }}">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre del Caso</label>
+                            <input type="text" class="form-control campo-lcoe" name="nombre" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Vida útil (años)</label>
+                            <input type="number" step="1" class="form-control campo-lcoe" name="vida_util">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Potencia nominal (MW)</label>
+                            <input type="number" step="0.01" class="form-control campo-lcoe" name="potencia_nominal">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Factor planta (%)</label>
+                            <input type="number" step="0.01" class="form-control campo-lcoe" name="factor_planta">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Energía anual (kWh)</label>
+                            <input type="number" step="0.01" class="form-control campo-lcoe" name="energia_anual_producida">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Inversión Total (USD)</label>
+                            <input type="number" step="0.01" class="form-control campo-lcoe" name="inversion_total">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">% Capital propio</label>
+                            <input type="number" step="0.01" class="form-control campo-lcoe" name="porcentaje_capital_propio">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">% Deuda</label>
+                            <input type="number" step="0.01" class="form-control campo-lcoe" name="porcentaje_deuda">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Costo variable (USD)</label>
+                            <input type="number" step="0.01" class="form-control campo-lcoe" name="costo_variable">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Costo producción (USD)</label>
+                            <input type="number" step="0.01" class="form-control campo-lcoe" name="costo_produccion">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Interés periodo (%)</label>
+                            <input type="number" step="0.0001" class="form-control campo-lcoe" name="tasa_interes_periodo">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Interés anual (%)</label>
+                            <input type="number" step="0.0001" class="form-control campo-lcoe" name="tasa_interes_anual">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Periodos pago</label>
+                            <input type="number" class="form-control campo-lcoe" name="periodos_pago">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Inflación (%)</label>
+                            <input type="number" step="0.0001" class="form-control campo-lcoe" name="inflacion">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Economía (%)</label>
+                            <input type="number" step="0.0001" class="form-control campo-lcoe" name="economia">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Tasa sin riesgo (%)</label>
+                            <input type="number" step="0.0001" class="form-control campo-lcoe" name="sin_riesgo">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Tasa mercado (%)</label>
+                            <input type="number" step="0.0001" class="form-control campo-lcoe" name="tasa_mercado">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Riesgo país ()</label>
+                            <input type="number" step="0.0001" class="form-control campo-lcoe" name="riesgo">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Impuesto (%)</label>
+                            <input type="number" step="0.0001" class="form-control campo-lcoe" name="impuesto">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tasa_descuento" class="form-label">Tasa de descuento (%)</label>
+                            <input type="number" step="0.0001" min="0" name="tasa_descuento" id="tasa_descuento" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-calculator me-2"></i>Calcular LCOE
+                        </button>
+                    </div>
+
+                    <div id="resultado-lcoe" class="resultado-lcoe d-none">
+                        <h5 class="text-success">Resultado del LCOE:</h5>
+                        <p class="fs-5"><strong id="valor-lcoe"></strong> USD/kWh</p>
+                    </div>
+
+                    <div id="grafico-lcoe" class="grafico-container d-none">
+                        <h6 class="text-muted">Comparación visual:</h6>
+                        <img id="img-grafico" src="" class="img-fluid rounded">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("form-nuevo-caso").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch("{% url 'nuevo_caso_calculo' %}", {
+            method: "POST",
+            body: formData,
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "ok") {
+                document.getElementById("valor-lcoe").innerText = data.lcoe;
+                document.getElementById("resultado-lcoe").classList.remove("d-none");
+                document.getElementById("img-grafico").src = `data:image/png;base64,${data.grafico}`;
+                document.getElementById("grafico-lcoe").classList.remove("d-none");
+            } else {
+                alert("Error: " + data.message);
+            }
+        });
+    });
+</script>
+

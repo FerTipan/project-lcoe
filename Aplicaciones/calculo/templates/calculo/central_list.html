@@ -1,0 +1,182 @@
+{% extends "plantilla.html" %}
+{% block content %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Centrales</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <a href="{% url 'tipoGeneracion' %}" class="pc-head-link ms-0">
+                            Tipos de Generación
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">Lista de Centrales</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+  {% endfor %}
+{% endif %} -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Centrales Eléctricas</h2>
+            <div>
+                <a href="{% url 'central_create' %}" class="btn btn-primary mb-3">
+                    <i class="ti ti-plus"></i>Agregar
+                </a>
+                <div class="btn-group">
+                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Mostrar Detalles">
+                        <button onclick="mostrarDetalles();" id="btn_ver_detalles" class="btn btn-outline-primary mb-3">
+                            <i class="ti ti-eye"></i>
+                        </button>
+                    </span>
+                    <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Ocultar Detalles">
+                        <button onclick="ocultarDetalles();" class="btn btn-outline-success btn-lcoe mb-3" id="btn_ocultar_detalles" style="display:none;">
+                            <i class="fa fa-eye-slash"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="tbl-central" class="table table-hover table-striped">
+                            <thead class="table-lcoe">
+                                <tr>
+                                    <th class="principal">Nombre</th>
+                                    <th class="secundario">Foto</th>
+                                    <th class="principal">Ubicación</th>
+                                    <th class="principal">Empresa</th>
+                                    <th class="principal">Tipo</th>
+                                    <th class="secundario">Potencia</th>
+                                    <th class="principal">Provincia</th>
+                                    <th class="principal">Año de Operación</th>
+                                    <th class="principal">Tipo de Generación</th>
+                                    <th class="principal">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for central in object_list %}
+                                <tr>
+                                    <td class="principal">{{ central.nombre }}</td>
+                                    <td class="secundario">{% if central.foto_central and central.foto_central.url %}
+                                        <p class="mb-0  fw-normal">
+                                            <a  href="{{central.foto_central.url}}" target="_blank">
+                                                <img src="{{central.foto_central.url}}" alt=""
+                                                height="70px" width="90px">
+                                            </a>
+                                            <hr>
+                                            <a class="btn btn-outline-success" download  href="{{central.foto_central.url}}">
+                                            Descargar
+                                            </a>
+                                        {% else %}
+                                            No hay foto disponible.
+                                        {% endif %}
+                                    </td>
+                                    <td >{{ central.ubicacion}}</td>
+                                    <td >{{ central.empresa }}</td>
+                                    <td >
+                                        <span class="badge rounded-3 fw-semibold 
+                                        {% if central.tipo == 'hidraulica' %} bg-primary 
+                                        {% elif central.tipo == 'GAS' %} bg-warning 
+                                        {% elif central.tipo == 'VAPOR' %} bg-success 
+                                        {% else %} bg-light text-dark
+                                        {% endif %}">
+                                        {{ central.tipo}}
+                                        </span> 
+                                    </td>
+                                    <td class="secundario">{{ central.potencia}}</td>
+                                    <td class="principal">{{ central.provincia }}</td>
+                                    <td class="principal">{{ central.anio_operacion }}</td>
+                                    <td>
+                                        <span class="badge rounded-3 fw-semibold 
+                                            {% if central.tipo_electrica|lower == 'hidraulica' %}bg-primary text-white
+                                            {% elif central.tipo_electrica|lower == 'termica' %}bg-success text-white
+                                            {% elif central.tipo_electrica|lower == 'eolica' %}bg-info text-white
+                                            {% elif central.tipo_electrica|lower == 'fotovoltaica' %}bg-warning text-white
+                                            {% else %}bg-secondary text-white{% endif %}">
+                                            {{ central.tipo_electrica|title }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="d-inline-block mb-2" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
+                                            <a href="{% url 'central_update' central.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil me-1" name="editar"></i></a>
+                                        </span>
+                                        <!-- <a href="{% url 'central_delete' central.pk %}" class="btn btn-danger btn-sm">Eliminar</a> -->
+                                        <form id="form-eliminar-{{ central.pk }}" method="POST" action="{% url 'central_delete' central.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <span class="d-inline-block mb-2" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
+                                                <button type="button" onclick="confirmarEliminacion('{{ central.pk }}')" class="btn btn-danger btn-sm btn-circle">
+                                                    <i class="ti ti-trash me-1"></i>
+                                                </button>
+                                            </span>
+
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> 
+    </div>
+</div>
+
+
+<script>
+    $(".secundario").hide();
+
+    function mostrarDetalles(){
+        $(".secundario").fadeIn();
+        $("#btn_ver_detalles").hide();
+        $("#btn_ocultar_detalles").fadeIn();
+    }
+
+    function ocultarDetalles(){
+        $(".secundario").hide();
+        $("#btn_ver_detalles").fadeIn();
+        $("#btn_ocultar_detalles").hide();
+    }
+
+    ocultarDetalles();
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let table = new DataTable('#tbl-central', {
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+            },
+            dom:
+                "<'row'<'col-sm-8 d-flex align-items-center'B><'col-md-4 d-flex justify-content-end'f>>" +  // Botones + buscador
+                "<'row'<'col-sm-6'l>>" +                                          
+                "<'row'<'col-sm-12'tr>>" +                                             // Tabla
+                "<'row mt-2'<'col-md-6'i><'col-md-6 d-flex justify-content-end'p>>",   
+            buttons: [
+                { extend: 'copy', text: '<i class="fa fa-copy"></i> Copiar', className: 'custom-blue' },
+                { extend: 'csv', text: '<i class="fa fa-file-csv"></i> CSV', className: 'custom-blue' },
+                { extend: 'excel', text: '<i class="fa fa-file-excel"></i> Excel', className: 'custom-blue' },
+                { extend: 'pdf', text: '<i class="fa fa-file-pdf"></i> PDF', className: 'custom-blue' },
+                { extend: 'print', text: '<i class="fa fa-print"></i> Imprimir', className: 'custom-blue' }
+            ]
+        });
+    });
+</script>
+{% endblock %}
