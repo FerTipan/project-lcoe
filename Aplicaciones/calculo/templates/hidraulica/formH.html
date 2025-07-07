@@ -30,7 +30,7 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <div class="section-title">Centrales Hidroelectricas</div>
+                        <div class="section-title accordion-lcoe-title">Centrales Hidroelectricas</div>
                     </div>
                     <div class="col-md-8 text-end">
                         <p style="color:#1373cc"><i class="ti ti-bookmark"></i>{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Central Hidraulica</p>
@@ -58,13 +58,12 @@
                         <div class="accordion" id="accordionExample">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button accordion-lcoe" style="background-color: #1373cc; color:white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <button class="accordion-button accordion-lcoe accordion-lcoe-title" style="background-color: #1373cc; color:white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     Información General
                                 </button>
                                 </h2>
                                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <strong class="mb-3 d-block">Información General</strong>
 
                                     <div class="row g-3">
                                         <div class="col-md-3">
@@ -129,8 +128,8 @@
                                 </div>
                             </div>
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <h2 class="accordion-header accordion-lcoe-title" id="headingTwo">
+                                <button class="accordion-button collapsed accordion-lcoe-title" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                     Financiamiento
                                 </button>
                                 </h2>
@@ -193,7 +192,10 @@
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <button class="accordion-button collapsed accordion-lcoe-title"
+                                        style="background-color: #1373cc; color:white"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree"
+                                        aria-expanded="false" aria-controls="collapseThree">
                                     Costos Totales
                                 </button>
                                 </h2>
@@ -243,7 +245,7 @@
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingFour">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                <button class="accordion-button collapsed accordion-lcoe-title" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                     Parámetros Económicos
                                 </button>
                                 </h2>

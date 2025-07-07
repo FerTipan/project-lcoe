@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'social_django',  
     'Aplicaciones.usuarios',
     'Aplicaciones.calculo',
+    'widget_tweaks',
     #'leaflet',
 
 ]
@@ -158,3 +159,11 @@ MEDIA_ROOT = (os.path.join(BASE_DIR,'project_lcoe/media'))
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'estevezjosue047@gmail.com'
+EMAIL_HOST_PASSWORD = 'oyvq vtuh zbji bxdz'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'estevezjosue047@gmail.com'

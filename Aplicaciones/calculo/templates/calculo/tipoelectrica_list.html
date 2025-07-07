@@ -40,28 +40,32 @@
                         <tbody>
                             {% for tipo in object_list %}
                             <tr>
-                                <td>{{ tipo.nombre }}</td>
-                                <td>{% if tipo.foto_tipo and tipo.foto_tipo.url %}
-                                    <p class="mb-0  fw-normal">
-                                        <a  href="{{tipo.foto_tipo.url}}" target="_blank">
-                                            <img src="{{tipo.foto_tipo.url}}" alt=""
-                                            height="70px" width="90px">
-                                        </a>
-                                        <a class="btn btn-outline-success" download  href="{{tipo.foto_tipo.url}}">
-                                        Descargar
+                                <td class="text-center">{{ tipo.nombre }}</td>
+                                <td class="text-center">
+                                    {% if tipo.foto_tipo and tipo.foto_tipo.url %}
+                                        <p class="mb-1 fw-normal">
+                                            <a href="{{tipo.foto_tipo.url}}" target="_blank">
+                                                <img src="{{tipo.foto_tipo.url}}" alt="" height="110px" width="150px">
+                                            </a>
+                                        </p>
+                                        <a class="btn btn-outline-success btn-sm mt-1" download href="{{tipo.foto_tipo.url}}">
+                                            Descargar
                                         </a>
                                     {% else %}
                                         No hay foto disponible.
-                                    {% endif %}</td>
-                                <td>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
                                     <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Editar">
-                                        <a href="{% url 'tipoelectrica_update' tipo.pk %}" class="btn btn-warning btn-sm btn-circle"><i class="ti ti-pencil"></i></a>
+                                        <a href="{% url 'tipoelectrica_update' tipo.pk %}" class="btn btn-warning btn-lg rounded-circle d-flex align-items-center justify-content-center mx-1" style="width: 60px; height: 60px;">
+                                            <i class="ti ti-pencil" style="font-size: 2em; margin: 0 auto;"></i>
+                                        </a>
                                     </span>
                                     <form id="form-eliminar-{{ tipo.pk }}" method="POST" action="{% url 'tipoelectrica_delete' tipo.pk %}" class="d-inline">
                                         {% csrf_token %}
                                         <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Eliminar">
-                                            <button type="button" onclick="confirmarEliminacion('{{ tipo.pk }}')" class="btn btn-danger btn-sm btn-circle">
-                                                <i class="ti ti-trash me-1"></i>
+                                            <button type="button" onclick="confirmarEliminacion('{{ tipo.pk }}')" class="btn btn-danger btn-lg rounded-circle d-flex align-items-center justify-content-center mx-1" style="width: 60px; height: 60px;">
+                                                <i class="ti ti-trash" style="font-size: 2em; margin: 0 auto;"></i>
                                             </button>
                                         </span>
                                     </form>
