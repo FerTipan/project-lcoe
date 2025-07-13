@@ -74,6 +74,45 @@
             <p class="lead text-muted">Seleccione una central para ver sus detalles</p>
         </div>
         <div class="col-md-4">
+            <!-- Botón Comparativa -->
+            <button class="btn btn-outline-secondary float-end mb-3 ms-2" data-bs-toggle="modal" data-bs-target="#comparativaModal">
+                <i class="fas fa-balance-scale"></i> Comparativa
+            </button>
+                <!-- Modal Comparativa -->
+                <div class="modal fade" id="comparativaModal" tabindex="-1" aria-labelledby="comparativaModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="comparativaModalLabel">Comparar LCOE entre centrales</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="comparativa-form">
+                        <div class="mb-3">
+                            <label for="central-base" class="form-label">Central base</label>
+                            <select class="form-select" id="central-base" required>
+                            <option value="">Seleccione...</option>
+                            {% for c in centrales %}
+                                <option value="{{ c.id }}">{{ c.nombre }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="central-comparar" class="form-label">Comparar con</label>
+                            <select class="form-select" id="central-comparar" required>
+                            <option value="">Seleccione...</option>
+                            {% for c in centrales %}
+                                <option value="{{ c.id }}">{{ c.nombre }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Comparar</button>
+                        </form>
+                        <div id="grafico-comparativa" class="mt-4 text-center"></div>
+                    </div>
+                    </div>
+                </div>
+                </div>
             {% if tipo|lower == "hidraulica" %}
                 <a
                     class="btn btn-primary float-end mb-3 text-white" 
@@ -112,7 +151,7 @@
             {% endif %}
         </div>
 
-        <!-- Modal -->
+        <!-- Modal de resultados/ modal -->
         {% include "resultados/modal.html" %}
     </div>
     <div class="row">
@@ -340,4 +379,38 @@
         
     </div>
 </div>
+
+
+<script>
+document.getElementById('comparativa-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const baseId = document.getElementById('central-base').value;
+    const compararId = document.getElementById('central-comparar').value;
+    const graficoDiv = document.getElementById('grafico-comparativa');
+    graficoDiv.innerHTML = '<div class="spinner-border text-primary"></div>';
+
+    fetch("{% url 'nuevo_caso_calculo' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: new URLSearchParams({
+            'nombre': 'Comparativa',
+            'central_id': baseId,
+            'comparar_con_id': compararId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === "ok") {
+            graficoDiv.innerHTML = `<img src="data:image/png;base64,${data.grafico}" class="img-fluid" alt="Gráfico comparativo">`;
+        } else {
+            graficoDiv.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+        }
+    })
+    .catch(() => {
+        graficoDiv.innerHTML = `<div class="alert alert-danger">Error al comparar.</div>`;
+    });
+});
+</script>
 {% endblock %}

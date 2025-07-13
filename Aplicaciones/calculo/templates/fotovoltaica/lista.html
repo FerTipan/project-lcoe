@@ -363,13 +363,11 @@
         $("#btn_ocultar_detalles").hide();
     }
     
+    let formToDelete = null;
+
     function confirmarEliminacion(button) {
-        const form = $(button).closest('form');
+        formToDelete = $(button).closest('form');
         $('#confirmDeleteModal').modal('show');
-        
-        $('#confirmDeleteButton').off().on('click', function() {
-            form.submit();
-        });
     }
     
     $(document).on('click', '.toggle-details', function() {

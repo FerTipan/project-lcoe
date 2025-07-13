@@ -39,13 +39,13 @@
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
   <!-- Notyf CSS -->
   <link href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" rel="stylesheet" />
-  <!-- Importancion del IziToast
+  <!-- Importancion del IziToast -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css"
     integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"
     integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
   <!-- File Inputs Libreria
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.0/js/fileinput.min.js" integrity="sha512-ZOU4ZJnGlvyQ76zoWdOs4Yb7VnhJPRKkssorqt36m9/NDmHs0FrWteaSAsODgSJfBke9vAPLxpO7b1fb2Bmevw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.0/css/fileinput.min.css" integrity="sha512-cvhwKyzOpC1m0Ps5PFVput79SWoJ98fkcV52QEr3aJ1A6hfE6N1wzWFtGH8iYOHp/MHOg6LDlX5ljHoi9BS5SQ==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
@@ -355,6 +355,70 @@
       mostrarNotificaciones(mensajes);
     });
   </script>
+
+
+  <script>
+    function confirmarEliminacion(formId) {
+      iziToast.question({
+          timeout: 20000,
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          title: 'Confirmar Eliminación',
+          message: '¿Estás seguro de que deseas eliminar este elemento?',
+          position: 'center',
+          buttons: [
+              ['<button><b>SI</b></button>', function (instance, toast) {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  document.getElementById(formId).submit();
+              }, true],
+              ['<button>NO</button>', function (instance, toast) {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              }]
+          ]
+        });
+      }
+    </script>
+    <script>
+    function confirmarEliminacionclave(formId) {
+      iziToast.question({
+        timeout: false,
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        title: 'Advertencia',
+        message: '⚠️ Esto puede estar relacionado con otras tablas (claves foráneas).',
+        position: 'center',
+        buttons: [
+          ['<button>Entiendo, continuar</button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            iziToast.question({
+              timeout: false,
+              close: false,
+              overlay: true,
+              displayMode: 'once',
+              title: 'Confirmar eliminación',
+              message: '¿Estás completamente seguro de que deseas eliminar este registro?',
+              position: 'center',
+              buttons: [
+                ['<button>Eliminar</button>', function (instance2, toast2) {
+                  instance2.hide({ transitionOut: 'fadeOut' }, toast2, 'button');
+                  document.getElementById(formId).submit(); // eliminar
+                }, true],
+                ['<button>Cancelar</button>', function (instance2, toast2) {
+                  instance2.hide({ transitionOut: 'fadeOut' }, toast2, 'button');
+                }]
+              ]
+            });
+
+          }, true],
+          ['<button>Cancelar</button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+          }]
+        ]
+      });
+    }
+    </script>
 
   <script>layout_change('light');</script>
 

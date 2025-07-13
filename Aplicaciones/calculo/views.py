@@ -383,7 +383,7 @@ def nuevo_caso_calculo(request):
         try:
             nombre = request.POST.get('nombre')
             central_id = request.POST.get('central_id')
-            comparar_con_id = request.POST.get('comparar_con_id')
+            comparar_con_id = request.POST.get('comparar_con_id')  # Puede ser None o un id
             central = Central.objects.get(id=central_id) if central_id else None
 
             caso = CasoCalculo.objects.create(
@@ -393,37 +393,12 @@ def nuevo_caso_calculo(request):
                 es_simulacion=True
             )
 
-            parametros = ParametroFotovoltaica.objects.create(
-                caso=caso,
-                potencia_nominal=request.POST.get('potencia_nominal'),
-                factor_planta=request.POST.get('factor_planta'),
-                vida_util=request.POST.get('vida_util'),
-                inversion_total=request.POST.get('inversion_total'),
-                porcentaje_capital_propio=request.POST.get('porcentaje_capital_propio'),
-                porcentaje_deuda=request.POST.get('porcentaje_deuda'),
-                capital_propio=request.POST.get('capital_propio'),
-                deuda=request.POST.get('deuda'),
-                costo_variable=request.POST.get('costo_variable'),
-                costo_produccion=request.POST.get('costo_produccion'),
-                costo_anual_oma_mw=request.POST.get('costo_anual_oma_mw'),
-                energia_anual_producida=request.POST.get('energia_anual_producida'),
-                tasa_interes_periodo=request.POST.get('tasa_interes_periodo'),
-                tasa_interes_anual=request.POST.get('tasa_interes_anual'),
-                total_periodos=request.POST.get('total_periodos'),
-                anios_gracia=request.POST.get('anios_gracia'),
-                periodos_pago=request.POST.get('periodos_pago'),
-                beta=request.POST.get('beta'),
-                margen_intermediacion=request.POST.get('margen_intermediacion'),
-                inflacion=request.POST.get('inflacion'),
-                economia=request.POST.get('economia'),
-                riesgo=request.POST.get('riesgo'),
-                sin_riesgo=request.POST.get('sin_riesgo'),
-                tasa_mercado=request.POST.get('tasa_mercado'),
-                premio_riesgo_mercado=request.POST.get('premio_riesgo_mercado'),
-                impuesto=request.POST.get('impuesto'),
-                degradacion=request.POST.get('degradacion'),
-                tasa_descuento=Decimal(request.POST["tasa_descuento"]),
-            )
+            parametros = crear_parametros_desde_tipo_generacion(caso)
+            if not parametros:
+                return JsonResponse({
+                    "status": "error",
+                    "message": "No se pudo crear los parámetros para esta tecnología."
+                })
 
             resultado = ResultadoCalculo.objects.create(caso=caso)
 
@@ -433,7 +408,7 @@ def nuevo_caso_calculo(request):
                     "message": "No se pudo calcular el LCOE. Verifique los datos ingresados."
                 })
 
-            # Comparar con otra tecnología existente si se proporcionó
+            # --- Comparación ---
             lcoe_base = float(resultado.lcoe)
             nombres = ["Nuevo Caso"]
             valores = [lcoe_base]
@@ -441,15 +416,17 @@ def nuevo_caso_calculo(request):
             if comparar_con_id:
                 central_comp = Central.objects.get(id=comparar_con_id)
                 caso_existente = CasoCalculo.objects.filter(central=central_comp).last()
-                if caso_existente and hasattr(caso_existente, 'resultadocalculo') and caso_existente.resultadocalculo.lcoe:
-                    nombres.append(central_comp.nombre)
-                    valores.append(float(caso_existente.resultadocalculo.lcoe))
+                if caso_existente:
+                    resultado_existente = ResultadoCalculo.objects.filter(caso=caso_existente).last()
+                    if resultado_existente and resultado_existente.lcoe:
+                        nombres.append(central_comp.nombre)
+                        valores.append(float(resultado_existente.lcoe))
 
-            # Generar gráfica con matplotlib
+            # Gráfica
             fig, ax = plt.subplots()
-            ax.bar(nombres, valores, color=["#4CAF50", "#FF9800"])
+            ax.bar(nombres, valores, color=["#4CAF50", "#FF9800"][:len(nombres)])
             ax.set_ylabel("LCOE (USD/kWh)")
-            ax.set_title("Comparación de LCOE")
+            ax.set_title("Comparación de LCOE" if len(nombres) > 1 else "LCOE Calculado")
 
             buf = io.BytesIO()
             plt.savefig(buf, format='png')
