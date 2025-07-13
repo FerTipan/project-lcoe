@@ -3,13 +3,7 @@ from .models import Perfil
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-class PerfilInline(admin.StackedInline):
-    model = Perfil
-    can_delete = False
-    verbose_name_plural = 'Perfil'
-
 class UserAdmin(BaseUserAdmin):
-    inlines = (PerfilInline,)
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)

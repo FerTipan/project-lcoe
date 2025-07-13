@@ -3,14 +3,15 @@ from . import views
 from .views import vista_usuario_calculo
 from .views import AdminDashboardView, UserDashboardView
 
+
 urlpatterns = [
     path('', views.inicio, name='inicio'),
     path('dashboard/admin/', AdminDashboardView.as_view(), name='admin-dashboard'),
     path('dashboard/user/', UserDashboardView.as_view(), name='user-dashboard'),
     path('vista', vista_usuario_calculo, name='vista_usuario_calculo'),
     path('tipoGeneracion/', views.tipoGeneracion, name='tipoGeneracion'),
-    path('mapa/', views.mapa, name='mapa'),
-    path('mapa/<str:pagina>/', views.mapa_detalle, name='mapa_detalle'),
+    path('central/<int:pk>/mapa/', views.central_mapa, name='central_mapa'),
+    path('mapa/', views.mapa_general, name='mapa_general'),
     
     # Eleccion tipo
     path('centrales/<int:tipo_id>/', views.centrales_por_tipo, name='centrales_por_tipo'),
@@ -65,4 +66,5 @@ urlpatterns = [
 
     #path('calculo/', views.calculo_view, name='calculo_view'),
     path('caso/nuevo/', views.nuevo_caso_calculo, name='nuevo_caso_calculo'),
+
 ]

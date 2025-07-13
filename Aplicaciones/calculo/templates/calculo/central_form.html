@@ -1,5 +1,119 @@
 {% extends "plantilla.html" %}
 {% block content %}
+<!-- Estilos personalizados -->
+<style>
+    .custom-form {
+        background: #f8fbff;
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(90, 120, 180, 0.10);
+        padding: 32px 24px 24px 24px;
+        margin-bottom: 30px;
+    }
+    .custom-form .form-group {
+        margin-bottom: 1.2rem;
+    }
+    .custom-form label {
+        font-weight: 600;
+        color: #185a9d;
+        margin-bottom: 0.3rem;
+    }
+    .custom-form input[type="text"],
+    .custom-form input[type="number"],
+    .custom-form input[type="file"],
+    .custom-form select {
+        border-radius: 8px;
+        border: 1px solid #b6c6e0;
+        background: #fff;
+        padding: 0.5rem 0.9rem;
+        font-size: 1rem;
+        color: #2a2a2a;
+        width: 100%;
+        transition: border-color 0.2s;
+    }
+    .custom-form input[type="text"]:focus,
+    .custom-form input[type="number"]:focus,
+    .custom-form select:focus {
+        border-color: #43cea2;
+        outline: none;
+    }
+    .custom-form .img-thumbnail {
+        margin-top: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(24,90,157,0.10);
+    }
+    @media (max-width: 991.98px) {
+        .custom-form .col-md-8, .custom-form .col-md-4 {
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+    }
+    .error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+    .form-control.error {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    .form-control.valid {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+    /* Visualmente en mayúsculas */
+    input[type="text"], input[type="number"], textarea {
+        text-transform: uppercase !important;
+    }
+
+    .btn-guardar {
+        background: linear-gradient(90deg, #437bceff 0%, #185a9d 100%);
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 1.7rem;
+        font-size: 1.08rem;
+        transition: background 0.3s, transform 0.2s;
+        box-shadow: 0 2px 8px rgba(24,90,157,0.10);
+    }
+    .btn-guardar:hover, .btn-guardar:focus {
+        background: linear-gradient(90deg, #185a9d 0%, ##437bceff 100%);
+        color: #fff;
+        transform: translateY(-2px) scale(1.04);
+        box-shadow: 0 4px 16px rgba(24,90,157,0.18);
+    }
+
+    .btn-cancelar {
+        background: linear-gradient(90deg, #bb3d03ff 0%, #ffcc33 100%);
+        color: #333;
+        font-weight: 600;
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 1.7rem;
+        font-size: 1.08rem;
+        transition: background 0.3s, transform 0.2s;
+        box-shadow: 0 2px 8px rgba(255,204,51,0.10);
+    }
+    .btn-cancelar:hover, .btn-cancelar:focus {
+        background: linear-gradient(90deg, #bb3d03ff 0%, #ffb347 100%);
+        color: #222;
+        transform: translateY(-2px) scale(1.04);
+        box-shadow: 0 4px 16px rgba(255,204,51,0.18);
+    }
+
+</style>
+
+<!-- Carga de librerías necesarias -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-fileinput@5.5.0/css/fileinput.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-fileinput@5.5.0/js/fileinput.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-fileinput@5.5.0/js/locales/es.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <div class="page-header">
     <div class="page-block">
         <div class="row align-items-center">
@@ -37,65 +151,87 @@
                     </div>
                 </div>
                 <br>
-                <form method="post" enctype="multipart/form-data">
+                <form id="centralForm" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group row">
-                                <!--{{ form.as_p }} -->
-                                <label class="col-lg-4 col-form-label"></i>Nombre</label>
-                                <div class="col-lg-6">
-                                    {{ form.nombre }}
-                                </div> 
-                            </div>
-                
-                            <div class="form-group row">
-                                <label class="col-lg-4 col-form-label">Empresa</label>
-                                <div class="col-lg-6">
-                                    {{ form.empresa }}
-                                </div> 
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-4 col-form-label">Tipo</label>
-                                <div class="col-lg-6">
-                                    {{ form.tipo }}
-                                </div> 
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-4 col-form-label">Ubicación</label>
-                                <div class="col-lg-6">
-                                    {{ form.ubicacion }}
-                                </div> 
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-4 col-form-label">Potencia</label>
-                                <div class="col-lg-6">
-                                    {{ form.potencia }}
-                                </div> 
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-4 col-form-label">Provincia</label>
-                                <div class="col-lg-6">
-                                    {{ form.provincia }}
-                                </div> 
-                            </div>    
-                            <div class="form-group row">
-                                <label class="col-lg-4 col-form-label">Año de Operación</label>
-                                <div class="col-lg-6">
-                                    {{ form.anio_operacion }}
-                                </div> 
-                            </div>
+                    {% if form.errors %}
+                        <div class="alert alert-danger" style="margin-bottom: 20px;">
+                            <ul style="margin-bottom: 0;">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group row">
-                                <label class="col-lg-4 col-form-label">Tipo Electrica</label>
-                                <div class="col-lg-6">
-                                    {{ form.tipo_electrica }}
-                                </div> 
+                    {% endif %}
+                    <div class="custom-form">
+                        <div class="row">
+                            <!-- Nombre y Empresa -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_nombre">Nombre</label>
+                                    {{ form.nombre }}
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="id_foto_central" class="col-lg-4 col-form-label">Foto Central</label>
-                                <div class="col-lg-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_empresa">Empresa</label>
+                                    {{ form.empresa }}
+                                </div>
+                            </div>
+                            <!-- Ubicación y Provincia -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_ubicacion">Estado</label>
+                                    {{ form.ubicacion }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_provincia">Provincia</label>
+                                    {{ form.provincia }}
+                                </div>
+                            </div>
+                            <!-- Tipo y Año de Operación -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_tipo">Tipo</label>
+                                    {{ form.tipo }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_anio_operacion">Año de Operación</label>
+                                    {{ form.anio_operacion }}
+                                </div>
+                            </div>
+                            <!-- Potencia y Tipo Electrica en la misma fila -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_potencia">Potencia</label>
+                                    {{ form.potencia }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_tipo_electrica">Tipo Eléctrica</label>
+                                    {{ form.tipo_electrica }}
+                                </div>
+                            </div>
+                            <!-- Mapa y Foto Central en la misma fila -->
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="id_localizacion">Localización (selecciona en el mapa)</label>
+                                    {{ form.localizacion }}
+                                    <div id="map" style="height: 300px; width: 100%; margin-bottom: 15px; border-radius: 8px; border: 1px solid #b6c6e0;"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_foto_central" class="col-form-label">Foto Central</label>
                                     {% if form.instance.foto_central %}
                                     <p>Imagen actual:</p>
                                     <img src="{{ form.instance.foto_central.url }}" class="img-thumbnail" width="100">
@@ -103,44 +239,190 @@
                                     {{ form.foto_central }}
                                 </div>
                             </div>
-                            
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary px-4 btn-guardar">Guardar</button>
+                            <a href="{% url 'central_list' %}" class="btn btn-danger px-4 btn-cancelar">Cancelar</a>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a href="{% url 'central_list' %}" class="btn btn-danger">Cancelar</a>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-
-<!--<script>
-    $("#id_foto_central").fileinput({
-      language: "es",
-      allowedFileExtensions: ["png", "jpg", "jpeg"], 
-      showCaption: false, 
-      dropZoneEnabled: true, 
-      showClose: false 
-    });
-</script> -->
-
-<!-- Bootstrap FileInput -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-fileinput@5.5.0/css/fileinput.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-fileinput@5.5.0/js/fileinput.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-fileinput@5.5.0/js/locales/es.js"></script>
-
-
+<!-- Scripts de inicialización -->
 <script>
-    $(document).ready(function () {
-      $("#id_foto_central").fileinput({
+$(document).ready(function () {
+    // Validación
+    $("#centralForm").validate({
+        ignore: [],
+        rules: {
+            nombre: {
+                required: true,
+                minlength: 3,
+                maxlength: 100
+            },
+            empresa: {
+                required: true,
+                minlength: 2,
+                maxlength: 100
+            },
+            ubicacion: {
+                required: true,
+                minlength: 2,
+                maxlength: 100
+            },
+            provincia: {
+                required: true,
+                minlength: 2,
+                maxlength: 50
+            },
+            tipo: {
+                required: true
+            },
+            anio_operacion: {
+                required: true,
+                number: true,
+                min: 1900,
+                max: 2030
+            },
+            potencia: {
+                required: true,
+                number: true,
+                min: 0.1,
+                max: 10000
+            },
+            tipo_electrica: {
+                required: true
+            }
+        },
+        messages: {
+            nombre: {
+                required: "El nombre es obligatorio",
+                minlength: "El nombre debe tener al menos 3 caracteres",
+                maxlength: "El nombre no puede exceder 100 caracteres"
+            },
+            empresa: {
+                required: "La empresa es obligatoria",
+                minlength: "La empresa debe tener al menos 2 caracteres",
+                maxlength: "La empresa no puede exceder 100 caracteres"
+            },
+            ubicacion: {
+                required: "El estado es obligatorio",
+                minlength: "El estado debe tener al menos 2 caracteres",
+                maxlength: "El estado no puede exceder 100 caracteres"
+            },
+            provincia: {
+                required: "La provincia es obligatoria",
+                minlength: "La provincia debe tener al menos 2 caracteres",
+                maxlength: "La provincia no puede exceder 50 caracteres"
+            },
+            tipo: {
+                required: "Debe seleccionar un tipo"
+            },
+            anio_operacion: {
+                required: "El año de operación es obligatorio",
+                number: "Debe ser un número válido",
+                min: "El año debe ser mayor a 1900",
+                max: "El año no puede ser mayor a 2030"
+            },
+            potencia: {
+                required: "La potencia es obligatoria",
+                number: "Debe ser un número válido",
+                min: "La potencia debe ser mayor a 0.1",
+                max: "La potencia no puede exceder 10,000"
+            },
+            tipo_electrica: {
+                required: "Debe seleccionar un tipo eléctrica"
+            }
+        },
+        errorElement: "span",
+        errorClass: "error",
+        validClass: "valid",
+        highlight: function(element) {
+            $(element).addClass("error").removeClass("valid");
+        },
+        unhighlight: function(element) {
+            $(element).removeClass("error").addClass("valid");
+        },
+        submitHandler: function(form) {
+            // Convertir a mayúsculas antes de enviar
+            $(form).find('input[type="text"], textarea').each(function() {
+                this.value = this.value.toUpperCase();
+            });
+            form.submit();
+        }
+    });
+
+    // FileInput para la foto
+    $("#id_foto_central").fileinput({
         language: "es",
         allowedFileExtensions: ["png", "jpg", "jpeg"], 
         showCaption: false, 
         dropZoneEnabled: true, 
         showClose: false 
-      });
     });
-  </script>
-  <br><br>
+
+    // Placeholders y mayúsculas
+    let fields = [
+        "id_nombre", "id_potencia", "id_empresa", "id_ubicacion", "id_provincia",
+        "id_tipo", "id_anio_operacion", "id_tipo_electrica", "id_localizacion"
+    ];
+    $("#id_nombre").attr("placeholder", "Ej: GRAN SOLAR SA");
+    $("#id_potencia").attr("placeholder", "Ej: 50 MW");
+    $("#id_empresa").attr("placeholder", "Ej: CELEC EP");
+    $("#id_ubicacion").attr("placeholder", "Ej: S.N.I");
+    $("#id_provincia").attr("placeholder", "Ej: IMBABURA");
+    $("#id_tipo").attr("placeholder", "PRIVADA");
+    $("#id_anio_operacion").attr("placeholder", "Ej: 2014");
+    $("#id_tipo_electrica").attr("placeholder", "Seleccione");
+    $("#id_localizacion").attr("placeholder", "Ej: -1.244409,-79.677523");
+
+    fields.forEach(function(id) {
+        let el = document.getElementById(id);
+        if (el && (el.type === "text" || el.type === "textarea" || el.type === "number")) {
+            el.addEventListener("change", function() {
+                el.value = el.value.toUpperCase();
+            });
+        }
+    });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Mapa Leaflet
+    var lat = -1.831239;
+    var lng = -78.183406;
+    var zoom = 6;
+    var locInput = document.getElementById("id_localizacion");
+    if (locInput && locInput.value) {
+        var parts = locInput.value.split(",");
+        if (parts.length === 2) {
+            lat = parseFloat(parts[0]);
+            lng = parseFloat(parts[1]);
+            zoom = 12;
+        }
+    }
+    var map = L.map('map').setView([lat, lng], zoom);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    var marker = null;
+    if (locInput && locInput.value) {
+        marker = L.marker([lat, lng]).addTo(map);
+    }
+    map.on('click', function(e) {
+        var latlng = e.latlng;
+        if (marker) {
+            marker.setLatLng(latlng);
+        } else {
+            marker = L.marker(latlng).addTo(map);
+        }
+        locInput.value = latlng.lat.toFixed(6) + "," + latlng.lng.toFixed(6);
+    });
+});
+</script>
+<br><br>
 {% endblock %}

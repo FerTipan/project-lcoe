@@ -1,6 +1,46 @@
 {% extends "plantilla.html" %}
 {% block content %}
+<style>
+    .btn-guardar {
+        background: linear-gradient(90deg, #437bceff 0%, #185a9d 100%);
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 1.7rem;
+        font-size: 1.08rem;
+        transition: background 0.3s, transform 0.2s;
+        box-shadow: 0 2px 8px rgba(24,90,157,0.10);
+    }
+    .btn-guardar:hover, .btn-guardar:focus {
+        background: linear-gradient(90deg, #185a9d 0%, ##437bceff 100%);
+        color: #fff;
+        transform: translateY(-2px) scale(1.04);
+        box-shadow: 0 4px 16px rgba(24,90,157,0.18);
+    }
 
+    .btn-cancelar {
+        background: linear-gradient(90deg, #bb3d03ff 0%, #ffcc33 100%);
+        color: #333;
+        font-weight: 600;
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 1.7rem;
+        font-size: 1.08rem;
+        transition: background 0.3s, transform 0.2s;
+        box-shadow: 0 2px 8px rgba(255,204,51,0.10);
+    }
+    .btn-cancelar:hover, .btn-cancelar:focus {
+        background: linear-gradient(90deg, #bb3d03ff 0%, #ffb347 100%);
+        color: #222;
+        transform: translateY(-2px) scale(1.04);
+        box-shadow: 0 4px 16px rgba(255,204,51,0.18);
+    }
+
+    input[type="text"], input[type="number"], textarea, select {
+    text-transform: uppercase !important;
+    }
+</style>
 <div class="page-header">
     <div class="page-block">
         <div class="row align-items-center">
@@ -56,14 +96,14 @@
                             </div>
                         {% endif %}
 
-                        <div class="accordion" id="accordionExample">
+                        <div class="accordion" id="accordionEolica">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button accordion-lcoe accordion-lcoe-title" style="background-color: #1373cc; color:white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     Información General
                                 </button>
                                 </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionEolica">
                                 <div class="accordion-body">
 
                                     <div class="row g-3">
@@ -129,13 +169,14 @@
                                 </div>
                                 </div>
                             </div>
+                            <div class="accordion" id="accordionEolica">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed accordion-lcoe-title" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <button class="accordion-button accordion-lcoe accordion-lcoe-title" style="background-color: #1373cc; color:white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                                     Financiamiento
                                 </button>
                                 </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionEolica">
                                 <div class="accordion-body">
                                     <div class="row g-3">
                                         <div class="col-md-3">
@@ -192,17 +233,16 @@
                                     </div>
                                 </div>
                             </div>
+                           <div class="accordion" id="accordionEolica">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed accordion-lcoe-title"
-                                        style="background-color: #1373cc; color:white"
-                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree"
-                                        aria-expanded="false" aria-controls="collapseThree">
+                                <button class="accordion-button accordion-lcoe accordion-lcoe-title" style="background-color: #1373cc; color:white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
                                     Costos Totales
                                 </button>
                                 </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionEolica">
                                 <div class="accordion-body">
+
                                     <div class="row g-3">
                                         <div class="col-md-3">
                                             <label class="form-label">Costos de Inversion</label>
@@ -271,11 +311,11 @@
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingFour">
-                                <button class="accordion-button collapsed accordion-lcoe-title" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                    Parámetros Económicos
+                                <button class="accordion-button accordion-lcoe accordion-lcoe-title" style="background-color: #1373cc; color:white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                    Parametros económicos
                                 </button>
                                 </h2>
-                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionEolica">
                                 <div class="accordion-body">
                                     <div class="row g-3">
                                         <div class="col-md-3">
@@ -339,16 +379,34 @@
                         </div>
                     </div>
                     <br>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a href="{% url 'eolica_list' %}" class="btn btn-danger">Cancelar</a>
+                    <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary px-4 btn-guardar">Guardar</button>
+                            <a href="{% url 'central_list' %}" class="btn btn-danger px-4 btn-cancelar">Cancelar</a>
+                        </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Busca el primer campo con error
+    // Visual: ya lo tienes con text-transform: uppercase
+
+    // Guardar: fuerza mayúsculas antes de enviar el formulario
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            // Todos los inputs de texto, textarea y select
+            form.querySelectorAll('input[type="text"], textarea, select').forEach(function(el) {
+                if (el.value) {
+                    el.value = el.value.toUpperCase();
+                }
+            });
+        });
+    }
+
+    // Tu código para mostrar errores en el acordeón
     var errorField = document.querySelector('.is-invalid, .errorlist + input, .errorlist + select, .errorlist + textarea');
     if (errorField) {
         var accordionCollapse = errorField.closest('.accordion-collapse');

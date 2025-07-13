@@ -1,6 +1,7 @@
 from django.db import models
 from Aplicaciones.usuarios.models import Perfil
 from decimal import Decimal
+from decimal import Decimal, getcontext, ROUND_HALF_UP
 
 # -----------------------------  Class TipoGeneracion -----------------------------
 class TipoElectrica(models.Model):
@@ -26,6 +27,7 @@ class Central(models.Model):
     potencia = models.DecimalField(max_digits=15, decimal_places=6, help_text="MW")
     provincia = models.CharField(max_length=200)
     anio_operacion = models.CharField()
+    localizacion = models.CharField(max_length=100, null=True, blank=True, help_text="Latitud,Longitud")
     tipo_electrica = models.ForeignKey(
         TipoElectrica,
         on_delete=models.CASCADE,
@@ -55,7 +57,7 @@ class Fotovoltaica(models.Model):
     degradacion = models.DecimalField(max_digits=10, decimal_places=4, help_text="%")
 
     # Inversión
-    inversion_total = models.DecimalField(max_digits=20, decimal_places=2, help_text="USD")
+    inversion_total = models.DecimalField(max_digits=20, decimal_places=4, help_text="USD")
     porcentaje_capital_propio = models.DecimalField(max_digits=10, decimal_places=4, help_text="%", default=0.0)
     porcentaje_deuda = models.DecimalField(max_digits=10, decimal_places=4, help_text="%", default=0.0)
     capital_propio = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
@@ -92,24 +94,56 @@ class Fotovoltaica(models.Model):
     premio_riesgo_mercado = models.DecimalField(max_digits=10, decimal_places=4, help_text="% premio riesgo mercado", default=0.0)
     impuesto = models.DecimalField(max_digits=10, decimal_places=4, help_text="% impuesto", default=0.0)
     
+    def _round_decimal(self, value):
+        #Redondea un valor Decimal a 2 decimales
+        if value is None:
+            return None
+        return Decimal(str(value)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    
     def save(self, *args, **kwargs):
+        # Cálculos con redondeo a 2 decimales
         if self.potencia_nominal and self.factor_planta:
-            self.energia_anual_producida = self.potencia_nominal * (self.factor_planta / Decimal('100')) * Decimal('8760')
-            self.energia_bruta_calculada = self.energia_anual_producida / Decimal('1000')
+            energia_calc = self.potencia_nominal * (self.factor_planta / Decimal('100')) * Decimal('8760')
+            self.energia_anual_producida = self._round_decimal(energia_calc)
+            self.energia_bruta_calculada = self._round_decimal(self.energia_anual_producida / Decimal('1000'))
 
-        self.indice_premio = self.riesgo / Decimal('100') if self.riesgo else None
-        self.capital_propio = self.inversion_total * (self.porcentaje_capital_propio / Decimal('100')) if self.inversion_total else None
-        self.deuda = self.inversion_total * (self.porcentaje_deuda / Decimal('100')) if self.inversion_total else None
+        self.indice_premio = self._round_decimal(self.riesgo / Decimal('100')) if self.riesgo else None
+        
+        if self.inversion_total:
+            capital_calc = self.inversion_total * (self.porcentaje_capital_propio / Decimal('100'))
+            self.capital_propio = self._round_decimal(capital_calc)
+            
+            deuda_calc = self.inversion_total * (self.porcentaje_deuda / Decimal('100'))
+            self.deuda = self._round_decimal(deuda_calc)
 
-        self.tasa_interes_anual = self.tasa_interes_periodo * self.periodos_por_anio
-        self.total_periodos = self.periodos_por_anio * self.anios_pago_total
-        self.periodos_gracia = self.periodos_por_anio * self.anios_gracia
-        self.periodos_pago = self.total_periodos - self.periodos_gracia
-        self.anios_pago = self.periodos_pago / self.periodos_por_anio if self.periodos_por_anio else None
+        if self.tasa_interes_periodo and self.periodos_por_anio:
+            tasa_calc = self.tasa_interes_periodo * self.periodos_por_anio
+            self.tasa_interes_anual = self._round_decimal(tasa_calc)
+        
+        if self.periodos_por_anio and self.anios_pago_total:
+            self.total_periodos = self.periodos_por_anio * self.anios_pago_total
+        
+        if self.periodos_por_anio and self.anios_gracia:
+            self.periodos_gracia = self.periodos_por_anio * self.anios_gracia
+        
+        if self.total_periodos and self.periodos_gracia:
+            self.periodos_pago = self.total_periodos - self.periodos_gracia
+        
+        if self.periodos_pago and self.periodos_por_anio:
+            anios_calc = self.periodos_pago / self.periodos_por_anio
+            self.anios_pago = int(self._round_decimal(anios_calc)) if anios_calc else None
 
-        self.costo_anual_oma = (self.inversion_total * Decimal('0.015')) if self.inversion_total else None
-        self.costo_anual_oma_inversion = (self.costo_anual_oma * Decimal('100') / self.inversion_total) if self.inversion_total else None
-        self.costo_anual_oma_mw = (self.costo_anual_oma / self.energia_anual_producida) if self.energia_anual_producida else None
+        if self.inversion_total:
+            oma_calc = self.inversion_total * Decimal('0.015')
+            self.costo_anual_oma = self._round_decimal(oma_calc)
+            
+            if self.costo_anual_oma:
+                oma_inv_calc = self.costo_anual_oma * Decimal('100') / self.inversion_total
+                self.costo_anual_oma_inversion = self._round_decimal(oma_inv_calc)
+            
+            if self.energia_anual_producida and self.costo_anual_oma:
+                oma_mw_calc = self.costo_anual_oma / self.energia_anual_producida
+                self.costo_anual_oma_mw = self._round_decimal(oma_mw_calc)
 
         super().save(*args, **kwargs)
 
@@ -161,7 +195,7 @@ class Termica(models.Model):
     costo_oma_usd = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
 
     # Administración
-    gastos_administracion = models.DecimalField(max_digits=10, decimal_places=4, help_text="USD")
+    gastos_administracion = models.DecimalField(max_digits=20, decimal_places=4, help_text="USD")
     pt_unidad_negocio = models.DecimalField(max_digits=10, decimal_places=4, help_text="%")
     costo_administracion = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
 
@@ -171,7 +205,7 @@ class Termica(models.Model):
     gal_anio = models.DecimalField(max_digits=10, decimal_places=4, help_text="GAL/a")
     tp_combustible_p = models.CharField(max_length=100)
     usd_galon_1 = models.DecimalField(max_digits=10, decimal_places=4, help_text="USD")
-    gal_anio_1 = models.DecimalField(max_digits=10, decimal_places=4, help_text="GAL/a")
+    gal_anio_1 = models.DecimalField(max_digits=20, decimal_places=4, help_text="GAL/a")
     usd_cb_total = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
 
     # costos operativos
@@ -701,19 +735,19 @@ class ParametroTermica(ParametroCalculos):
 # ----------------------------- Class Parametro Eólica ------------------------------------
 class ParametroEolica(ParametroCalculos):
     # Costos
-    costo_fijo_anual = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    costo_inversion = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    costo_fijo_mw = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    costo_fijo_kw = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    combustible = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    transporte = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    lubricantes = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    agua = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    mantenimiento = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    control = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    servicios = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    seguros = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
-    personal = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)  
+    costo_fijo_anual = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    costo_inversion = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    costo_fijo_mw = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    costo_fijo_kw = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    combustible = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    transporte = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    lubricantes = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    agua = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    mantenimiento = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    control = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    servicios = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    seguros = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    personal = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)  
 
     def calcular_lcoe(self):
         from decimal import Decimal, getcontext
@@ -920,7 +954,7 @@ class ParametroHidraulica(ParametroCalculos):
 
             # Fórmula unificada para lcoe
             if WACC != 0 and EAP != 0:
-                lcoe =(CP+(costos/(1+WACC)*1))/((EAP(1+degradacion)*1))/((1+WACC)*1)
+                lcoe =(CP+(costos/(1+WACC)*1))/((EAP*(1+degradacion)*1))/((1+WACC)*1)
             else:
                 lcoe = None
 

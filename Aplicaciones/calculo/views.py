@@ -3,18 +3,24 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from .models import  TipoElectrica, Central, InformacionCentral, Fotovoltaica, Termica, Eolica, Hidraulica, CasoCalculo, ResultadoCalculo , ParametroFotovoltaica, ParametroEolica, ParametroHidraulica
 from .forms import TipoElectricaForm, CentralForm, InformacionCentralForm, FotovoltaicaForm, TermicaForm, EolicaForm, HidraulicaForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
 from .services import crear_parametros_desde_tipo_generacion
-from django.contrib.auth.decorators import login_required
-# Importacion de la app usuarios
 from Aplicaciones.usuarios.models import Perfil
 from django.views.generic import TemplateView
 from Aplicaciones.usuarios.decorators import AdminRequiredMixin, UserRequiredMixin
 from django.urls import reverse
+from django.views.generic import DetailView
+from django.views.decorators.csrf import csrf_exempt
+import matplotlib.pyplot as plt
+import io
+import base64
 
 @login_required
 def vista_usuario_calculo(request):
@@ -74,8 +80,25 @@ class CentralCreateView(CreateView):
     success_url = reverse_lazy('central_list')
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+        central = self.object
+        # Usamos el nombre del tipo de tecnología, que siempre estará en mayúsculas por el save()
+        tipo_tecnologia = central.tipo_electrica.nombre.strip().lower()  # .lower() para comparar en minúsculas
+
+        print("DEBUG tipo_electrica:", tipo_tecnologia)
+
         messages.success(self.request, 'Central creada correctamente')
-        return super().form_valid(form)
+
+        if tipo_tecnologia == 'fotovoltaica':
+            return redirect(reverse('fotovoltaica_create') + f'?central_id={central.id}')
+        elif tipo_tecnologia == 'hidraulica':
+            return redirect(reverse('hidraulica_create') + f'?central_id={central.id}')
+        elif tipo_tecnologia == 'eolica':
+            return redirect(reverse('eolica_create') + f'?central_id={central.id}')
+        elif tipo_tecnologia == 'termica':
+            return redirect(reverse('termica_create') + f'?central_id={central.id}')
+        else:
+            return response
     
 class CentralUpdateView(UpdateView):
     model = Central
@@ -100,13 +123,24 @@ class FotovoltaicaListView(ListView):
     template_name = 'fotovoltaica/lista.html'
 
     def get_queryset(self):
-        return Fotovoltaica.objects.filter(central__tipo_electrica__nombre__icontains='fotovoltaica')
+        queryset = Fotovoltaica.objects.filter(central__tipo_electrica__nombre__icontains='fotovoltaica')
+        nombre = self.request.GET.get('nombre')
+        if nombre:
+            queryset = queryset.filter(central__nombre=nombre)
+        return queryset
 
 class FotovoltaicaCreateView(CreateView):
     model = Fotovoltaica
     form_class = FotovoltaicaForm
     template_name = 'fotovoltaica/form.html'
     success_url = reverse_lazy('fotovoltaica_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        central_id = self.request.GET.get('central_id')
+        if central_id:
+            initial['central'] = central_id
+        return initial
 
     def form_valid(self, form):
         messages.success(self.request, 'Central fotovoltaica agregada correctamente.')
@@ -133,18 +167,30 @@ class FotovoltaicaDeleteView(DeleteView):
     
 
 # ------------------------------- TERMICA -----------------------------------
+
 class TermicaListView(ListView):
     model = Termica
     template_name = 'termica/listaT.html'
 
     def get_queryset(self):
-        return Termica.objects.filter(central__tipo_electrica__nombre__icontains='termica')
+        queryset = Termica.objects.filter(central__tipo_electrica__nombre__icontains='termica')
+        nombre = self.request.GET.get('nombre')
+        if nombre:
+            queryset = queryset.filter(central__nombre=nombre)
+        return queryset
 
 class TermicaCreateView(CreateView):
     model = Termica
     form_class = TermicaForm
     template_name = 'termica/formT.html'
     success_url = reverse_lazy('termica_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        central_id = self.request.GET.get('central_id')
+        if central_id:
+            initial['central'] = central_id
+        return initial
 
     def form_valid(self, form):
         messages.success(self.request, 'Central termica agregada correctamente.')
@@ -182,6 +228,13 @@ class EolicaCreateView(CreateView):
     template_name = 'eolica/formE.html'
     success_url = reverse_lazy('eolica_list')
 
+    def get_initial(self):
+        initial = super().get_initial()
+        central_id = self.request.GET.get('central_id')
+        if central_id:
+            initial['central'] = central_id
+        return initial
+
     def form_valid(self, form):
         messages.success(self.request, 'Central eolica agregada correctamente.')
         return super().form_valid(form)
@@ -218,6 +271,13 @@ class HidraulicaCreateView(CreateView):
     form_class = HidraulicaForm  
     template_name = 'hidraulica/formH.html'
     success_url = reverse_lazy('hidraulica_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        central_id = self.request.GET.get('central_id')
+        if central_id:
+            initial['central'] = central_id
+        return initial
 
     def form_valid(self, form):
         messages.success(self.request, 'Central hidraulica agregada correctamente.')
@@ -271,15 +331,14 @@ class InformacionCentralDeleteView(DeleteView):
         messages.success(request, 'Datos eliminados correctamente')
         return super().delete(request, *args, **kwargs)
 
-def mapa(request):
-    lugares = [
-        {"nombre": "Lugar 1", "lat": -1.8312, "lng": -78.1834},
-        {"nombre": "Lugar 2", "lat": -0.1807, "lng": -78.4747},
-    ]
-    return render(request, 'mapa.html', {'lugares': lugares})
+def central_mapa(request, pk):
+    central = get_object_or_404(Central, pk=pk)
+    return render(request, 'mapa.html', {'central': central})
 
-def mapa_detalle(request, pagina):
-    return render(request, f'tecnologias/{pagina}.html')
+def mapa_general(request):
+    centrales = Central.objects.all()
+    return render(request, 'mapa.html', {'centrales': centrales})
+
 
 # ------------------------------- CENTRALES POR TIPO -----------------------------------
 @login_required
@@ -450,6 +509,78 @@ def nuevo_caso_calculo(request):
             ax.bar(nombres, valores, color=["#4CAF50", "#FF9800"])
             ax.set_ylabel("LCOE (USD/kWh)")
             ax.set_title("Comparación de LCOE")
+
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+            image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+            buf.close()
+
+            return JsonResponse({
+                "status": "ok",
+                "lcoe": lcoe_base,
+                "nombre": caso.nombre,
+                "id": caso.id,
+                "grafico": image_base64
+            })
+
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+
+    return JsonResponse({"status": "error", "message": "Método no permitido"})
+
+
+@login_required
+@csrf_exempt
+def nuevo_caso_calculo(request):
+    if request.method == 'POST':
+        try:
+            nombre = request.POST.get('nombre')
+            central_id = request.POST.get('central_id')
+            comparar_con_id = request.POST.get('comparar_con_id')  
+            central = Central.objects.get(id=central_id) if central_id else None
+
+            caso = CasoCalculo.objects.create(
+                nombre=nombre,
+                usuario=request.user.perfil,
+                central=central,
+                es_simulacion=True
+            )
+
+            parametros = crear_parametros_desde_tipo_generacion(caso)
+            if not parametros:
+                return JsonResponse({
+                    "status": "error",
+                    "message": "No se pudo crear los parámetros para esta tecnología."
+                })
+
+            resultado = ResultadoCalculo.objects.create(caso=caso)
+
+            if resultado.lcoe is None:
+                return JsonResponse({
+                    "status": "error",
+                    "message": "No se pudo calcular el LCOE. Verifique los datos ingresados."
+                })
+
+            # --- Comparación ---
+            lcoe_base = float(resultado.lcoe)
+            nombres = ["Nuevo Caso"]
+            valores = [lcoe_base]
+
+            if comparar_con_id:
+                central_comp = Central.objects.get(id=comparar_con_id)
+                caso_existente = CasoCalculo.objects.filter(central=central_comp).last()
+                if caso_existente:
+                    resultado_existente = ResultadoCalculo.objects.filter(caso=caso_existente).last()
+                    if resultado_existente and resultado_existente.lcoe:
+                        nombres.append(central_comp.nombre)
+                        valores.append(float(resultado_existente.lcoe))
+
+            # Gráfica
+            fig, ax = plt.subplots()
+            ax.bar(nombres, valores, color=["#4CAF50", "#FF9800"][:len(nombres)])
+            ax.set_ylabel("LCOE (USD/kWh)")
+            ax.set_title("Comparación de LCOE" if len(nombres) > 1 else "LCOE Calculado")
 
             buf = io.BytesIO()
             plt.savefig(buf, format='png')

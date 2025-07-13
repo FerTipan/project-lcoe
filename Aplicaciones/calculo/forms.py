@@ -16,7 +16,7 @@ class CentralForm(forms.ModelForm):
         model = Central
         fields = [
             'nombre', 'foto_central','ubicacion', 'empresa', 'tipo', 'potencia',
-            'provincia', 'anio_operacion', 'tipo_electrica'
+            'provincia', 'anio_operacion', 'tipo_electrica', 'localizacion'
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
@@ -28,6 +28,7 @@ class CentralForm(forms.ModelForm):
             'provincia': forms.TextInput(attrs={'class': 'form-control'}),
             'anio_operacion': forms.DateInput(attrs={'class': 'form-control','type': 'number' }),
             'tipo_electrica': forms.Select(attrs={'class': 'form-control'}),
+            'localizacion': forms.TextInput(attrs={'class': 'form-control', 'id': 'id_localizacion'}),
         }
 
 class InformacionCentralForm(forms.ModelForm):

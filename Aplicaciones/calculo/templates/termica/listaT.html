@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+{% load user_filters %}
 <link rel="stylesheet" href="{% static 'assets/css/administracion/seleccion.css' %}">
 <div class="page-header">
     <div class="page-block">
@@ -28,9 +29,11 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">Centrales Térmicas</h2>
             <div>
-                <a href="{% url 'termica_create' %}" class="btn btn-primary mb-0">
-                    <i class="ti ti-plus"></i> Agregar
-                </a>
+                {% if user|has_group:"Admin" %}
+                    <a href="{% url 'termica_create' %}" class="btn btn-primary mb-0">
+                        <i class="ti ti-plus"></i> Agregar
+                    </a>
+                {% endif %}
                 <div class="btn-group" role="group">
                     <button onclick="mostrarDetalles();" id="btn_ver_detalles" 
                             class="btn btn-outline-primary me-2" title="Mostrar detalles">
@@ -383,10 +386,12 @@
                 </div>
                 <div class="card-footer">
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="{% url 'termica_update' termica.pk %}" 
-                           class="btn btn-action btn-edit" title="Editar">
-                            <i class="ti ti-pencil"></i>
-                        </a>
+                        {% if user|has_group:"Admin" %}
+                            <a href="{% url 'termica_update' termica.pk %}" 
+                            class="btn btn-action btn-edit" title="Editar">
+                                <i class="ti ti-pencil"></i>
+                            </a>
+                        {% endif %}
                         <button class="btn btn-action btn-primary toggle-details" 
                                 data-target="secundario-info-{{ termica.pk }}" 
                                 title="Ver más detalles">
@@ -395,10 +400,12 @@
                         <form method="POST" action="{% url 'termica_delete' termica.pk %}" 
                               class="d-inline delete-form">
                             {% csrf_token %}
-                            <button type="button" onclick="confirmarEliminacion(this)" 
-                                    class="btn btn-action btn-delete" title="Eliminar">
-                                <i class="ti ti-trash"></i>
-                            </button>
+                            {% if user|has_group:"Admin" %}
+                                <button type="button" onclick="confirmarEliminacion(this)" 
+                                        class="btn btn-action btn-delete" title="Eliminar">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
