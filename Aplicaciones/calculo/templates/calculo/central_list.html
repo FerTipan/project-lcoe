@@ -60,9 +60,10 @@
                         <table id="tbl-central" class="table table-hover table-striped">
                             <thead class="table-lcoe">
                                 <tr>
+                                    <th class="principal">ID</th>
                                     <th class="principal">Nombre</th>
                                     <th class="secundario">Foto</th>
-                                    <th class="principal">Ubicación</th>
+                                    <th class="principal">Estado</th>
                                     <th class="principal">Empresa</th>
                                     <th class="principal">Tipo</th>
                                     <th class="secundario">Potencia</th>
@@ -75,6 +76,7 @@
                             <tbody>
                                 {% for central in object_list %}
                                 <tr>
+                                    <td class="principal">{{ central.id }}</td>
                                     <td class="principal">{{ central.nombre }}</td>
                                     <td class="secundario">{% if central.foto_central and central.foto_central.url %}
                                         <p class="mb-0  fw-normal">
@@ -107,9 +109,9 @@
                                     <td class="principal">{{ central.anio_operacion }}</td>
                                     <td>
                                         <span class="badge rounded-3 fw-semibold 
-                                            {% if central.tipo_electrica|lower == 'hidraulica' %}bg-primary text-white
-                                            {% elif central.tipo_electrica|lower == 'termica' %}bg-success text-white
-                                            {% elif central.tipo_electrica|lower == 'eolica' %}bg-info text-white
+                                            {% if central.tipo_electrica|lower == 'hidráulica' %}bg-primary text-white
+                                            {% elif central.tipo_electrica|lower == 'térmica' %}bg-success text-white
+                                            {% elif central.tipo_electrica|lower == 'eólica' %}bg-info text-white
                                             {% elif central.tipo_electrica|lower == 'fotovoltaica' %}bg-warning text-white
                                             {% else %}bg-secondary text-white{% endif %}">
                                             {{ central.tipo_electrica|title }}

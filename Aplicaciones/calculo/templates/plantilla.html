@@ -102,7 +102,7 @@
               <li class="pc-item">
                 <a href="{% url 'tipoGeneracion' %}" class="pc-link">
                   <span class="pc-micon"><i class="ti ti-home"></i></span>
-                  <span class="pc-mtext">Tipos de Generacion</span>
+                  <span class="pc-mtext">Panel de Tipo de Generacion</span>
                 </a>
               </li>
               <li class="pc-item">
@@ -171,12 +171,7 @@
               </ul>
             </li>
             {% else %}
-              <li class="pc-item">
-                <a href="{% url 'tipoGeneracion' %}" class="pc-link">
-                  <span class="pc-micon"><i class="ti ti-home"></i></span>
-                  <span class="pc-mtext">Tipo de Generacion</span>
-                </a>
-              </li>
+              
               <li class="pc-item">
                 <a href="{% url 'mapa_general' %}" class="pc-link">
                   <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
@@ -188,11 +183,11 @@
               <i class="ti ti-bolt"></i>
             </li>
             <li class="pc-item">
-              <a href="{% url 'tipoelectrica_list' %}" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-settings"></i></span>
-                <span class="pc-mtext">Tipo de Generación</span>
-              </a>
-            </li>
+                <a href="{% url 'tipoGeneracion' %}" class="pc-link">
+                  <span class="pc-micon"><i class="ti ti-home"></i></span>
+                  <span class="pc-mtext">Panel de Generacion</span>
+                </a>
+              </li>
             <li class="pc-item pc-caption">
               <label>Centrales Eléctricas</label>
               <i class="ti ti-power"></i>
@@ -290,24 +285,24 @@
                       class="ti ti-power text-danger"></i></a>
                 </div>
               </div>
-              <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
+              <!--<ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active" id="drp-t1" data-bs-toggle="tab" data-bs-target="#drp-tab-1"
                     type="button" role="tab" aria-controls="drp-tab-1" aria-selected="true"><i class="ti ti-user"></i>
                     Perfil</button>
                 </li>
-              </ul>
+              </ul> -->
               <div class="tab-content" id="mysrpTabContent">
                 <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1"
                   tabindex="0">
-                  <a href="#!" class="dropdown-item">
+                  <!-- <a href="#!" class="dropdown-item">
                     <i class="ti ti-edit-circle"></i>
                     <span>Editar Perfil</span>
                   </a>
                   <a href="#!" class="dropdown-item">
                     <i class="ti ti-user"></i>
                     <span>Ver Perfil</span>
-                  </a>
+                  </a>  --> 
                   <a href="{% url 'logout' %}" class="dropdown-item">
                     <i class="ti ti-power"></i>
                     <span>Cerrar sesión</span>

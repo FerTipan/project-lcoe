@@ -259,17 +259,17 @@
 <div class="dashboard-mapa">
     <div class="panel-lateral">
         <div class="mapa-header">
-            <span class="icon"><i class="fa fa-bolt"></i></span>
+            <span class="icon"><i class="fa fa-bolt sm"></i></span>
             <h2>Mapa de Centrales Eléctricas</h2>
         </div>
         <div class="filtro-bar">
             <label for="filtro-tipo"><i class="fa fa-filter"></i> Tipo:</label>
             <select id="filtro-tipo">
                 <option value="TODAS">Todas</option>
-                <option value="HIDRAULICA">Hidraulica</option>
+                <option value="HIDRÁULICA">Hidráulica</option>
                 <option value="FOTOVOLTAICA">Fotovoltaica</option>
-                <option value="EOLICA">Eolica</option>
-                <option value="TERMICA">Termica</option>
+                <option value="EÓLICA">Eólica</option>
+                <option value="TÉRMICA">Térmica</option>
             </select>
             <label for="buscador-central" style="margin-left:1rem;"><i class="fa fa-search"></i> Central:</label>
             <input type="text" id="buscador-central" placeholder="Escribe el nombre..." autocomplete="off" />
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Íconos de color tipo Leaflet
     var iconos = {
-        "HIDRAULICA": L.icon({
+        "HIDRÁULICA": L.icon({
             iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
             shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
             iconSize: [25, 41],
@@ -319,7 +319,7 @@ document.addEventListener("DOMContentLoaded", function() {
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
         }),
-        "EOLICA": L.icon({
+        "EÓLICA": L.icon({
             iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
             shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
             iconSize: [25, 41],
@@ -327,7 +327,7 @@ document.addEventListener("DOMContentLoaded", function() {
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
         }),
-        "TERMICA": L.icon({
+        "TÉRMICA": L.icon({
             iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
             shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
             iconSize: [25, 41],
@@ -383,13 +383,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     // Selecciona el icono según el tipo
                     var icon = iconos[central.tipo] || iconos["DEFAULT"];
                     var url = "#";
-if (central.tipo === "HIDRAULICA") {
+if (central.tipo === "HIDRÁULICA") {
     url = "{% url 'hidraulica_list' %}?nombre=" + encodeURIComponent(central.nombre);
 } else if (central.tipo === "FOTOVOLTAICA") {
     url = "{% url 'fotovoltaica_list' %}?nombre=" + encodeURIComponent(central.nombre);
-} else if (central.tipo === "EOLICA") {
+} else if (central.tipo === "EÓLICA") {
     url = "{% url 'eolica_list' %}?nombre=" + encodeURIComponent(central.nombre);
-} else if (central.tipo === "TERMICA") {
+} else if (central.tipo === "TÉRMICA") {
     url = "{% url 'termica_list' %}?nombre=" + encodeURIComponent(central.nombre);
 }
 

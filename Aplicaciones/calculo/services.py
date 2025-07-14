@@ -14,11 +14,11 @@ def crear_parametros_desde_tipo_generacion(caso: CasoCalculo) -> ParametroGeneri
 
     if tipo == 'fotovoltaica':
         return crear_parametros_desde_fotovoltaica(caso)
-    elif tipo == 'termica':
+    elif tipo == 'térmica':
         return crear_parametros_desde_termica(caso)
-    elif tipo == 'eolica':
+    elif tipo == 'eólica':
         return crear_parametros_desde_eolica(caso)
-    elif tipo == 'hidraulica':
+    elif tipo == 'hidráulica':
         return crear_parametros_desde_hidraulica(caso)
 
     return None
@@ -70,7 +70,7 @@ def crear_parametros_desde_termica(caso: CasoCalculo) -> ParametroTermica:
 
     parametros = ParametroTermica.objects.create(
         caso=caso,
-        tipo_generacion='Termica',
+        tipo_generacion='Térmica',
         inversion_total=termica.inversion_total,
         energia_anual_producida=termica.energia_anual_producida,
         vida_util=termica.vida_util,
@@ -127,7 +127,7 @@ def crear_parametros_desde_eolica(caso: CasoCalculo) -> ParametroEolica:
     eolica = caso.central.eolica
     parametros = ParametroEolica.objects.create(  
         caso=caso,
-        tipo_generacion='Eolica',
+        tipo_generacion='Eólica',
         inversion_total=eolica.inversion_total,
         energia_anual_producida=eolica.energia_anual_producida,
         vida_util=eolica.vida_util,
@@ -179,7 +179,7 @@ def crear_parametros_desde_hidraulica(caso: CasoCalculo) -> ParametroHidraulica:
 
     parametros = ParametroHidraulica.objects.create(  
         caso=caso,
-        tipo_generacion='Hidraulica',
+        tipo_generacion='Hidráulica',
         inversion_total=hidraulica.inversion_total,
         energia_anual_producida=hidraulica.energia_anual_producida,
         vida_util=hidraulica.vida_util,

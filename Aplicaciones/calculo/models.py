@@ -548,9 +548,10 @@ class ParametroFotovoltaica(ParametroCalculos):
 
             # WACC
             WACC = ((P_CP * CT_CP) + (P_D * CST_DEU)) / (P_CP + P_D) if (P_CP + P_D) else Decimal('0')
+            wacc_2 = WACC * 100
 
             # Anualidad de la deuda 
-            FRC = WACC * ((1 + WACC) ** VU) / (((1 + WACC) ** VU) - 1) if VU and WACC else Decimal('0')
+            FRC = wacc_2 * ((1 + wacc_2) ** VU) / (((1 + wacc_2) ** VU) - 1) if VU and wacc_2 else Decimal('0')
             anualidad = D * FRC
 
             # Costos totales
@@ -567,7 +568,7 @@ class ParametroFotovoltaica(ParametroCalculos):
 
             # Fórmula unificada para lcoe
             if WACC != 0 and EAP != 0:
-                lcoe =((CP)+((costos)/(1+WACC)**1))/((EAP*(1+degradacion)**1))/((1+WACC)**1)
+                lcoe =((CP)+((costos)/(1+wacc_2)**1))/((EAP*(1+degradacion)**1))/((1+wacc_2)**1)
             else:
                 lcoe = None
 
@@ -575,7 +576,7 @@ class ParametroFotovoltaica(ParametroCalculos):
             print("Potencia nominal:", PN)
             print("Factor planta:", FP)
             print("Energia Anual Producida:", EAP)
-            print("WACC:", WACC)
+            print("WACC:", wacc_2)
             print("Anualidad:", anualidad)
             print("Costos:", costos)
             print("LCOE:", lcoe)
