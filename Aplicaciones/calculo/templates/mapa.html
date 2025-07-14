@@ -3,131 +3,347 @@
 {% load static %}
 
 <style>
-    .mapa-container {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-        padding: 2rem 1rem;
+    body {
+        min-height: 100vh;
+        background: linear-gradient(120deg, #185a9d 0%, #43cea2 100%);
+        position: relative;
+        overflow-x: hidden;
     }
-    #map {
-        height: 500px;
-        width: 100%;
-        border-radius: 12px;
-        min-height: 300px;
-        max-height: 70vh;
-        transition: box-shadow 0.3s;
-        box-shadow: 0 2px 12px rgba(67,123,206,0.10);
+    .fondo-ondas {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+        background: none;
     }
-    @media (max-width: 768px) {
-        .mapa-container {
-            padding: 1rem 0.2rem;
-        }
-        #map {
-            height: 320px;
-            min-height: 200px;
-        }
-        .filtro-bar {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 0.7rem;
-        }
+    .dashboard-mapa {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2.5rem;
+        max-width: 1400px;
+        margin: 3.5rem auto 2.5rem auto;
+        position: relative;
+        z-index: 2;
+        min-height: 600px;
     }
-    .leaflet-popup-content {
-        min-width: 180px;
-        max-width: 220px;
-        font-size: 0.98rem;
+    .panel-lateral {
+        background: rgba(255,255,255,0.97);
+        border-radius: 28px;
+        box-shadow: 0 10px 48px 0 rgba(24,90,157,0.18), 0 2px 8px 0 rgba(67,123,206,0.10);
+        padding: 2.7rem 2.2rem 2.2rem 2.2rem;
+        min-width: 340px;
+        max-width: 420px;
+        flex: 1 1 370px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        position: relative;
     }
-    .leaflet-popup-content h5 {
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
+    .mapa-header {
+        display: flex;
+        align-items: center;
+        gap: 1.3rem;
+        margin-bottom: 1.7rem;
+    }
+    .mapa-header .icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #185a9d 60%, #43cea2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 2.5rem;
+        box-shadow: 0 2px 16px rgba(24,90,157,0.18);
+        border: 4px solid #fff;
+    }
+    .mapa-header h2 {
         color: #185a9d;
-        font-weight: 700;
-    }
-    .leaflet-popup-content img {
-        width: 100%;
-        max-width: 140px;
-        border-radius: 8px;
-        margin: 0.5rem 0;
-        box-shadow: 0 2px 8px rgba(24,90,157,0.10);
-    }
-    .leaflet-popup-content .btn {
-        font-size: 0.95rem;
-        padding: 0.3rem 1rem;
-        border-radius: 20px;
-        background: linear-gradient(90deg, #437bceff 0%, #185a9d 100%);
-        color: #fff !important;
-        font-weight: 600;
-        margin-top: 0.5rem;
-        display: inline-block;
-        text-decoration: none;
-        transition: background 0.2s;
-    }
-    .leaflet-popup-content .btn:hover {
-        background: linear-gradient(90deg, #185a9d 0%, #437bceff 100%);
-        color: #fff !important;
+        font-weight: 900;
+        font-size: 2.3rem;
+        margin: 0;
+        letter-spacing: 1.2px;
+        text-shadow: 0 2px 8px #43cea22a;
     }
     .filtro-bar {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: 1.3rem;
+        margin-bottom: 2.1rem;
         flex-wrap: wrap;
+        background: rgba(67,123,206,0.07);
+        border-radius: 22px;
+        padding: 1.1rem 1.7rem;
+        box-shadow: 0 2px 12px rgba(67,123,206,0.08);
+        border: 1.5px solid #e3eaf7;
+        position: relative;
+        z-index: 2;
     }
     .filtro-bar label {
-        font-weight: 600;
+        font-weight: 700;
         color: #185a9d;
-        font-size: 1.05rem;
+        font-size: 1.09rem;
+        margin-bottom: 0;
+        letter-spacing: 0.2px;
     }
     .filtro-bar select, .filtro-bar input[type="text"] {
-        border-radius: 20px;
-        border: 1px solid #b3c6e0;
-        padding: 0.4rem 1.2rem;
-        font-size: 1rem;
-        background: #f7faff;
+        border-radius: 22px;
+        border: 1.5px solid #b3c6e0;
+        padding: 0.55rem 1.3rem;
+        font-size: 1.08rem;
+        background: #fff;
         color: #185a9d;
-        font-weight: 600;
+        font-weight: 700;
         outline: none;
-        transition: border 0.2s;
+        transition: border 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 6px rgba(67,123,206,0.06);
     }
     .filtro-bar select:focus, .filtro-bar input[type="text"]:focus {
-        border: 1.5px solid #185a9d;
+        border: 1.7px solid #185a9d;
+        box-shadow: 0 2px 12px rgba(24,90,157,0.13);
     }
     .filtro-bar input[type="text"] {
         text-transform: uppercase;
         min-width: 180px;
-        max-width: 300px;
+        max-width: 320px;
+        letter-spacing: 1px;
+    }
+    .leyenda-flotante {
+        background: rgba(255,255,255,0.93);
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(67,123,206,0.10);
+        padding: 0.8rem 1.3rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.1rem;
+        font-size: 1.07rem;
+        font-weight: 600;
+        color: #185a9d;
+        z-index: 10;
+        border: 1.5px solid #e3eaf7;
+        margin-bottom: 1.2rem;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        position: static;
+        animation: leyendaIn 0.7s cubic-bezier(.4,2,.6,1);
+        backdrop-filter: blur(2px);
+    }
+    @keyframes leyendaIn {
+        0% { opacity: 0; transform: translateY(-20px);}
+        100% { opacity: 1; transform: translateY(0);}
+    }
+    .leyenda-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.1rem 0.3rem;
+        border-radius: 8px;
+        transition: background 0.2s;
+        min-width: 0;
+        max-width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .leyenda-item:hover {
+        background: #e0eafc;
+    }
+    .leyenda-pin {
+        width: 20px;
+        height: 32px;
+        display: inline-block;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-right: 2px;
+        filter: drop-shadow(0 2px 6px #185a9d22);
+        flex-shrink: 0;
+    }
+    .leyenda-pin.hidraulica { background-image: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'); }
+    .leyenda-pin.fotovoltaica { background-image: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png'); }
+    .leyenda-pin.eolica { background-image: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png'); }
+    .leyenda-pin.termica { background-image: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'); }
+    .mapa-area {
+        flex: 2 1 600px;
+        min-width: 350px;
+        max-width: 1000px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        height: 650px;
+    }
+    #map {
+        height: 100%;
+        width: 100%;
+        border-radius: 18px;
+        min-height: 350px;
+        max-height: 100%;
+        transition: box-shadow 0.3s;
+        box-shadow: 0 4px 24px rgba(67,123,206,0.13);
+        z-index: 1;
+        border: 1.5px solid #e3eaf7;
+    }
+    @media (max-width: 1100px) {
+        .dashboard-mapa { flex-direction: column; gap: 1.5rem; min-height: unset; }
+        .panel-lateral, .mapa-area { max-width: 100%; min-width: 0; width: 100%; }
+        .mapa-area { height: 350px; }
+        #map { height: 320px; min-height: 200px; }
+        .leyenda-flotante { font-size: 0.97rem; }
+    }
+    .leaflet-popup-content {
+        min-width: 180px;
+        max-width: 240px;
+        font-size: 1.07rem;
+        padding: 0.2rem 0.1rem;
+        color: #185a9d;
+        font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+    .leaflet-popup-content h5 {
+        font-size: 1.18rem;
+        margin-bottom: 0.5rem;
+        color: #185a9d;
+        font-weight: 900;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 8px #43cea22a;
+    }
+    .leaflet-popup-content img {
+        width: 100%;
+        max-width: 140px;
+        border-radius: 10px;
+        margin: 0.5rem 0;
+        box-shadow: 0 2px 12px rgba(24,90,157,0.13);
+        border: 1.5px solid #e3eaf7;
+    }
+    .leaflet-popup-content .btn {
+        font-size: 1.01rem;
+        padding: 0.35rem 1.2rem;
+        border-radius: 22px;
+        background: linear-gradient(90deg, #437bceff 0%, #185a9d 100%);
+        color: #fff !important;
+        font-weight: 700;
+        margin-top: 0.5rem;
+        display: inline-block;
+        text-decoration: none;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 6px rgba(24,90,157,0.13);
+        border: none;
+    }
+    .leaflet-popup-content .btn:hover {
+        background: linear-gradient(90deg, #185a9d 0%, #437bceff 100%);
+        color: #fff !important;
+        box-shadow: 0 2px 12px #185a9d33;
+    }
+    .leaflet-marker-icon {
+        transition: transform 0.18s cubic-bezier(.4,2,.6,1), filter 0.18s;
+    }
+    .leaflet-marker-icon:hover {
+        transform: scale(1.15) translateY(-6px);
+        z-index: 999 !important;
+        filter: drop-shadow(0 6px 18px #185a9d33);
     }
 </style>
 
-<div class="container mapa-container">
-    <h2 class="mb-4" style="color:#185a9d; font-weight:700;">Mapa de Centrales</h2>
-    <div class="filtro-bar">
-        <label for="filtro-tipo">Filtrar por tipo:</label>
-        <select id="filtro-tipo">
-            <option value="TODAS">Todas</option>
-            <option value="HIDRAULICA">Hidraulica</option>
-            <option value="FOTOVOLTAICA">Fotovoltaica</option>
-            <option value="EOLICA">Eolica</option>
-            <option value="TERMICA">Termica</option>
-        </select>
-        <label for="buscador-central" style="margin-left:1rem;">Buscar central:</label>
-        <input type="text" id="buscador-central" placeholder="Escribe el nombre..." autocomplete="off" />
-    </div>
-    <div id="map"></div>
+<!-- Fondo de ondas SVG -->
+<div class="fondo-ondas">
+    <svg width="100%" height="100%" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;">
+        <path fill="#43cea2" fill-opacity="0.13" d="M0,160L60,154.7C120,149,240,139,360,154.7C480,171,600,213,720,229.3C840,245,960,235,1080,218.7C1200,203,1320,181,1380,170.7L1440,160L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
+        <path fill="#185a9d" fill-opacity="0.09" d="M0,320L60,293.3C120,267,240,213,360,197.3C480,181,600,203,720,208C840,213,960,203,1080,197.3C1200,192,1320,192,1380,192L1440,192L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
+    </svg>
 </div>
 
+<div class="dashboard-mapa">
+    <div class="panel-lateral">
+        <div class="mapa-header">
+            <span class="icon"><i class="fa fa-bolt"></i></span>
+            <h2>Mapa de Centrales Eléctricas</h2>
+        </div>
+        <div class="filtro-bar">
+            <label for="filtro-tipo"><i class="fa fa-filter"></i> Tipo:</label>
+            <select id="filtro-tipo">
+                <option value="TODAS">Todas</option>
+                <option value="HIDRAULICA">Hidraulica</option>
+                <option value="FOTOVOLTAICA">Fotovoltaica</option>
+                <option value="EOLICA">Eolica</option>
+                <option value="TERMICA">Termica</option>
+            </select>
+            <label for="buscador-central" style="margin-left:1rem;"><i class="fa fa-search"></i> Central:</label>
+            <input type="text" id="buscador-central" placeholder="Escribe el nombre..." autocomplete="off" />
+        </div>
+        <div class="leyenda-flotante">
+            <span class="leyenda-item"><span class="leyenda-pin hidraulica"></span>Hidráulica</span>
+            <span class="leyenda-item"><span class="leyenda-pin fotovoltaica"></span>Fotovoltaica</span>
+            <span class="leyenda-item"><span class="leyenda-pin eolica"></span>Eólica</span>
+            <span class="leyenda-item"><span class="leyenda-pin termica"></span>Térmica</span>
+        </div>
+    </div>
+    <div class="mapa-area">
+        <div id="map"></div>
+    </div>
+</div>
+
+<!-- FontAwesome para los íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+<!-- Leaflet y los íconos de color -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    var map = L.map('map').setView([-1.831239, -78.183406], 6);
+    var map = L.map('map').setView([-1.831239, -78.183406], 7); // Zoom más cercano a Ecuador
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
+
+    // Íconos de color tipo Leaflet
+    var iconos = {
+        "HIDRAULICA": L.icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+            shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        }),
+        "FOTOVOLTAICA": L.icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+            shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        }),
+        "EOLICA": L.icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+            shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        }),
+        "TERMICA": L.icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+            shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        }),
+        "DEFAULT": L.icon({
+            iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+            shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        })
+    };
 
     var centrales = [
         {% for central in centrales %}
@@ -164,16 +380,29 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
                     var lat = parseFloat(parts[0]);
                     var lng = parseFloat(parts[1]);
-                    var popupContent = `
-                        <div style="text-align:center;">
-                            <h5>${central.nombre}</h5>
-                            <p><b>Tipo:</b> ${central.tipo}</p>
-                            ${central.foto ? `<img src="${central.foto}" alt="Foto Central">` : ""}
-                            <br>
-                            ${central.fotovoltaica ? `<a href="{% url 'fotovoltaica_list' %}?nombre=${encodeURIComponent(central.nombre)}" class="btn">Ver datos</a>` : ""}
-                        </div>
-                    `;
-                    var marker = L.marker([lat, lng]).addTo(map).bindPopup(popupContent);
+                    // Selecciona el icono según el tipo
+                    var icon = iconos[central.tipo] || iconos["DEFAULT"];
+                    var url = "#";
+if (central.tipo === "HIDRAULICA") {
+    url = "{% url 'hidraulica_list' %}?nombre=" + encodeURIComponent(central.nombre);
+} else if (central.tipo === "FOTOVOLTAICA") {
+    url = "{% url 'fotovoltaica_list' %}?nombre=" + encodeURIComponent(central.nombre);
+} else if (central.tipo === "EOLICA") {
+    url = "{% url 'eolica_list' %}?nombre=" + encodeURIComponent(central.nombre);
+} else if (central.tipo === "TERMICA") {
+    url = "{% url 'termica_list' %}?nombre=" + encodeURIComponent(central.nombre);
+}
+
+var popupContent = `
+    <div style="text-align:center;">
+        <h5>${central.nombre}</h5>
+        <p><b>Tipo:</b> ${central.tipo}</p>
+        ${central.foto ? `<img src="${central.foto}" alt="Foto Central">` : ""}
+        <br>
+        <a href="${url}" class="btn">Ver datos</a>
+    </div>
+`;
+                    var marker = L.marker([lat, lng], {icon: icon}).addTo(map).bindPopup(popupContent);
                     markers.push(marker);
                 }
             }
@@ -193,7 +422,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Evento para el buscador
     var buscador = document.getElementById('buscador-central');
     buscador.addEventListener('input', function() {
-        // Forzar mayúsculas visualmente
         this.value = this.value.toUpperCase();
         var tipo = document.getElementById('filtro-tipo').value;
         var texto = this.value.trim();
