@@ -2,9 +2,120 @@
 {% block content %}
 {% load static %}
 
-<div class="container mt-4">
-    <h2>Mapa de Centrales</h2>
-    <div id="map" style="height: 500px; width: 100%; border-radius: 12px;"></div>
+<style>
+    .mapa-container {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        padding: 2rem 1rem;
+    }
+    #map {
+        height: 500px;
+        width: 100%;
+        border-radius: 12px;
+        min-height: 300px;
+        max-height: 70vh;
+        transition: box-shadow 0.3s;
+        box-shadow: 0 2px 12px rgba(67,123,206,0.10);
+    }
+    @media (max-width: 768px) {
+        .mapa-container {
+            padding: 1rem 0.2rem;
+        }
+        #map {
+            height: 320px;
+            min-height: 200px;
+        }
+        .filtro-bar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.7rem;
+        }
+    }
+    .leaflet-popup-content {
+        min-width: 180px;
+        max-width: 220px;
+        font-size: 0.98rem;
+    }
+    .leaflet-popup-content h5 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: #185a9d;
+        font-weight: 700;
+    }
+    .leaflet-popup-content img {
+        width: 100%;
+        max-width: 140px;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+        box-shadow: 0 2px 8px rgba(24,90,157,0.10);
+    }
+    .leaflet-popup-content .btn {
+        font-size: 0.95rem;
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        background: linear-gradient(90deg, #437bceff 0%, #185a9d 100%);
+        color: #fff !important;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        display: inline-block;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+    .leaflet-popup-content .btn:hover {
+        background: linear-gradient(90deg, #185a9d 0%, #437bceff 100%);
+        color: #fff !important;
+    }
+    .filtro-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+    .filtro-bar label {
+        font-weight: 600;
+        color: #185a9d;
+        font-size: 1.05rem;
+    }
+    .filtro-bar select, .filtro-bar input[type="text"] {
+        border-radius: 20px;
+        border: 1px solid #b3c6e0;
+        padding: 0.4rem 1.2rem;
+        font-size: 1rem;
+        background: #f7faff;
+        color: #185a9d;
+        font-weight: 600;
+        outline: none;
+        transition: border 0.2s;
+    }
+    .filtro-bar select:focus, .filtro-bar input[type="text"]:focus {
+        border: 1.5px solid #185a9d;
+    }
+    .filtro-bar input[type="text"] {
+        text-transform: uppercase;
+        min-width: 180px;
+        max-width: 300px;
+    }
+</style>
+
+<div class="container mapa-container">
+    <h2 class="mb-4" style="color:#185a9d; font-weight:700;">Mapa de Centrales</h2>
+    <div class="filtro-bar">
+        <label for="filtro-tipo">Filtrar por tipo:</label>
+        <select id="filtro-tipo">
+            <option value="TODAS">Todas</option>
+            <option value="HIDRAULICA">Hidraulica</option>
+            <option value="FOTOVOLTAICA">Fotovoltaica</option>
+            <option value="EOLICA">Eolica</option>
+            <option value="TERMICA">Termica</option>
+        </select>
+        <label for="buscador-central" style="margin-left:1rem;">Buscar central:</label>
+        <input type="text" id="buscador-central" placeholder="Escribe el nombre..." autocomplete="off" />
+    </div>
+    <div id="map"></div>
 </div>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -12,42 +123,82 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Centra el mapa en Ecuador
     var map = L.map('map').setView([-1.831239, -78.183406], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // Agrega los pines de todas las centrales
-    {% for central in centrales %}
-        {% if central.localizacion and "," in central.localizacion %}
-            (function() {
-                var loc = "{{ central.localizacion|cut:' ' }}";
-                var parts = loc.split(",");
+    var centrales = [
+        {% for central in centrales %}
+            {% if central.localizacion and "," in central.localizacion %}
+                {
+                    nombre: `{{ central.nombre|escapejs }}`,
+                    tipo: `{{ central.tipo_electrica.nombre|escapejs }}`,
+                    localizacion: `{{ central.localizacion|cut:' ' }}`,
+                    foto: `{% if central.foto_central %}{{ central.foto_central.url }}{% else %}{% endif %}`,
+                    fotovoltaica: {% if central.fotovoltaica %}true{% else %}false{% endif %}
+                },
+            {% endif %}
+        {% endfor %}
+    ];
+
+    var markers = [];
+
+    function mostrarCentrales(tipo, texto) {
+        // Elimina los marcadores actuales
+        markers.forEach(function(marker) {
+            map.removeLayer(marker);
+        });
+        markers = [];
+
+        // Filtra y agrega los nuevos
+        centrales.forEach(function(central) {
+            var coincideTipo = (tipo === "TODAS" || central.tipo === tipo);
+            var coincideTexto = true;
+            if (texto && texto.length > 0) {
+                coincideTexto = central.nombre.toUpperCase().includes(texto.toUpperCase());
+            }
+            if (coincideTipo && coincideTexto) {
+                var parts = central.localizacion.split(",");
                 if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
                     var lat = parseFloat(parts[0]);
                     var lng = parseFloat(parts[1]);
                     var popupContent = `
                         <div style="text-align:center;">
-                            <h5>{{ central.nombre }}</h5>
-                            <p><b>Tipo:</b> {{ central.tipo_electrica.nombre }}</p>
-                            {% if central.foto_central %}
-                                <img src="{{ central.foto_central.url }}" alt="Foto Central" style="width:120px; border-radius:8px;">
-                            {% endif %}
+                            <h5>${central.nombre}</h5>
+                            <p><b>Tipo:</b> ${central.tipo}</p>
+                            ${central.foto ? `<img src="${central.foto}" alt="Foto Central">` : ""}
                             <br>
-                            {% if central.fotovoltaica %}
-                                <a href="{% url 'fotovoltaica_list' %}?nombre={{ central.nombre|urlencode }}" class="btn btn-primary mt-2" style="color:white;">
-                                    Ver datos
-                                </a>
-                            {% endif %}
+                            ${central.fotovoltaica ? `<a href="{% url 'fotovoltaica_list' %}?nombre=${encodeURIComponent(central.nombre)}" class="btn">Ver datos</a>` : ""}
                         </div>
                     `;
-                    L.marker([lat, lng]).addTo(map).bindPopup(popupContent);
+                    var marker = L.marker([lat, lng]).addTo(map).bindPopup(popupContent);
+                    markers.push(marker);
                 }
-            })();
-        {% endif %}
-    {% endfor %}
+            }
+        });
+    }
+
+    // Inicialmente muestra todas
+    mostrarCentrales("TODAS", "");
+
+    // Evento para el filtro de tipo
+    document.getElementById('filtro-tipo').addEventListener('change', function() {
+        var tipo = this.value;
+        var texto = document.getElementById('buscador-central').value.trim().toUpperCase();
+        mostrarCentrales(tipo, texto);
+    });
+
+    // Evento para el buscador
+    var buscador = document.getElementById('buscador-central');
+    buscador.addEventListener('input', function() {
+        // Forzar mayúsculas visualmente
+        this.value = this.value.toUpperCase();
+        var tipo = document.getElementById('filtro-tipo').value;
+        var texto = this.value.trim();
+        mostrarCentrales(tipo, texto);
+    });
 });
 </script>
 {% endblock %}
